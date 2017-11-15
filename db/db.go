@@ -1,0 +1,37 @@
+package db
+
+import (
+	"database/sql"
+	"fmt"
+	"log"
+
+	_ "github.com/lib/pq"
+)
+
+type DB struct {
+	*sql.DB
+}
+
+const (
+	user    = "pokedb"
+	pass    = ""
+	dbName  = "pokedb"
+	sslMode = "disable"
+)
+
+func New() (*DB, error) {
+	info := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=%s", user, pass, dbName, sslMode)
+	db, err := sql.Open("postgres", info)
+	if err != nil {
+		log.Printf("Error opening database")
+		return nil, err
+	}
+
+	err = db.Ping()
+	if err != nil {
+		log.Printf("Error establishing database connection")
+		return nil, err
+	}
+
+	return &DB{db}, nil
+}
