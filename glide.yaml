@@ -1,0 +1,9 @@
+package: github.com/TMDeal/PokeDB
+import:
+- package: github.com/julienschmidt/httprouter
+  version: ^1.1.0
+- package: github.com/graphql-go/graphql
+  version: ^0.7.3
+- package: github.com/graphql-go/handler
+  version: ^0.2.1
+- package: github.com/lib/pq
