@@ -20,5 +20,5 @@ func (db DB) FindStatsByID(id int) (*Stat, error) {
 		return nil, err
 	}
 
-	return &s
+	return &s, nil
 }
