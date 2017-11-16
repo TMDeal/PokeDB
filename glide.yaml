@@ -7,3 +7,4 @@ import:
 - package: github.com/graphql-go/handler
   version: ^0.2.1
 - package: github.com/lib/pq
+- package: github.com/jmoiron/sqlx
