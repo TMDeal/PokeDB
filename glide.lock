@@ -1,16 +1,37 @@
-hash: c44974e48a58305efde9d5d6b611c0744c29791c1ecdde9d2970000ff82ac802
-updated: 2017-11-16T12:00:12.493937787-05:00
+hash: e8da919cfa5ab90ba66660c430f124c67104669b43189bc9bf5263a68a2de407
+updated: 2017-11-16T16:53:56.964475882-05:00
 imports:
 - name: github.com/jmoiron/sqlx
   version: 3379e5993990b1f927fc8db926485e6f6becf2d2
   subpackages:
   - reflectx
-- name: github.com/julienschmidt/httprouter
-  version: 8c199fb6259ffc1af525cc3ad52ee60ba8359669
 - name: github.com/lib/pq
   version: b609790bd85edf8e9ab7e0f8912750a786177bcf
   subpackages:
   - oid
 - name: github.com/neelance/graphql-go
   version: beff08417b04a91f0a7618b55786d63eec833b9f
+  subpackages:
+  - errors
+  - internal/common
+  - internal/exec
+  - internal/exec/packer
+  - internal/exec/resolvable
+  - internal/exec/selected
+  - internal/query
+  - internal/schema
+  - internal/validation
+  - introspection
+  - log
+  - relay
+  - trace
+- name: github.com/opentracing/opentracing-go
+  version: 1361b9cd60be79c4c3a7fa9841b3c132e40066a7
+  subpackages:
+  - ext
+  - log
+- name: golang.org/x/net
+  version: c73622c77280266305273cb545f54516ced95b93
+  subpackages:
+  - context
 testImports: []
