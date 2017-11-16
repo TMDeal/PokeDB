@@ -1,15 +1,15 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
 type DB struct {
-	*sql.DB
+	*sqlx.DB
 }
 
 const (
@@ -21,7 +21,7 @@ const (
 
 func New() (*DB, error) {
 	info := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=%s", user, pass, dbName, sslMode)
-	db, err := sql.Open("postgres", info)
+	db, err := sqlx.Open("postgres", info)
 	if err != nil {
 		log.Printf("Error opening database")
 		return nil, err
