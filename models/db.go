@@ -1,4 +1,4 @@
-package db
+package models
 
 import (
 	"fmt"
@@ -19,7 +19,7 @@ const (
 	sslMode = "disable"
 )
 
-func New() (*DB, error) {
+func NewDB() (*DB, error) {
 	info := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=%s", user, pass, dbName, sslMode)
 	db, err := sqlx.Open("postgres", info)
 	if err != nil {
