@@ -4,7 +4,7 @@ import "log"
 
 type Pokemon struct {
 	ID           int                    `db:"id"`
-	Name         string                 `db:"name"`
+	Identifier   string                 `db:"identifier"`
 	Height       float32                `db:"height"`
 	Weight       float32                `db:"weight"`
 	MaleChance   float32                `db:"male_chance"`
@@ -38,7 +38,7 @@ func (db DB) FindPokemonByID(id int) (*Pokemon, error) {
 	}
 
 	rowsStat, err := db.Queryx(`
-	select s.name, s.alt_name, s.id, ps.effort, ps.base
+	select s.identifier, s.alt_identifier, s.id, ps.effort, ps.base
 	from pokemon_stats as ps, stats as s
 	where ps.stat_id = s.id and ps.pokemon_id = $1
 	`, id)
@@ -51,11 +51,11 @@ func (db DB) FindPokemonByID(id int) (*Pokemon, error) {
 	for rowsStat.Next() {
 		var stat PokemonStat
 		rowsStat.StructScan(&stat)
-		stats[stat.AltName] = stat
+		stats[stat.AltIdentifier] = stat
 	}
 
 	rowsType, err := db.Queryx(`
-	select t.id, t.name
+	select t.id, t.identifier
 	from types as t, pokemon_types as pt
 	where pt.type_id = t.id and pt.pokemon_id = $1
 	`, id)
