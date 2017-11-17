@@ -15,7 +15,7 @@ type DB struct {
 const (
 	user    = "pokedb"
 	pass    = ""
-	dbName  = "pokedb"
+	dbName  = "pokedex"
 	sslMode = "disable"
 )
 
