@@ -20,7 +20,7 @@ func NewRootResolver(db *models.DB) *RootResolver {
 }
 
 //Generation resolves a Generation based on an ID
-func (root *RootResolver) Generation(args struct{ ID int32 }) *GenerationResolver {
+func (root *RootResolver) Generations(args struct{ ID int32 }) *GenerationResolver {
 	gen, err := root.DB.FindGenerationByID(int(args.ID))
 	if err != nil {
 		log.Fatal(err)
@@ -29,7 +29,7 @@ func (root *RootResolver) Generation(args struct{ ID int32 }) *GenerationResolve
 }
 
 //Region resolves a Region based on an ID
-func (root *RootResolver) Region(args struct{ ID int32 }) *RegionResolver {
+func (root *RootResolver) Regions(args struct{ ID int32 }) *RegionResolver {
 	r, err := root.DB.FindRegionByID(int(args.ID))
 	if err != nil {
 		log.Fatal(err)
