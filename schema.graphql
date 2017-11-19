@@ -2,6 +2,12 @@ schema {
     query: Query
 }
 
+type Query {
+    generations(id: Int): [Generation]
+    regions(id: Int, name: String): [Region]
+    types(id: Int, name: String): [Type]
+}
+
 type Generation {
     id: ID!
     identifier: String!
@@ -28,9 +34,4 @@ type Type {
     name: String!
     generation: Generation!
     damageClass: DamageClass!
-}
-
-type Query {
-    generation(id: Int!): Generation
-    region(id: Int!): Region
 }
