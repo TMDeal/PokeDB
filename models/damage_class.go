@@ -35,8 +35,9 @@ func (db DB) FindDamageClasses(search interface{}) ([]*DamageClass, error) {
 		where id = $1
 		`))
 	case string:
+		search = fmt.Sprintf(`%s%%`, search)
 		stmt, err = db.session.Preparex(fmt.Sprintf(baseQuery, `
-		where lower(name) like lower($1%)
+		where lower(name) like lower($1)
 		`))
 	default:
 		return nil, ErrInvalidSearch
