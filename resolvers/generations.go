@@ -1,7 +1,6 @@
 package resolvers
 
 import (
-	"log"
 	"strconv"
 
 	"github.com/TMDeal/PokeDB/models"
@@ -41,7 +40,7 @@ func (gr *GenerationResolver) Name() string {
 func (gr *GenerationResolver) Region() *RegionResolver {
 	r, err := gr.g.Region()
 	if err != nil {
-		log.Fatal(err)
+		return nil
 	}
 	return NewRegionResolver(r)
 }
