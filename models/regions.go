@@ -1,6 +1,10 @@
 package models
 
-import "log"
+import (
+	"fmt"
+
+	"github.com/jmoiron/sqlx"
+)
 
 //Region represents a region entry in the database
 type Region struct {
@@ -11,22 +15,44 @@ type Region struct {
 
 //RegionFinder says how to find information for a region model
 type RegionFinder interface {
-	FindRegionByID(id int) (*Region, error)
+	FindRegions(search interface{}) ([]*Region, error)
 }
 
-//FindRegionByID returns a Region from the database based on the id of the
-//entry. An error is also returned if a failure occured
-func (db DB) FindRegionByID(id int) (*Region, error) {
-	var r Region
+func (db DB) FindRegions(search interface{}) ([]*Region, error) {
+	var rs []*Region
+	var stmt *sqlx.Stmt
+	var err error
 
-	err := db.session.QueryRowx(`
-	select * from regions where id = $1
-	`, id).StructScan(&r)
+	baseQuery := `
+	select * from regions %s
+	`
 
+	switch search.(type) {
+	case int:
+		stmt, err = db.session.Preparex(fmt.Sprintf(baseQuery, `
+		where id = $1
+		`))
+	case string:
+		stmt, err = db.session.Preparex(fmt.Sprintf(baseQuery, `
+		where lower(name) like lower($1%)
+		`))
+	default:
+		return nil, ErrInvalidSearch
+	}
+
+	rows, err := stmt.Queryx(search)
 	if err != nil {
-		log.Println("Unable to execute query!")
 		return nil, err
 	}
 
-	return &r, nil
+	for rows.Next() {
+		var r Region
+		err := rows.StructScan(&r)
+		if err != nil {
+			return nil, err
+		}
+		rs = append(rs, &r)
+	}
+
+	return rs, nil
 }

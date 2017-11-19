@@ -19,6 +19,7 @@ type DB struct {
 type Finder interface {
 	GenerationFinder
 	RegionFinder
+	DamageClassFinder
 }
 
 const (
