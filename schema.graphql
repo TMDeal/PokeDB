@@ -1,0 +1,36 @@
+schema {
+    query: Query
+}
+
+type Generation {
+    id: ID!
+    identifier: String!
+    name: String!
+    region: Region!
+}
+
+type Region {
+    id: ID!
+    identifier: String!
+    name: String!
+}
+
+type DamageClass {
+    id: ID!
+    identifier: String!
+    name: String!
+    description: String!
+}
+
+type Type {
+    id: ID!
+    identifier: String!
+    name: String!
+    generation: Generation!
+    damageClass: DamageClass!
+}
+
+type Query {
+    generation(id: Int!): Generation
+    region(id: Int!): Region
+}
