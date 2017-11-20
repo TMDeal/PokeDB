@@ -3,10 +3,10 @@ schema {
 }
 
 type Query {
-    # Searches
-    #generation(id: Int!): Generation
-    #region(id: Int, name: String): Region
-    #type(id: Int, name: String): Type
+    #Searches
+    generation(id: Int!): Generation
+    region(id: Int, name: String): Region
+    type(id: Int, name: String): Type
 
     # Lists
     generations: [Generation]
@@ -39,5 +39,5 @@ type Type {
     identifier: String!
     name: String!
     generation: Generation!
-    damageClass: DamageClass!
+    damageClass: DamageClass
 }
