@@ -6,7 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func (db DB) GetRow(query string, search interface{}) (*sqlx.Row, error) {
+func (db DB) Row(query string, search interface{}) (*sqlx.Row, error) {
 	switch search.(type) {
 	case int:
 		return db.session.QueryRowx(fmt.Sprintf(query, `
@@ -27,7 +27,7 @@ func (db DB) GetRow(query string, search interface{}) (*sqlx.Row, error) {
 	}
 }
 
-func (db DB) GetRows(query string, search interface{}) (*sqlx.Rows, error) {
+func (db DB) Rows(query string, search interface{}) (*sqlx.Rows, error) {
 	switch search.(type) {
 	case int:
 		return db.session.Queryx(fmt.Sprintf(query, `

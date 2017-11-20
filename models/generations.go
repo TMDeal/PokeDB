@@ -27,7 +27,7 @@ func (g Generation) Region(rf RegionFinder) (*Region, error) {
 func (db DB) FindGeneration(search interface{}) (*Generation, error) {
 	var gen Generation
 
-	row, err := db.GetRow(`
+	row, err := db.Row(`
 	select g.id, g.main_region_id as "region_id", g.identifier, g.name from
 	generations as g %s
 	`, search)
@@ -35,7 +35,10 @@ func (db DB) FindGeneration(search interface{}) (*Generation, error) {
 		return nil, err
 	}
 
-	row.StructScan(&gen)
+	err = row.StructScan(&gen)
+	if err != nil {
+		return nil, err
+	}
 
 	return &gen, nil
 }
@@ -48,7 +51,7 @@ func (db DB) FindGenerations(search interface{}) ([]*Generation, error) {
 	generations as g %s
 	`
 
-	rows, err := db.GetRows(baseQuery, search)
+	rows, err := db.Rows(baseQuery, search)
 	if err != nil {
 		return nil, err
 	}

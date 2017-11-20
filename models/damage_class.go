@@ -18,14 +18,17 @@ type DamageClassFinder interface {
 func (db DB) FindDamageClass(search interface{}) (*DamageClass, error) {
 	var dc DamageClass
 
-	row, err := db.GetRow(`
+	row, err := db.Row(`
 	select * from move_damage_classes %s
 	`, search)
 	if err != nil {
 		return nil, err
 	}
 
-	row.StructScan(&dc)
+	err = row.StructScan(&dc)
+	if err != nil {
+		return nil, err
+	}
 
 	return &dc, nil
 }
@@ -37,7 +40,7 @@ func (db DB) FindDamageClasses(search interface{}) ([]*DamageClass, error) {
 	select * from move_damage_classes %s
 	`
 
-	rows, err := db.GetRows(baseQuery, search)
+	rows, err := db.Rows(baseQuery, search)
 	if err != nil {
 		return nil, err
 	}

@@ -38,14 +38,17 @@ func (t Type) DamageClass(df DamageClassFinder) (*DamageClass, error) {
 func (db DB) FindType(search interface{}) (*Type, error) {
 	var t Type
 
-	row, err := db.GetRow(`
+	row, err := db.Row(`
 	select * from types %s
 	`, search)
 	if err != nil {
 		return nil, err
 	}
 
-	row.StructScan(&t)
+	err = row.StructScan(&t)
+	if err != nil {
+		return nil, err
+	}
 
 	return &t, nil
 }
@@ -57,7 +60,7 @@ func (db DB) FindTypes(search interface{}) ([]*Type, error) {
 	select * from types %s
 	`
 
-	rows, err := db.GetRows(baseQuery, search)
+	rows, err := db.Rows(baseQuery, search)
 	if err != nil {
 		return nil, err
 	}

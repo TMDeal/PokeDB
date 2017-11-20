@@ -16,14 +16,17 @@ type RegionFinder interface {
 func (db DB) FindRegion(search interface{}) (*Region, error) {
 	var r Region
 
-	row, err := db.GetRow(`
+	row, err := db.Row(`
 	select * from regions %s
 	`, search)
 	if err != nil {
 		return nil, err
 	}
 
-	row.StructScan(&r)
+	err = row.StructScan(&r)
+	if err != nil {
+		return nil, err
+	}
 
 	return &r, nil
 }
@@ -35,7 +38,7 @@ func (db DB) FindRegions(search interface{}) ([]*Region, error) {
 	select * from regions %s
 	`
 
-	rows, err := db.GetRows(baseQuery, search)
+	rows, err := db.Rows(baseQuery, search)
 	if err != nil {
 		return nil, err
 	}
