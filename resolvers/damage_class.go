@@ -19,7 +19,7 @@ func NewDamageClassResolver(db *models.DB, dc *models.DamageClass) *DamageClassR
 
 //ID resolves a damage classes ID
 func (dcr *DamageClassResolver) ID() graphql.ID {
-	id := graphql.ID(strconv.Itoa(dcr.dc.ID))
+	id := graphql.ID(strconv.Itoa(int(dcr.dc.ID)))
 	return id
 }
 

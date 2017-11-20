@@ -6,7 +6,7 @@ import (
 )
 
 func (root *RootResolver) Generation(args struct{ ID int32 }) *GenerationResolver {
-	gen, err := root.db.FindGeneration(int(args.ID))
+	gen, err := root.db.FindGeneration("id = ?", int(args.ID))
 	if err == sql.ErrNoRows {
 		return nil
 	}

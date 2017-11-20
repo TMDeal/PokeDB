@@ -20,7 +20,7 @@ func NewGenerationResolver(db *models.DB, g *models.Generation) *GenerationResol
 
 //ID resolves the ID field of a Generation
 func (gr *GenerationResolver) ID() graphql.ID {
-	id := graphql.ID(strconv.Itoa(gr.g.ID))
+	id := graphql.ID(strconv.Itoa(int(gr.g.ID)))
 	return id
 }
 

@@ -1,8 +1,10 @@
 package models
 
+import "github.com/gocraft/dbr"
+
 //Generation represents a generation entry in the database
 type Generation struct {
-	ID         int    `db:"id"`
+	ID         int64  `db:"id"`
 	Identifier string `db:"identifier"`
 	Name       string `db:"name"`
 	RegionID   int    `db:"region_id"`
@@ -10,13 +12,13 @@ type Generation struct {
 
 //GenerationFinder says how to find information for a Generation
 type GenerationFinder interface {
-	FindGenerations(search interface{}) ([]*Generation, error)
-	FindGeneration(search interface{}) (*Generation, error)
+	FindGenerations(limit uint64) ([]*Generation, error)
+	FindGeneration(query string, value interface{}) (*Generation, error)
 }
 
 //Region is a getter function for a Generations region info
 func (g Generation) Region(rf RegionFinder) (*Region, error) {
-	r, err := rf.FindRegion(g.RegionID)
+	r, err := rf.FindRegion("id = ?", g.RegionID)
 	if err != nil {
 		return nil, err
 	}
@@ -24,46 +26,35 @@ func (g Generation) Region(rf RegionFinder) (*Region, error) {
 	return r, nil
 }
 
-func (db DB) FindGeneration(search interface{}) (*Generation, error) {
+func (db DB) FindGeneration(query string, value interface{}) (*Generation, error) {
 	var gen Generation
+	sess := db.Session()
 
-	row, err := db.Row(`
-	select g.id, g.main_region_id as "region_id", g.identifier, g.name from
-	generations as g %s
-	`, search)
+	count, err := sess.Select(
+		"id", "main_region_id as region_id",
+		"identifier", "name").From("generations").Where(query, value).Load(&gen)
 	if err != nil {
 		return nil, err
 	}
-
-	err = row.StructScan(&gen)
-	if err != nil {
-		return nil, err
+	if count == 0 {
+		return nil, dbr.ErrNotFound
 	}
 
 	return &gen, nil
 }
 
-func (db DB) FindGenerations(search interface{}) ([]*Generation, error) {
+func (db DB) FindGenerations(limit uint64) ([]*Generation, error) {
 	var gens []*Generation
+	sess := db.Session()
 
-	baseQuery := `
-	select g.id, g.main_region_id as "region_id", g.identifier, g.name from
-	generations as g %s
-	`
-
-	rows, err := db.Rows(baseQuery, search)
+	count, err := sess.Select(
+		"id", "main_region_id as region_id",
+		"identifier", "name").From("generations").Limit(limit).Load(&gens)
 	if err != nil {
 		return nil, err
 	}
-
-	for rows.Next() {
-		var gen Generation
-
-		err := rows.StructScan(&gen)
-		if err != nil {
-			return nil, err
-		}
-		gens = append(gens, &gen)
+	if count == 0 {
+		return nil, dbr.ErrNotFound
 	}
 
 	return gens, nil

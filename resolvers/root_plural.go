@@ -9,7 +9,7 @@ import (
 func (root *RootResolver) Generations() *[]*GenerationResolver {
 	var gr []*GenerationResolver
 
-	gens, err := root.db.FindGenerations(nil)
+	gens, err := root.db.FindGenerations(20)
 	if err == sql.ErrNoRows {
 		return nil
 	}
@@ -28,7 +28,7 @@ func (root *RootResolver) Generations() *[]*GenerationResolver {
 func (root *RootResolver) Regions() *[]*RegionResolver {
 	var rr []*RegionResolver
 
-	rs, err := root.db.FindRegions(nil)
+	rs, err := root.db.FindRegions(20)
 	if err == sql.ErrNoRows {
 		return nil
 	}
@@ -47,7 +47,7 @@ func (root *RootResolver) Regions() *[]*RegionResolver {
 func (root *RootResolver) Types() *[]*TypeResolver {
 	var tr []*TypeResolver
 
-	ts, err := root.db.FindTypes(nil)
+	ts, err := root.db.FindTypes(20)
 	if err == sql.ErrNoRows {
 		return nil
 	}

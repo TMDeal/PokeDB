@@ -1,55 +1,47 @@
 package models
 
+import (
+	"github.com/gocraft/dbr"
+)
+
 //Region represents a region entry in the database
 type Region struct {
-	ID         int    `db:"id"`
+	ID         int64  `db:"id"`
 	Identifier string `db:"identifier"`
 	Name       string `db:"name"`
 }
 
 //RegionFinder says how to find information for a region model
 type RegionFinder interface {
-	FindRegions(search interface{}) ([]*Region, error)
-	FindRegion(search interface{}) (*Region, error)
+	FindRegions(limit uint64) ([]*Region, error)
+	FindRegion(query string, value interface{}) (*Region, error)
 }
 
-func (db DB) FindRegion(search interface{}) (*Region, error) {
+func (db DB) FindRegion(query string, value interface{}) (*Region, error) {
 	var r Region
+	sess := db.Session()
 
-	row, err := db.Row(`
-	select * from regions %s
-	`, search)
+	count, err := sess.Select("*").From("regions").Where(query, value).Load(&r)
 	if err != nil {
 		return nil, err
 	}
-
-	err = row.StructScan(&r)
-	if err != nil {
-		return nil, err
+	if count == 0 {
+		return nil, dbr.ErrNotFound
 	}
 
 	return &r, nil
 }
 
-func (db DB) FindRegions(search interface{}) ([]*Region, error) {
+func (db DB) FindRegions(limit uint64) ([]*Region, error) {
 	var rs []*Region
+	sess := db.Session()
 
-	baseQuery := `
-	select * from regions %s
-	`
-
-	rows, err := db.Rows(baseQuery, search)
+	count, err := sess.Select("*").From("regions").Limit(limit).Load(&rs)
 	if err != nil {
 		return nil, err
 	}
-
-	for rows.Next() {
-		var r Region
-		err := rows.StructScan(&r)
-		if err != nil {
-			return nil, err
-		}
-		rs = append(rs, &r)
+	if count == 0 {
+		return nil, dbr.ErrNotFound
 	}
 
 	return rs, nil

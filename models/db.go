@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/jmoiron/sqlx"
+	"github.com/gocraft/dbr"
 	_ "github.com/lib/pq"
 )
 
@@ -12,13 +12,14 @@ import (
 //functions required to find information from the database, as defined by the
 //Finder interface
 type DB struct {
-	session *sqlx.DB
+	conn *dbr.Connection
 }
 
 //Finder is an interface that defines how to get data about pokemon
 type Finder interface {
-	GenerationFinder
 	RegionFinder
+	GenerationFinder
+	TypeFinder
 	DamageClassFinder
 }
 
@@ -33,9 +34,9 @@ const (
 //NewDB returns a new DB and an error if a failure occurs
 func NewDB() (*DB, error) {
 	info := fmt.Sprintf("postgresql://%s:%s@%s/%s?sslmode=%s", user, pass, host, dbName, sslMode)
-	db, err := sqlx.Open("postgres", info)
+	db, err := dbr.Open("postgres", info, nil)
 	if err != nil {
-		log.Printf("Error opening database")
+		log.Printf("Error connecting to database")
 		return nil, err
 	}
 
@@ -45,9 +46,13 @@ func NewDB() (*DB, error) {
 		return nil, err
 	}
 
-	return &DB{session: db}, nil
+	return &DB{conn: db}, nil
 }
 
 func (db DB) Close() error {
-	return db.session.Close()
+	return db.conn.Close()
+}
+
+func (db DB) Session() *dbr.Session {
+	return db.conn.NewSession(nil)
 }

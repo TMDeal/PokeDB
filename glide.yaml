@@ -3,3 +3,5 @@ import:
 - package: github.com/lib/pq
 - package: github.com/jmoiron/sqlx
 - package: github.com/neelance/graphql-go
+- package: github.com/gocraft/dbr
+  version: ^2.1.0

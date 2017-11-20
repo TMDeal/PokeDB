@@ -20,7 +20,7 @@ func NewRegionResolver(db *models.DB, r *models.Region) *RegionResolver {
 
 //ID resolves the ID field of a Region
 func (rr *RegionResolver) ID() graphql.ID {
-	id := graphql.ID(strconv.Itoa(rr.r.ID))
+	id := graphql.ID(strconv.Itoa(int(rr.r.ID)))
 	return id
 }
 

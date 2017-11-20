@@ -1,9 +1,11 @@
 package models
 
+import "github.com/gocraft/dbr"
+
 //DamageClass represets the damage class of a move or type. The damage classes
 //are status, physical, or special
 type DamageClass struct {
-	ID          int    `db:"id"`
+	ID          int64  `db:"id"`
 	Identifier  string `db:"identifier"`
 	Name        string `db:"name"`
 	Description string `db:"description"`
@@ -11,47 +13,35 @@ type DamageClass struct {
 
 //DamageClassFinder is an interface the defines ways to find a DamageClass
 type DamageClassFinder interface {
-	FindDamageClasses(search interface{}) ([]*DamageClass, error)
-	FindDamageClass(search interface{}) (*DamageClass, error)
+	FindDamageClasses(limit uint64) ([]*DamageClass, error)
+	FindDamageClass(query string, value interface{}) (*DamageClass, error)
 }
 
-func (db DB) FindDamageClass(search interface{}) (*DamageClass, error) {
+func (db DB) FindDamageClass(query string, value interface{}) (*DamageClass, error) {
 	var dc DamageClass
+	sess := db.Session()
 
-	row, err := db.Row(`
-	select * from move_damage_classes %s
-	`, search)
+	count, err := sess.Select("*").From("move_damage_classes").Where(query, value).Load(&dc)
 	if err != nil {
 		return nil, err
 	}
-
-	err = row.StructScan(&dc)
-	if err != nil {
-		return nil, err
+	if count == 0 {
+		return nil, dbr.ErrNotFound
 	}
 
 	return &dc, nil
 }
 
-func (db DB) FindDamageClasses(search interface{}) ([]*DamageClass, error) {
+func (db DB) FindDamageClasses(limit uint64) ([]*DamageClass, error) {
 	var dcs []*DamageClass
+	sess := db.Session()
 
-	baseQuery := `
-	select * from move_damage_classes %s
-	`
-
-	rows, err := db.Rows(baseQuery, search)
+	count, err := sess.Select("*").From("move_damage_classes").Limit(limit).Load(&dcs)
 	if err != nil {
 		return nil, err
 	}
-
-	for rows.Next() {
-		var dc DamageClass
-		err := rows.StructScan(&dc)
-		if err != nil {
-			return nil, err
-		}
-		dcs = append(dcs, &dc)
+	if count == 0 {
+		return nil, dbr.ErrNotFound
 	}
 
 	return dcs, nil

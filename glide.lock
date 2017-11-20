@@ -1,6 +1,10 @@
-hash: e8da919cfa5ab90ba66660c430f124c67104669b43189bc9bf5263a68a2de407
-updated: 2017-11-16T16:53:56.964475882-05:00
+hash: c1bd0eea5861d39438b74d66b39ce9a897fbd9ba82d4591215902b0749446927
+updated: 2017-11-20T13:45:00.204689746-05:00
 imports:
+- name: github.com/elgris/sqrl
+  version: 852d8b353bc263808db088c342c3ead84a5ebcbd
+- name: github.com/gocraft/dbr
+  version: b2f0ffcef2a64c0729d5818e103bc019caed7b22
 - name: github.com/jmoiron/sqlx
   version: 3379e5993990b1f927fc8db926485e6f6becf2d2
   subpackages:

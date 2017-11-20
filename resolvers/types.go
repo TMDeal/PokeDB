@@ -17,7 +17,7 @@ func NewTypeResolver(db *models.DB, t *models.Type) *TypeResolver {
 }
 
 func (tr *TypeResolver) ID() graphql.ID {
-	id := graphql.ID(strconv.Itoa(tr.t.ID))
+	id := graphql.ID(strconv.Itoa(int(tr.t.ID)))
 	return id
 }
 
