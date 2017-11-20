@@ -18,17 +18,8 @@ func NewRootResolver(db *models.DB) *RootResolver {
 	return &RootResolver{db}
 }
 
-type IDArgs struct {
-	ID *int32
-}
-
-type IDNameArgs struct {
-	ID   *int32
-	Name *string
-}
-
 //Generation resolves a Generation based on an ID
-func (root *RootResolver) Generations(args IDArgs) *[]*GenerationResolver {
+func (root *RootResolver) Generations(args struct{ ID *int32 }) *[]*GenerationResolver {
 	var gr []*GenerationResolver
 
 	gens, err := root.db.FindGenerations(int(*args.ID))
@@ -47,7 +38,10 @@ func (root *RootResolver) Generations(args IDArgs) *[]*GenerationResolver {
 }
 
 //Region resolves a Region based on an ID
-func (root *RootResolver) Regions(args IDNameArgs) *[]*RegionResolver {
+func (root *RootResolver) Regions(args struct {
+	ID   *int32
+	Name *string
+}) *[]*RegionResolver {
 	var rr []*RegionResolver
 
 	rs, err := root.db.FindRegions(int(*args.ID))
@@ -66,7 +60,10 @@ func (root *RootResolver) Regions(args IDNameArgs) *[]*RegionResolver {
 }
 
 //Types resolves a Type based on an ID
-func (root *RootResolver) Types(args IDNameArgs) *[]*TypeResolver {
+func (root *RootResolver) Types(args struct {
+	ID   *int32
+	Name *string
+}) *[]*TypeResolver {
 	var tr []*TypeResolver
 
 	ts, err := root.db.FindTypes(int(*args.ID))

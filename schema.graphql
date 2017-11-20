@@ -4,6 +4,7 @@ schema {
 
 type Query {
     generations(id: Int): [Generation]
+    generation(id: Int!): Generation
     regions(id: Int, name: String): [Region]
     types(id: Int, name: String): [Type]
 }
