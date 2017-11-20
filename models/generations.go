@@ -1,11 +1,5 @@
 package models
 
-import (
-	"fmt"
-
-	"github.com/jmoiron/sqlx"
-)
-
 //Generation represents a generation entry in the database
 type Generation struct {
 	retriever  GenerationSelfFinder
@@ -38,29 +32,13 @@ func (g Generation) Region() (*Region, error) {
 
 func (db DB) FindGenerations(search interface{}) ([]*Generation, error) {
 	var gens []*Generation
-	var stmt *sqlx.Stmt
-	var err error
 
 	baseQuery := `
 	select g.id, g.main_region_id as "region_id", g.identifier, g.name from
 	generations as g %s
 	`
 
-	switch search.(type) {
-	case int:
-		stmt, err = db.session.Preparex(fmt.Sprintf(baseQuery, `
-		where id = $1
-		`))
-	case string:
-		search = fmt.Sprintf(`%s%%`, search)
-		stmt, err = db.session.Preparex(fmt.Sprintf(baseQuery, `
-		where lower(name) like lower($1)
-		`))
-	default:
-		return nil, ErrInvalidSearch
-	}
-
-	rows, err := stmt.Queryx(search)
+	rows, err := db.GetRows(baseQuery, search)
 	if err != nil {
 		return nil, err
 	}
