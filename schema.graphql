@@ -3,10 +3,15 @@ schema {
 }
 
 type Query {
-    generations(id: Int): [Generation]
-    generation(id: Int!): Generation
-    regions(id: Int, name: String): [Region]
-    types(id: Int, name: String): [Type]
+    # Searches
+    #generation(id: Int!): Generation
+    #region(id: Int, name: String): Region
+    #type(id: Int, name: String): Type
+
+    # Lists
+    generations: [Generation]
+    regions: [Region]
+    types: [Type]
 }
 
 type Generation {
