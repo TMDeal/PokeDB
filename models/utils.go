@@ -6,37 +6,44 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func (db DB) GetRows(query string, search interface{}) (*sqlx.Rows, error) {
-	var rows *sqlx.Rows
-	var err error
-
+func (db DB) GetRow(query string, search interface{}) (*sqlx.Row, error) {
 	switch search.(type) {
 	case int:
-		rows, err = db.session.Queryx(fmt.Sprintf(query, `
+		return db.session.QueryRowx(fmt.Sprintf(query, `
 		where id = $1
-		`), search)
-		if err != nil {
-			return nil, err
-		}
+		`), search), nil
 
 	case string:
 		search = fmt.Sprintf(`%s%%`, search)
-		rows, err = db.session.Queryx(fmt.Sprintf(query, `
+		return db.session.QueryRowx(fmt.Sprintf(query, `
 		where lower(name) like lower($1)
-		`), search)
-		if err != nil {
-			return nil, err
-		}
+		`), search), nil
 
 	case nil:
-		rows, err = db.session.Queryx(fmt.Sprintf(query, ``))
-		if err != nil {
-			return nil, err
-		}
+		return db.session.QueryRowx(fmt.Sprintf(query, ``)), nil
 
 	default:
 		return nil, ErrInvalidSearch
 	}
+}
 
-	return rows, nil
+func (db DB) GetRows(query string, search interface{}) (*sqlx.Rows, error) {
+	switch search.(type) {
+	case int:
+		return db.session.Queryx(fmt.Sprintf(query, `
+		where id = $1
+		`), search)
+
+	case string:
+		search = fmt.Sprintf(`%s%%`, search)
+		return db.session.Queryx(fmt.Sprintf(query, `
+		where lower(name) like lower($1)
+		`), search)
+
+	case nil:
+		return db.session.Queryx(fmt.Sprintf(query, ``))
+
+	default:
+		return nil, ErrInvalidSearch
+	}
 }

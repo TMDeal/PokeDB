@@ -10,6 +10,22 @@ type Region struct {
 //RegionFinder says how to find information for a region model
 type RegionFinder interface {
 	FindRegions(search interface{}) ([]*Region, error)
+	FindRegion(search interface{}) (*Region, error)
+}
+
+func (db DB) FindRegion(search interface{}) (*Region, error) {
+	var r Region
+
+	row, err := db.GetRow(`
+	select * from regions %s
+	`, search)
+	if err != nil {
+		return nil, err
+	}
+
+	row.StructScan(&r)
+
+	return &r, nil
 }
 
 func (db DB) FindRegions(search interface{}) ([]*Region, error) {

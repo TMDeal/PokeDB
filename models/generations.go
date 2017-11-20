@@ -11,16 +11,33 @@ type Generation struct {
 //GenerationFinder says how to find information for a Generation
 type GenerationFinder interface {
 	FindGenerations(search interface{}) ([]*Generation, error)
+	FindGeneration(search interface{}) (*Generation, error)
 }
 
 //Region is a getter function for a Generations region info
 func (g Generation) Region(rf RegionFinder) (*Region, error) {
-	rs, err := rf.FindRegions(g.RegionID)
+	r, err := rf.FindRegion(g.RegionID)
 	if err != nil {
 		return nil, err
 	}
 
-	return rs[0], nil
+	return r, nil
+}
+
+func (db DB) FindGeneration(search interface{}) (*Generation, error) {
+	var gen Generation
+
+	row, err := db.GetRow(`
+	select g.id, g.main_region_id as "region_id", g.identifier, g.name from
+	generations as g %s
+	`, search)
+	if err != nil {
+		return nil, err
+	}
+
+	row.StructScan(&gen)
+
+	return &gen, nil
 }
 
 func (db DB) FindGenerations(search interface{}) ([]*Generation, error) {

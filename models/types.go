@@ -12,26 +12,42 @@ type Type struct {
 //TypeFinder is an interface that says how to find a Type
 type TypeFinder interface {
 	FindTypes(search interface{}) ([]*Type, error)
+	FindType(search interface{}) (*Type, error)
 }
 
 //Generation gets the generation info for a Type
 func (t Type) Generation(gf GenerationFinder) (*Generation, error) {
-	gens, err := gf.FindGenerations(t.GenerationID)
+	gen, err := gf.FindGeneration(t.GenerationID)
 	if err != nil {
 		return nil, err
 	}
 
-	return gens[0], nil
+	return gen, nil
 }
 
 //DamageClass gets the damage class info for a type
 func (t Type) DamageClass(df DamageClassFinder) (*DamageClass, error) {
-	dcs, err := df.FindDamageClasses(t.DamageClassID)
+	dc, err := df.FindDamageClass(t.DamageClassID)
 	if err != nil {
 		return nil, err
 	}
 
-	return dcs[0], err
+	return dc, err
+}
+
+func (db DB) FindType(search interface{}) (*Type, error) {
+	var t Type
+
+	row, err := db.GetRow(`
+	select * from types %s
+	`, search)
+	if err != nil {
+		return nil, err
+	}
+
+	row.StructScan(&t)
+
+	return &t, nil
 }
 
 func (db DB) FindTypes(search interface{}) ([]*Type, error) {
