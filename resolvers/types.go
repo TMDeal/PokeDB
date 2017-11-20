@@ -8,11 +8,12 @@ import (
 )
 
 type TypeResolver struct {
-	t *models.Type
+	db *models.DB
+	t  *models.Type
 }
 
-func NewTypeResolver(t *models.Type) *TypeResolver {
-	return &TypeResolver{t}
+func NewTypeResolver(db *models.DB, t *models.Type) *TypeResolver {
+	return &TypeResolver{db, t}
 }
 
 func (tr *TypeResolver) ID() graphql.ID {
@@ -29,19 +30,19 @@ func (tr *TypeResolver) Name() string {
 }
 
 func (tr *TypeResolver) Generation() *GenerationResolver {
-	gen, err := tr.t.Generation()
+	gen, err := tr.t.Generation(tr.db)
 	if err != nil {
 		return nil
 	}
 
-	return NewGenerationResolver(gen)
+	return NewGenerationResolver(tr.db, gen)
 }
 
 func (tr *TypeResolver) DamageClass() *DamageClassResolver {
-	dc, err := tr.t.DamageClass()
+	dc, err := tr.t.DamageClass(tr.db)
 	if err != nil {
 		return nil
 	}
 
-	return NewDamageClassResolver(dc)
+	return NewDamageClassResolver(tr.db, dc)
 }

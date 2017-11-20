@@ -9,14 +9,13 @@ import (
 
 //GenerationResolver resolves the fields of a Generation
 type GenerationResolver struct {
-	g *models.Generation
+	db *models.DB
+	g  *models.Generation
 }
 
 //NewGenerationResolver returns a new GenerationResolver
-func NewGenerationResolver(g *models.Generation) *GenerationResolver {
-	return &GenerationResolver{
-		g: g,
-	}
+func NewGenerationResolver(db *models.DB, g *models.Generation) *GenerationResolver {
+	return &GenerationResolver{db, g}
 }
 
 //ID resolves the ID field of a Generation
@@ -38,9 +37,9 @@ func (gr *GenerationResolver) Name() string {
 //Region resolves the Region of a generation, by finding the region based on a
 //Generations RegionID, and returning a RegionResolver for that Region
 func (gr *GenerationResolver) Region() *RegionResolver {
-	r, err := gr.g.Region()
+	r, err := gr.g.Region(gr.db)
 	if err != nil {
 		return nil
 	}
-	return NewRegionResolver(r)
+	return NewRegionResolver(gr.db, r)
 }

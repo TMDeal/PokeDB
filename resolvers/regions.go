@@ -9,14 +9,13 @@ import (
 
 //RegionResolver resolves the fields of a Region
 type RegionResolver struct {
-	r *models.Region
+	db *models.DB
+	r  *models.Region
 }
 
 //NewRegionResolver returns a new RegionResolver
-func NewRegionResolver(r *models.Region) *RegionResolver {
-	return &RegionResolver{
-		r: r,
-	}
+func NewRegionResolver(db *models.DB, r *models.Region) *RegionResolver {
+	return &RegionResolver{db, r}
 }
 
 //ID resolves the ID field of a Region

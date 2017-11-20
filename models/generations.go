@@ -2,7 +2,6 @@ package models
 
 //Generation represents a generation entry in the database
 type Generation struct {
-	retriever  GenerationSelfFinder
 	ID         int    `db:"id"`
 	Identifier string `db:"identifier"`
 	Name       string `db:"name"`
@@ -14,15 +13,9 @@ type GenerationFinder interface {
 	FindGenerations(search interface{}) ([]*Generation, error)
 }
 
-//GenerationSelfFinder is an interface that says how a generation should
-//find its own data relationship information
-type GenerationSelfFinder interface {
-	RegionFinder
-}
-
 //Region is a getter function for a Generations region info
-func (g Generation) Region() (*Region, error) {
-	rs, err := g.retriever.FindRegions(g.RegionID)
+func (g Generation) Region(rf RegionFinder) (*Region, error) {
+	rs, err := rf.FindRegions(g.RegionID)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +38,6 @@ func (db DB) FindGenerations(search interface{}) ([]*Generation, error) {
 
 	for rows.Next() {
 		var gen Generation
-		gen.retriever = db
 
 		err := rows.StructScan(&gen)
 		if err != nil {

@@ -10,14 +10,12 @@ import (
 //RootResolver is the root resolver for the graphql schema. All other resolvers
 //get returned from this resolver
 type RootResolver struct {
-	DB *models.DB
+	db *models.DB
 }
 
 //NewRootResolver returns a new RootResolver
 func NewRootResolver(db *models.DB) *RootResolver {
-	return &RootResolver{
-		DB: db,
-	}
+	return &RootResolver{db}
 }
 
 type IDArgs struct {
@@ -33,7 +31,7 @@ type IDNameArgs struct {
 func (root *RootResolver) Generations(args IDArgs) *[]*GenerationResolver {
 	var gr []*GenerationResolver
 
-	gens, err := root.DB.FindGenerations(int(*args.ID))
+	gens, err := root.db.FindGenerations(int(*args.ID))
 	if err == sql.ErrNoRows {
 		return nil
 	}
@@ -42,7 +40,7 @@ func (root *RootResolver) Generations(args IDArgs) *[]*GenerationResolver {
 	}
 
 	for _, gen := range gens {
-		gr = append(gr, NewGenerationResolver(gen))
+		gr = append(gr, NewGenerationResolver(root.db, gen))
 	}
 
 	return &gr
@@ -52,7 +50,7 @@ func (root *RootResolver) Generations(args IDArgs) *[]*GenerationResolver {
 func (root *RootResolver) Regions(args IDNameArgs) *[]*RegionResolver {
 	var rr []*RegionResolver
 
-	rs, err := root.DB.FindRegions(int(*args.ID))
+	rs, err := root.db.FindRegions(int(*args.ID))
 	if err == sql.ErrNoRows {
 		return nil
 	}
@@ -61,7 +59,7 @@ func (root *RootResolver) Regions(args IDNameArgs) *[]*RegionResolver {
 	}
 
 	for _, r := range rs {
-		rr = append(rr, NewRegionResolver(r))
+		rr = append(rr, NewRegionResolver(root.db, r))
 	}
 
 	return &rr
@@ -71,7 +69,7 @@ func (root *RootResolver) Regions(args IDNameArgs) *[]*RegionResolver {
 func (root *RootResolver) Types(args IDNameArgs) *[]*TypeResolver {
 	var tr []*TypeResolver
 
-	ts, err := root.DB.FindTypes(int(*args.ID))
+	ts, err := root.db.FindTypes(int(*args.ID))
 	if err == sql.ErrNoRows {
 		return nil
 	}
@@ -80,7 +78,7 @@ func (root *RootResolver) Types(args IDNameArgs) *[]*TypeResolver {
 	}
 
 	for _, t := range ts {
-		tr = append(tr, NewTypeResolver(t))
+		tr = append(tr, NewTypeResolver(root.db, t))
 	}
 	return &tr
 }

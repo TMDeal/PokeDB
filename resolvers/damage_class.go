@@ -9,11 +9,12 @@ import (
 
 //DamageClassResolver resolves a DamageClass for graphql
 type DamageClassResolver struct {
+	db *models.DB
 	dc *models.DamageClass
 }
 
-func NewDamageClassResolver(dc *models.DamageClass) *DamageClassResolver {
-	return &DamageClassResolver{dc}
+func NewDamageClassResolver(db *models.DB, dc *models.DamageClass) *DamageClassResolver {
+	return &DamageClassResolver{db, dc}
 }
 
 //ID resolves a damage classes ID

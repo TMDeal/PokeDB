@@ -2,7 +2,6 @@ package models
 
 //Type represents a Type in the database
 type Type struct {
-	retriever     TypeSelfFinder
 	ID            int    `db:"id"`
 	Identifier    string `db:"identifier"`
 	GenerationID  int    `db:"generation_id"`
@@ -15,16 +14,9 @@ type TypeFinder interface {
 	FindTypes(search interface{}) ([]*Type, error)
 }
 
-//TypeSelfFinder is an interface that says how a Type should find its own data
-//relationship information
-type TypeSelfFinder interface {
-	GenerationFinder
-	DamageClassFinder
-}
-
 //Generation gets the generation info for a Type
-func (t Type) Generation() (*Generation, error) {
-	gens, err := t.retriever.FindGenerations(t.GenerationID)
+func (t Type) Generation(gf GenerationFinder) (*Generation, error) {
+	gens, err := gf.FindGenerations(t.GenerationID)
 	if err != nil {
 		return nil, err
 	}
@@ -33,8 +25,8 @@ func (t Type) Generation() (*Generation, error) {
 }
 
 //DamageClass gets the damage class info for a type
-func (t Type) DamageClass() (*DamageClass, error) {
-	dcs, err := t.retriever.FindDamageClasses(t.DamageClassID)
+func (t Type) DamageClass(df DamageClassFinder) (*DamageClass, error) {
+	dcs, err := df.FindDamageClasses(t.DamageClassID)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +48,6 @@ func (db DB) FindTypes(search interface{}) ([]*Type, error) {
 
 	for rows.Next() {
 		var t Type
-		t.retriever = db
 
 		err := rows.StructScan(&t)
 		if err != nil {
