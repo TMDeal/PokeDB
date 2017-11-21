@@ -1,27 +1,18 @@
 package main
 
 import (
-	"io/ioutil"
 	"log"
 	"net/http"
 
 	"github.com/TMDeal/PokeDB/models"
 	"github.com/TMDeal/PokeDB/resolvers"
+	"github.com/TMDeal/PokeDB/schema"
 	graphql "github.com/neelance/graphql-go"
 	"github.com/neelance/graphql-go/relay"
 )
 
 func init() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-}
-
-func schema() string {
-	file, err := ioutil.ReadFile("./schema.graphql")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return string(file)
 }
 
 func main() {
@@ -31,7 +22,7 @@ func main() {
 	}
 	defer db.Close()
 
-	schema := graphql.MustParseSchema(schema(), resolvers.NewRootResolver(db))
+	schema := graphql.MustParseSchema(schema.New(), resolvers.NewRootResolver(db))
 	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write(page)
 	}))
