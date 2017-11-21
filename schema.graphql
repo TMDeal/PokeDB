@@ -5,13 +5,13 @@ schema {
 type Query {
     #Searches
     generation(id: Int!): Generation
-    region(id: Int, name: String): Region
-    type(id: Int, name: String): Type
+    # region(id: Int, name: String): Region
+    # type(id: Int, name: String): Type
 
     # Lists
-    generations: [Generation]
-    regions: [Region]
-    types: [Type]
+    generations(first: Int = 20): [Generation]
+    regions(first: Int = 20): [Region]
+    types(first: Int = 20): [Type]
 }
 
 type Generation {
