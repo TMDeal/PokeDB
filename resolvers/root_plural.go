@@ -3,11 +3,15 @@ package resolvers
 import (
 	"database/sql"
 	"log"
+
+	"github.com/TMDeal/PokeDB/resolvers/generations"
+	"github.com/TMDeal/PokeDB/resolvers/regions"
+	"github.com/TMDeal/PokeDB/resolvers/types"
 )
 
 //Generation resolves a Generation based on an ID
-func (root *RootResolver) Generations(args struct{ First int32 }) *[]*GenerationResolver {
-	var gr []*GenerationResolver
+func (root *RootResolver) Generations(args struct{ First int32 }) *[]*generations.Resolver {
+	var gr []*generations.Resolver
 
 	gens, err := root.db.FindGenerations(uint64(args.First))
 	if err == sql.ErrNoRows {
@@ -18,15 +22,15 @@ func (root *RootResolver) Generations(args struct{ First int32 }) *[]*Generation
 	}
 
 	for _, gen := range gens {
-		gr = append(gr, NewGenerationResolver(root.db, gen))
+		gr = append(gr, generations.NewResolver(root.db, gen))
 	}
 
 	return &gr
 }
 
 //Region resolves a Region based on an ID
-func (root *RootResolver) Regions(args struct{ First int32 }) *[]*RegionResolver {
-	var rr []*RegionResolver
+func (root *RootResolver) Regions(args struct{ First int32 }) *[]*regions.Resolver {
+	var rr []*regions.Resolver
 
 	rs, err := root.db.FindRegions(uint64(args.First))
 	if err == sql.ErrNoRows {
@@ -37,15 +41,15 @@ func (root *RootResolver) Regions(args struct{ First int32 }) *[]*RegionResolver
 	}
 
 	for _, r := range rs {
-		rr = append(rr, NewRegionResolver(root.db, r))
+		rr = append(rr, regions.NewResolver(root.db, r))
 	}
 
 	return &rr
 }
 
 //Types resolves a Type based on an ID
-func (root *RootResolver) Types(args struct{ First int32 }) *[]*TypeResolver {
-	var tr []*TypeResolver
+func (root *RootResolver) Types(args struct{ First int32 }) *[]*types.Resolver {
+	var tr []*types.Resolver
 
 	ts, err := root.db.FindTypes(uint64(args.First))
 	if err == sql.ErrNoRows {
@@ -56,7 +60,7 @@ func (root *RootResolver) Types(args struct{ First int32 }) *[]*TypeResolver {
 	}
 
 	for _, t := range ts {
-		tr = append(tr, NewTypeResolver(root.db, t))
+		tr = append(tr, types.NewResolver(root.db, t))
 	}
 
 	return &tr
