@@ -5,15 +5,17 @@ schema {
     query: Query
 }
 
+scalar Cursor
+
 type Query {
     #Searches
-    generation(id: Int!): Generation
+    generation(id: Int): Generation
     # region(id: Int, name: String): Region
     # type(id: Int, name: String): Type
 
     # Lists
-    generations(first: Int = 20): [Generation]
-    regions(first: Int = 20): [Region]
-    types(first: Int = 20): [Type]
+	regions(first: Int, after: Cursor): RegionConnection!
+	generations(first: Int, after: Cursor): GenerationConnection!
+	types(first: Int, after: Cursor): TypeConnection!
 }
 `

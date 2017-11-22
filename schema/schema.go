@@ -6,6 +6,7 @@ func New() string {
 	schema := strings.Join(
 		[]string{
 			schema,
+			pages,
 			generations,
 			regions,
 			types,

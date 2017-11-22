@@ -8,4 +8,15 @@ type Type {
     generation: Generation!
     damageClass: DamageClass
 }
+
+type TypeEdge {
+	cursor: Cursor!
+	node: Type
+}
+
+type TypeConnection {
+	totalCount: Int!
+	edges: [TypeEdge]
+	pageInfo: PageInfo!
+}
 `

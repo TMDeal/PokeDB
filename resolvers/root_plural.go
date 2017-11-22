@@ -1,67 +1,98 @@
 package resolvers
 
 import (
-	"database/sql"
 	"log"
 
+	"github.com/TMDeal/PokeDB/arguments"
 	"github.com/TMDeal/PokeDB/resolvers/generations"
 	"github.com/TMDeal/PokeDB/resolvers/regions"
 	"github.com/TMDeal/PokeDB/resolvers/types"
+	"github.com/gocraft/dbr"
 )
 
-//Generation resolves a Generation based on an ID
-func (root *RootResolver) Generations(args struct{ First int32 }) *[]*generations.Resolver {
-	var gr []*generations.Resolver
+func (root *RootResolver) Generations(args arguments.Connection) generations.ConnectionResolver {
+	offset := 0
+	limit := 20
+	var err error
 
-	gens, err := root.db.FindGenerations(uint64(args.First))
-	if err == sql.ErrNoRows {
-		return nil
+	if args.After != nil {
+		offset, err = args.After.IntValue()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
+
+	if args.First != nil {
+		limit = int(*args.First)
+	}
+
+	rs, err := root.db.FindGenerations(uint64(limit), uint64(offset))
+	if err != nil && err != dbr.ErrNotFound {
+		log.Fatal(err)
+	}
+
+	connections, err := generations.NewConnectionResolver(root.db, rs, args)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, gen := range gens {
-		gr = append(gr, generations.NewResolver(root.db, gen))
-	}
-
-	return &gr
+	return *connections
 }
 
-//Region resolves a Region based on an ID
-func (root *RootResolver) Regions(args struct{ First int32 }) *[]*regions.Resolver {
-	var rr []*regions.Resolver
+func (root *RootResolver) Regions(args arguments.Connection) regions.ConnectionResolver {
+	offset := 0
+	limit := 20
+	var err error
 
-	rs, err := root.db.FindRegions(uint64(args.First))
-	if err == sql.ErrNoRows {
-		return nil
+	if args.After != nil {
+		offset, err = args.After.IntValue()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
+
+	if args.First != nil {
+		limit = int(*args.First)
+	}
+
+	rs, err := root.db.FindRegions(uint64(limit), uint64(offset))
+	if err != nil && err != dbr.ErrNotFound {
+		log.Fatal(err)
+	}
+
+	connections, err := regions.NewConnectionResolver(root.db, rs, args)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, r := range rs {
-		rr = append(rr, regions.NewResolver(root.db, r))
-	}
-
-	return &rr
+	return *connections
 }
 
-//Types resolves a Type based on an ID
-func (root *RootResolver) Types(args struct{ First int32 }) *[]*types.Resolver {
-	var tr []*types.Resolver
+func (root *RootResolver) Types(args arguments.Connection) types.ConnectionResolver {
+	offset := 0
+	limit := 20
+	var err error
 
-	ts, err := root.db.FindTypes(uint64(args.First))
-	if err == sql.ErrNoRows {
-		return nil
+	if args.After != nil {
+		offset, err = args.After.IntValue()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
+
+	if args.First != nil {
+		limit = int(*args.First)
+	}
+
+	rs, err := root.db.FindTypes(uint64(limit), uint64(offset))
+	if err != nil && err != dbr.ErrNotFound {
+		log.Fatal(err)
+	}
+
+	connections, err := types.NewConnectionResolver(root.db, rs, args)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, t := range ts {
-		tr = append(tr, types.NewResolver(root.db, t))
-	}
-
-	return &tr
+	return *connections
 }
