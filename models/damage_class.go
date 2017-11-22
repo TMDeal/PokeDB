@@ -13,7 +13,7 @@ type DamageClass struct {
 
 //DamageClassFinder is an interface the defines ways to find a DamageClass
 type DamageClassFinder interface {
-	FindDamageClasses(limit uint64) ([]*DamageClass, error)
+	FindDamageClasses(limit uint64, offset uint64) ([]*DamageClass, error)
 	FindDamageClass(query string, value interface{}) (*DamageClass, error)
 }
 
@@ -32,11 +32,11 @@ func (db DB) FindDamageClass(query string, value interface{}) (*DamageClass, err
 	return &dc, nil
 }
 
-func (db DB) FindDamageClasses(limit uint64) ([]*DamageClass, error) {
+func (db DB) FindDamageClasses(limit uint64, offset uint64) ([]*DamageClass, error) {
 	var dcs []*DamageClass
 	sess := db.Session()
 
-	count, err := sess.Select("*").From("move_damage_classes").Limit(limit).Load(&dcs)
+	count, err := sess.Select("*").From("move_damage_classes").Limit(limit).Offset(offset).Load(&dcs)
 	if err != nil {
 		return nil, err
 	}

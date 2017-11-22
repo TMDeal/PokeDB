@@ -13,7 +13,7 @@ type Type struct {
 
 //TypeFinder is an interface that says how to find a Type
 type TypeFinder interface {
-	FindTypes(limit uint64) ([]*Type, error)
+	FindTypes(limit uint64, offset uint64) ([]*Type, error)
 	FindType(query string, value interface{}) (*Type, error)
 }
 
@@ -52,11 +52,11 @@ func (db DB) FindType(query string, value interface{}) (*Type, error) {
 	return &t, nil
 }
 
-func (db DB) FindTypes(limit uint64) ([]*Type, error) {
+func (db DB) FindTypes(limit uint64, offset uint64) ([]*Type, error) {
 	var ts []*Type
 	sess := db.Session()
 
-	count, err := sess.Select("*").From("types").Limit(limit).Load(&ts)
+	count, err := sess.Select("*").From("types").Limit(limit).Offset(offset).Load(&ts)
 	if err != nil {
 		return nil, err
 	}

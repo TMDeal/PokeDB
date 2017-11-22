@@ -12,7 +12,7 @@ type Generation struct {
 
 //GenerationFinder says how to find information for a Generation
 type GenerationFinder interface {
-	FindGenerations(limit uint64) ([]*Generation, error)
+	FindGenerations(limit uint64, offset uint64) ([]*Generation, error)
 	FindGeneration(query string, value interface{}) (*Generation, error)
 }
 
@@ -43,13 +43,13 @@ func (db DB) FindGeneration(query string, value interface{}) (*Generation, error
 	return &gen, nil
 }
 
-func (db DB) FindGenerations(limit uint64) ([]*Generation, error) {
+func (db DB) FindGenerations(limit uint64, offset uint64) ([]*Generation, error) {
 	var gens []*Generation
 	sess := db.Session()
 
 	count, err := sess.Select(
 		"id", "main_region_id as region_id",
-		"identifier", "name").From("generations").Limit(limit).Load(&gens)
+		"identifier", "name").From("generations").Limit(limit).Offset(offset).Load(&gens)
 	if err != nil {
 		return nil, err
 	}

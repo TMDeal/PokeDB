@@ -13,7 +13,7 @@ type Region struct {
 
 //RegionFinder says how to find information for a region model
 type RegionFinder interface {
-	FindRegions(limit uint64) ([]*Region, error)
+	FindRegions(limit uint64, offset uint64) ([]*Region, error)
 	FindRegion(query string, value interface{}) (*Region, error)
 }
 
@@ -32,11 +32,11 @@ func (db DB) FindRegion(query string, value interface{}) (*Region, error) {
 	return &r, nil
 }
 
-func (db DB) FindRegions(limit uint64) ([]*Region, error) {
+func (db DB) FindRegions(limit uint64, offset uint64) ([]*Region, error) {
 	var rs []*Region
 	sess := db.Session()
 
-	count, err := sess.Select("*").From("regions").Limit(limit).Load(&rs)
+	count, err := sess.Select("*").From("regions").Limit(limit).Offset(offset).Load(&rs)
 	if err != nil {
 		return nil, err
 	}
