@@ -1,4 +1,4 @@
-package damageClasses
+package resolvers
 
 import (
 	"strconv"
@@ -7,34 +7,34 @@ import (
 	graphql "github.com/neelance/graphql-go"
 )
 
-//Resolver resolves a DamageClass for graphql
-type Resolver struct {
+//DamageClassResolver resolves a DamageClass for graphql
+type DamageClassResolver struct {
 	db          *models.DB
 	damageClass *models.DamageClass
 }
 
-//NewResolver returns a new Resolver
-func NewResolver(db *models.DB, dc *models.DamageClass) *Resolver {
-	return &Resolver{db, dc}
+//NewDamageClassResolver returns a new DamageClassResolver
+func NewDamageClassResolver(db *models.DB, dc *models.DamageClass) *DamageClassResolver {
+	return &DamageClassResolver{db, dc}
 }
 
 //ID resolves a damage classes ID
-func (r *Resolver) ID() graphql.ID {
+func (r *DamageClassResolver) ID() graphql.ID {
 	id := graphql.ID(strconv.Itoa(int(r.damageClass.ID)))
 	return id
 }
 
 //Identifier resolves a damage classes identifier
-func (r *Resolver) Identifier() string {
+func (r *DamageClassResolver) Identifier() string {
 	return r.damageClass.Identifier
 }
 
 //Name resolves a damage classes name
-func (r *Resolver) Name() string {
+func (r *DamageClassResolver) Name() string {
 	return r.damageClass.Name
 }
 
 //Description resolves a damage classes description
-func (r *Resolver) Description() string {
+func (r *DamageClassResolver) Description() string {
 	return r.damageClass.Description
 }
