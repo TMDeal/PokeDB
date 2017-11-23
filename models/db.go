@@ -56,3 +56,15 @@ func (db DB) Close() error {
 func (db DB) Session() *dbr.Session {
 	return db.conn.NewSession(nil)
 }
+
+func (db DB) Count(table string) (int, error) {
+	var count int
+	sess := db.Session()
+
+	_, err := sess.Select("count(*)").From(table).Load(&count)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
