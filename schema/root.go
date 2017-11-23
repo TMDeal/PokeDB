@@ -9,7 +9,7 @@ scalar Cursor
 
 type Query {
     #Searches
-    generation(id: Int): Generation
+	#generation(id: Int): Generation
     # region(id: Int, name: String): Region
     # type(id: Int, name: String): Type
 
