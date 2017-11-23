@@ -47,7 +47,6 @@ func (c *Cursor) UnmarshalGraphQL(input interface{}) error {
 		if err != nil {
 			return err
 		}
-		fmt.Println(i)
 
 		*c = NewCursor(i)
 	case int32:
