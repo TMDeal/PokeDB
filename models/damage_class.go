@@ -1,7 +1,5 @@
 package models
 
-import "github.com/gocraft/dbr"
-
 //DamageClass represets the damage class of a move or type. The damage classes
 //are status, physical, or special
 type DamageClass struct {
@@ -21,12 +19,9 @@ func (db DB) FindDamageClass(query string, value interface{}) (*DamageClass, err
 	var dc DamageClass
 	sess := db.Session()
 
-	count, err := sess.Select("*").From("move_damage_classes").Where(query, value).Load(&dc)
+	_, err := sess.Select("*").From("move_damage_classes").Where(query, value).Load(&dc)
 	if err != nil {
 		return nil, err
-	}
-	if count == 0 {
-		return nil, dbr.ErrNotFound
 	}
 
 	return &dc, nil
@@ -36,12 +31,9 @@ func (db DB) FindDamageClasses(limit uint64, offset uint64) ([]*DamageClass, err
 	var dcs []*DamageClass
 	sess := db.Session()
 
-	count, err := sess.Select("*").From("move_damage_classes").Limit(limit).Offset(offset).Load(&dcs)
+	_, err := sess.Select("*").From("move_damage_classes").Limit(limit).Offset(offset).Load(&dcs)
 	if err != nil {
 		return nil, err
-	}
-	if count == 0 {
-		return nil, dbr.ErrNotFound
 	}
 
 	return dcs, nil

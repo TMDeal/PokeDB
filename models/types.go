@@ -41,12 +41,9 @@ func (db DB) FindType(query string, value interface{}) (*Type, error) {
 	var t Type
 	sess := db.Session()
 
-	count, err := sess.Select("*").From("types").Where(query, value).Load(&t)
+	_, err := sess.Select("*").From("types").Where(query, value).Load(&t)
 	if err != nil {
 		return nil, err
-	}
-	if count == 0 {
-		return nil, dbr.ErrNotFound
 	}
 
 	return &t, nil
@@ -56,12 +53,9 @@ func (db DB) FindTypes(limit uint64, offset uint64) ([]*Type, error) {
 	var ts []*Type
 	sess := db.Session()
 
-	count, err := sess.Select("*").From("types").Limit(limit).Offset(offset).Load(&ts)
+	_, err := sess.Select("*").From("types").Limit(limit).Offset(offset).Load(&ts)
 	if err != nil {
 		return nil, err
-	}
-	if count == 0 {
-		return nil, dbr.ErrNotFound
 	}
 
 	return ts, nil
