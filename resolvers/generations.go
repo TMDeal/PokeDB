@@ -1,23 +1,11 @@
 package resolvers
 
 import (
-	"strconv"
-
 	"github.com/TMDeal/PokeDB/arguments"
 	"github.com/TMDeal/PokeDB/models"
 	"github.com/TMDeal/PokeDB/scalars"
 	graphql "github.com/neelance/graphql-go"
 )
-
-type GenerationEResolver interface {
-	EResolver
-	Node() *GenerationResolver
-}
-
-type GenerationCResolver interface {
-	CResolver
-	Edges() (*[]GenerationEResolver, error)
-}
 
 //GenerationResolver resolves the fields of a Generation
 type GenerationResolver struct {
@@ -32,8 +20,7 @@ func NewGenerationResolver(db *models.DB, g *models.Generation) *GenerationResol
 
 //ID resolves the ID field of a Generation
 func (r *GenerationResolver) ID() graphql.ID {
-	id := graphql.ID(strconv.Itoa(int(r.generation.ID)))
-	return id
+	return GlobalID(models.Generation{}, r.generation.ID)
 }
 
 //Identifier resolves the Identifier field of a Generation
@@ -122,17 +109,17 @@ func (gcr GenerationConnectionResolver) PageInfo() (*PageResolver, error) {
 	return NewPageResolver(gcr.start, gcr.end, hasNext), nil
 }
 
-func (rcr GenerationConnectionResolver) Edges() (*[]GenerationEResolver, error) {
-	var e []GenerationEResolver
+func (gcr GenerationConnectionResolver) Edges() (*[]*GenerationEdgeResolver, error) {
+	var e []*GenerationEdgeResolver
 
-	for i, item := range rcr.items {
-		starti, err := rcr.start.IntValue()
+	for i, item := range gcr.items {
+		starti, err := gcr.start.IntValue()
 		if err != nil {
 			return nil, err
 		}
 		cursorLocation := starti + i + 1
 		cursor := scalars.NewCursor(cursorLocation)
-		e = append(e, NewGenerationEdgeResolver(rcr.db, item, cursor))
+		e = append(e, NewGenerationEdgeResolver(gcr.db, item, cursor))
 	}
 
 	return &e, nil

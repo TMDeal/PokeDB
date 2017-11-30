@@ -1,7 +1,7 @@
 package schema
 
 const regions = `
-type Region {
+type Region implements Node {
     id: ID!
     identifier: String!
     name: String!

@@ -1,7 +1,7 @@
 package schema
 
 const generations = `
-type Generation {
+type Generation implements Node {
     id: ID!
     identifier: String!
     name: String!

@@ -1,0 +1,23 @@
+package schema
+
+var stats = `
+type Stat implements Node {
+	id: ID!
+	identifier: String
+	name: String
+	battleOnly: Boolean!
+	gameIndex: Int
+	damageClass: DamageClass
+}
+
+type StatEdge {
+	cursor: Cursor!
+	node: Stat
+}
+
+type StatConnection {
+	totalCount: Int!
+	edges: [StatEdge]
+	pageInfo: PageInfo!
+}
+`

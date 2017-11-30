@@ -1,7 +1,7 @@
 package schema
 
 const types = `
-type Type {
+type Type implements Node {
     id: ID!
     identifier: String!
     name: String!

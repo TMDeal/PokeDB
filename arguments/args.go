@@ -2,6 +2,7 @@ package arguments
 
 import (
 	"github.com/TMDeal/PokeDB/scalars"
+	graphql "github.com/neelance/graphql-go"
 )
 
 type Connection struct {
@@ -9,15 +10,11 @@ type Connection struct {
 	After *scalars.Cursor
 }
 
-type Name struct {
-	Name *string
-}
-
 type ID struct {
-	ID *int32
+	ID *graphql.ID
 }
 
 type Search struct {
-	Name
-	ID
+	ID   *graphql.ID
+	Name *string
 }

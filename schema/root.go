@@ -9,9 +9,10 @@ scalar Cursor
 
 type Query {
     #Searches
-	#generation(id: Int): Generation
-    # region(id: Int, name: String): Region
-    # type(id: Int, name: String): Type
+	node(id: ID): Node
+    region(id: ID, name: String): Region
+	#generation(id: ID): Generation
+    # type(id: ID, name: String): Type
 
     # Lists
 	regions(first: Int, after: Cursor): RegionConnection!

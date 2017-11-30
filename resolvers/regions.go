@@ -1,26 +1,11 @@
 package resolvers
 
 import (
-	"strconv"
-
 	"github.com/TMDeal/PokeDB/arguments"
 	"github.com/TMDeal/PokeDB/models"
 	"github.com/TMDeal/PokeDB/scalars"
 	graphql "github.com/neelance/graphql-go"
 )
-
-//RegionEResolver is an interface for an edge in a region connection
-type RegionEResolver interface {
-	EResolver
-	Node() *RegionResolver
-}
-
-//RegionCResolver is an interface for a connection that returns info for
-//regions in a pagination friendly manner
-type RegionCResolver interface {
-	CResolver
-	Edges() (*[]RegionEResolver, error)
-}
 
 //RegionResolver resolves the fields of a Region
 type RegionResolver struct {
@@ -35,8 +20,7 @@ func NewRegionResolver(db *models.DB, r *models.Region) *RegionResolver {
 
 //ID resolves the ID field of a Region
 func (r *RegionResolver) ID() graphql.ID {
-	id := graphql.ID(strconv.Itoa(int(r.region.ID)))
-	return id
+	return GlobalID(models.Region{}, r.region.ID)
 }
 
 //Identifier resolves the Identifier field of a Region
@@ -122,8 +106,8 @@ func (rcr RegionConnectionResolver) PageInfo() (*PageResolver, error) {
 }
 
 //Edges returns the edges of a connection
-func (rcr RegionConnectionResolver) Edges() (*[]RegionEResolver, error) {
-	var e []RegionEResolver
+func (rcr RegionConnectionResolver) Edges() (*[]*RegionEdgeResolver, error) {
+	var e []*RegionEdgeResolver
 
 	for i, item := range rcr.items {
 		starti, err := rcr.start.IntValue()

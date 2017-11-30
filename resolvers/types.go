@@ -1,23 +1,11 @@
 package resolvers
 
 import (
-	"strconv"
-
 	"github.com/TMDeal/PokeDB/arguments"
 	"github.com/TMDeal/PokeDB/models"
 	"github.com/TMDeal/PokeDB/scalars"
 	graphql "github.com/neelance/graphql-go"
 )
-
-type TypeEResolver interface {
-	EResolver
-	Node() *TypeResolver
-}
-
-type TypeCResolver interface {
-	CResolver
-	Edges() (*[]TypeEResolver, error)
-}
 
 type TypeResolver struct {
 	db *models.DB
@@ -29,8 +17,7 @@ func NewTypeResolver(db *models.DB, t *models.Type) *TypeResolver {
 }
 
 func (r *TypeResolver) ID() graphql.ID {
-	id := graphql.ID(strconv.Itoa(int(r.t.ID)))
-	return id
+	return GlobalID(models.Type{}, r.t.ID)
 }
 
 func (r *TypeResolver) Identifier() string {
@@ -125,8 +112,8 @@ func (tcr TypeConnectionResolver) PageInfo() (*PageResolver, error) {
 	return NewPageResolver(tcr.start, tcr.end, hasNext), nil
 }
 
-func (rcr TypeConnectionResolver) Edges() (*[]TypeEResolver, error) {
-	var e []TypeEResolver
+func (rcr TypeConnectionResolver) Edges() (*[]*TypeEdgeResolver, error) {
+	var e []*TypeEdgeResolver
 
 	for i, item := range rcr.items {
 		starti, err := rcr.start.IntValue()

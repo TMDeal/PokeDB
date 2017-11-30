@@ -5,22 +5,6 @@ import (
 	"github.com/TMDeal/PokeDB/scalars"
 )
 
-//CResolver is an interface that says how to get the total count of items in a
-//page query, and the pageinfo of a query for a connection
-type CResolver interface {
-	//TotalCount returns the number of items in a page
-	TotalCount() (int32, error)
-	//Pageinfo returns the information about a page regarding its starting and
-	//ending items, and knows if there is a next page or not
-	PageInfo() (*PageResolver, error)
-}
-
-//EResolver is an interface that says that an Edge must have a Cursor item
-type EResolver interface {
-	//Cursor returns the cursor for the edge
-	Cursor() scalars.Cursor
-}
-
 //MakeCursors creates two cursors, start and end, that corrospond to the page
 //queries first element and last element.
 func MakeCursors(size int, args arguments.Connection) (*scalars.Cursor, *scalars.Cursor, error) {

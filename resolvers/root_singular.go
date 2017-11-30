@@ -7,9 +7,14 @@ import (
 	"github.com/gocraft/dbr"
 )
 
-func (root *RootResolver) Region(args arguments.ID) *RegionResolver {
+func (root *RootResolver) Region(args arguments.Search) *RegionResolver {
 	if args.ID != nil {
-		r, err := root.db.FindRegion("id = ?", int(*args.ID))
+		_, id, err := FromGlobalID(*args.ID)
+		if err != nil {
+			return nil
+		}
+
+		r, err := root.db.FindRegion("id = ?", int(id))
 		if err == dbr.ErrNotFound {
 			return nil
 		}
