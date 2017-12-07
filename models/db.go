@@ -21,6 +21,8 @@ type Finder interface {
 	GenerationFinder
 	TypeFinder
 	DamageClassFinder
+	MoveFinder
+	MoveTargetFinder
 }
 
 const (
