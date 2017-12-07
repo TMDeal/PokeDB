@@ -1,10 +1,7 @@
 package resolvers
 
 import (
-	"strconv"
-
 	"github.com/TMDeal/PokeDB/models"
-	graphql "github.com/neelance/graphql-go"
 )
 
 //DamageClassResolver resolves a DamageClass for graphql
@@ -16,12 +13,6 @@ type DamageClassResolver struct {
 //NewDamageClassResolver returns a new DamageClassResolver
 func NewDamageClassResolver(db *models.DB, dc *models.DamageClass) *DamageClassResolver {
 	return &DamageClassResolver{db, dc}
-}
-
-//ID resolves a damage classes ID
-func (r *DamageClassResolver) ID() graphql.ID {
-	id := graphql.ID(strconv.Itoa(int(r.damageClass.ID)))
-	return id
 }
 
 //Identifier resolves a damage classes identifier
