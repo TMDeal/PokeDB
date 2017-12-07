@@ -57,12 +57,12 @@ func NewGenerationEdgeResolver(db *models.DB, gen *models.Generation, c scalars.
 	}
 }
 
-func (ger *GenerationEdgeResolver) Cursor() scalars.Cursor {
-	return ger.cursor
+func (e *GenerationEdgeResolver) Cursor() scalars.Cursor {
+	return e.cursor
 }
 
-func (ger *GenerationEdgeResolver) Node() *GenerationResolver {
-	return NewGenerationResolver(ger.db, ger.node)
+func (e *GenerationEdgeResolver) Node() *GenerationResolver {
+	return NewGenerationResolver(e.db, e.node)
 }
 
 type GenerationConnectionResolver struct {
@@ -87,8 +87,8 @@ func NewGenerationConnectionResolver(db *models.DB, items []*models.Generation, 
 }
 
 //TotalCount returns the total number of items in a connection
-func (gcr GenerationConnectionResolver) TotalCount() (int32, error) {
-	count, err := gcr.db.Count("generations")
+func (c GenerationConnectionResolver) TotalCount() (int32, error) {
+	count, err := c.db.Count("generations")
 	if err != nil {
 		return 0, err
 	}
@@ -96,30 +96,30 @@ func (gcr GenerationConnectionResolver) TotalCount() (int32, error) {
 }
 
 //PageInfo returns the information about the current page
-func (gcr GenerationConnectionResolver) PageInfo() (*PageResolver, error) {
-	count, err := gcr.TotalCount()
+func (c GenerationConnectionResolver) PageInfo() (*PageResolver, error) {
+	count, err := c.TotalCount()
 	if err != nil {
 		return nil, err
 	}
-	hasNext, err := HasNextPage(gcr.end, int(count))
+	hasNext, err := HasNextPage(c.end, int(count))
 	if err != nil {
 		return nil, err
 	}
 
-	return NewPageResolver(gcr.start, gcr.end, hasNext), nil
+	return NewPageResolver(c.start, c.end, hasNext), nil
 }
 
-func (gcr GenerationConnectionResolver) Edges() (*[]*GenerationEdgeResolver, error) {
+func (c GenerationConnectionResolver) Edges() (*[]*GenerationEdgeResolver, error) {
 	var e []*GenerationEdgeResolver
 
-	for i, item := range gcr.items {
-		starti, err := gcr.start.IntValue()
+	for i, item := range c.items {
+		starti, err := c.start.IntValue()
 		if err != nil {
 			return nil, err
 		}
 		cursorLocation := starti + i + 1
 		cursor := scalars.NewCursor(cursorLocation)
-		e = append(e, NewGenerationEdgeResolver(gcr.db, item, cursor))
+		e = append(e, NewGenerationEdgeResolver(c.db, item, cursor))
 	}
 
 	return &e, nil

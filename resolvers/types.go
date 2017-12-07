@@ -60,12 +60,12 @@ func NewTypeEdgeResolver(db *models.DB, gen *models.Type, c scalars.Cursor) *Typ
 	}
 }
 
-func (ter *TypeEdgeResolver) Cursor() scalars.Cursor {
-	return ter.cursor
+func (e *TypeEdgeResolver) Cursor() scalars.Cursor {
+	return e.cursor
 }
 
-func (ter *TypeEdgeResolver) Node() *TypeResolver {
-	return NewTypeResolver(ter.db, ter.node)
+func (e *TypeEdgeResolver) Node() *TypeResolver {
+	return NewTypeResolver(e.db, e.node)
 }
 
 type TypeConnectionResolver struct {
@@ -90,8 +90,8 @@ func NewTypeConnectionResolver(db *models.DB, items []*models.Type, args argumen
 }
 
 //TotalCount returns the total number of items in a connection
-func (tcr TypeConnectionResolver) TotalCount() (int32, error) {
-	count, err := tcr.db.Count("types")
+func (c TypeConnectionResolver) TotalCount() (int32, error) {
+	count, err := c.db.Count("types")
 	if err != nil {
 		return 0, err
 	}
@@ -99,30 +99,30 @@ func (tcr TypeConnectionResolver) TotalCount() (int32, error) {
 }
 
 //PageInfo returns the information about the current page
-func (tcr TypeConnectionResolver) PageInfo() (*PageResolver, error) {
-	count, err := tcr.TotalCount()
+func (c TypeConnectionResolver) PageInfo() (*PageResolver, error) {
+	count, err := c.TotalCount()
 	if err != nil {
 		return nil, err
 	}
-	hasNext, err := HasNextPage(tcr.end, int(count))
+	hasNext, err := HasNextPage(c.end, int(count))
 	if err != nil {
 		return nil, err
 	}
 
-	return NewPageResolver(tcr.start, tcr.end, hasNext), nil
+	return NewPageResolver(c.start, c.end, hasNext), nil
 }
 
-func (rcr TypeConnectionResolver) Edges() (*[]*TypeEdgeResolver, error) {
+func (c TypeConnectionResolver) Edges() (*[]*TypeEdgeResolver, error) {
 	var e []*TypeEdgeResolver
 
-	for i, item := range rcr.items {
-		starti, err := rcr.start.IntValue()
+	for i, item := range c.items {
+		starti, err := c.start.IntValue()
 		if err != nil {
 			return nil, err
 		}
 		cursorLocation := starti + i + 1
 		cursor := scalars.NewCursor(cursorLocation)
-		e = append(e, NewTypeEdgeResolver(rcr.db, item, cursor))
+		e = append(e, NewTypeEdgeResolver(c.db, item, cursor))
 	}
 
 	return &e, nil

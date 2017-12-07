@@ -50,13 +50,13 @@ func NewRegionEdgeResolver(db *models.DB, r *models.Region, c scalars.Cursor) *R
 }
 
 //Cursor returns the cursor for the edge
-func (rer *RegionEdgeResolver) Cursor() scalars.Cursor {
-	return rer.cursor
+func (e *RegionEdgeResolver) Cursor() scalars.Cursor {
+	return e.cursor
 }
 
 //Node returns the region for the edge
-func (rer *RegionEdgeResolver) Node() *RegionResolver {
-	return NewRegionResolver(rer.db, rer.node)
+func (e *RegionEdgeResolver) Node() *RegionResolver {
+	return NewRegionResolver(e.db, e.node)
 }
 
 //RegionConnectionResolver resolves the fields of a region connection
@@ -83,8 +83,8 @@ func NewRegionConnectionResolver(db *models.DB, items []*models.Region, args arg
 }
 
 //TotalCount returns the total number of items in a connection
-func (rcr RegionConnectionResolver) TotalCount() (int32, error) {
-	count, err := rcr.db.Count("regions")
+func (c RegionConnectionResolver) TotalCount() (int32, error) {
+	count, err := c.db.Count("regions")
 	if err != nil {
 		return 0, err
 	}
@@ -92,31 +92,31 @@ func (rcr RegionConnectionResolver) TotalCount() (int32, error) {
 }
 
 //PageInfo returns the information about the current page
-func (rcr RegionConnectionResolver) PageInfo() (*PageResolver, error) {
-	count, err := rcr.TotalCount()
+func (c RegionConnectionResolver) PageInfo() (*PageResolver, error) {
+	count, err := c.TotalCount()
 	if err != nil {
 		return nil, err
 	}
-	hasNext, err := HasNextPage(rcr.end, int(count))
+	hasNext, err := HasNextPage(c.end, int(count))
 	if err != nil {
 		return nil, err
 	}
 
-	return NewPageResolver(rcr.start, rcr.end, hasNext), nil
+	return NewPageResolver(c.start, c.end, hasNext), nil
 }
 
 //Edges returns the edges of a connection
-func (rcr RegionConnectionResolver) Edges() (*[]*RegionEdgeResolver, error) {
+func (c RegionConnectionResolver) Edges() (*[]*RegionEdgeResolver, error) {
 	var e []*RegionEdgeResolver
 
-	for i, item := range rcr.items {
-		starti, err := rcr.start.IntValue()
+	for i, item := range c.items {
+		starti, err := c.start.IntValue()
 		if err != nil {
 			return nil, err
 		}
 		cursorLocation := starti + i + 1
 		cursor := scalars.NewCursor(cursorLocation)
-		e = append(e, NewRegionEdgeResolver(rcr.db, item, cursor))
+		e = append(e, NewRegionEdgeResolver(c.db, item, cursor))
 	}
 
 	return &e, nil

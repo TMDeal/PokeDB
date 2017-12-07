@@ -90,7 +90,7 @@ func NewStatConnectionResolver(db *models.DB, items []*models.Stat, args argumen
 
 //TotalCount returns the total number of items in a connection
 func (c StatConnectionResolver) TotalCount() (int32, error) {
-	count, err := c.db.Count("generations")
+	count, err := c.db.Count("stats")
 	if err != nil {
 		return 0, err
 	}
