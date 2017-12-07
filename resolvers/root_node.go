@@ -1,10 +1,7 @@
 package resolvers
 
 import (
-	"log"
-
 	"github.com/TMDeal/PokeDB/arguments"
-	"github.com/gocraft/dbr"
 )
 
 func (root *RootResolver) Node(args arguments.ID) *NodeResolver {
@@ -19,36 +16,35 @@ func (root *RootResolver) Node(args arguments.ID) *NodeResolver {
 		switch typ {
 		case "Region":
 			r, err := root.db.FindRegion("id = ?", int(id))
-			if err == dbr.ErrNotFound {
-				return nil
-			}
 			if err != nil {
-				log.Fatal(err)
+				return nil
 			}
 
 			node = NewRegionResolver(root.db, r)
 
 		case "Generation":
 			gen, err := root.db.FindGeneration("id = ?", int(id))
-			if err == dbr.ErrNotFound {
-				return nil
-			}
 			if err != nil {
-				log.Fatal(err)
+				return nil
 			}
 
 			node = NewGenerationResolver(root.db, gen)
 
 		case "Type":
 			t, err := root.db.FindType("id = ?", int(id))
-			if err == dbr.ErrNotFound {
-				return nil
-			}
 			if err != nil {
-				log.Fatal(err)
+				return nil
 			}
 
 			node = NewTypeResolver(root.db, t)
+
+		case "Move":
+			m, err := root.db.FindMove("id = ?", int(id))
+			if err != nil {
+				return nil
+			}
+
+			node = NewMoveResolver(root.db, m)
 		}
 
 		return NewNodeResolver(node)
