@@ -22,8 +22,13 @@ func NewNodeResolver(node Node) *NodeResolver {
 	return &NodeResolver{node}
 }
 
-func (r *NodeResolver) ToRegion() (*RegionResolver, bool) {
+func (r NodeResolver) ToRegion() (*RegionResolver, bool) {
 	to, ok := r.Node.(*RegionResolver)
+	return to, ok
+}
+
+func (r NodeResolver) ToMove() (*MoveResolver, bool) {
+	to, ok := r.Node.(*MoveResolver)
 	return to, ok
 }
 
