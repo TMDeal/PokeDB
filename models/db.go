@@ -81,7 +81,7 @@ func (db DB) Find(model interface{}, query string, values ...interface{}) error 
 
 	err := db.conn.QueryRowx(query, values...).StructScan(model)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	return nil
