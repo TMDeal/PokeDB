@@ -6,6 +6,8 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/gedex/inflector"
+	"github.com/iancoleman/strcase"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
@@ -72,7 +74,7 @@ func (db DB) Find(model interface{}, query string, values ...interface{}) error 
 	}
 	t = t.Elem()
 
-	table := strings.ToLower(t.Name() + "s")
+	table := strings.ToLower(strcase.ToSnake(inflector.Pluralize(t.Name())))
 
 	query = fmt.Sprintf(`SELECT * FROM %s WHERE %s`, table, query)
 	query = db.conn.Rebind(query)
@@ -99,7 +101,7 @@ func (db DB) FindAll(models interface{}, limit int, offset int) error {
 	}
 	t = t.Elem().Elem()
 
-	table := strings.ToLower(t.Name() + "s")
+	table := strings.ToLower(strcase.ToSnake(inflector.Pluralize(t.Name())))
 
 	query := fmt.Sprintf(`SELECT * FROM %s LIMIT ? OFFSET ?`, table)
 	query = db.conn.Rebind(query)
