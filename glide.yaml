@@ -4,3 +4,4 @@ import:
 - package: github.com/jmoiron/sqlx
 - package: github.com/neelance/graphql-go
 - package: github.com/iancoleman/strcase
+- package: github.com/gedex/inflector

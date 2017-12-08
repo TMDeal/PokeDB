@@ -1,13 +1,13 @@
 package models
 
-import "github.com/gocraft/dbr"
+import "database/sql"
 
 //Type represents a Type in the database
 type Type struct {
 	ID            int64         `db:"id"`
 	Identifier    string        `db:"identifier"`
 	GenerationID  int           `db:"generation_id"`
-	DamageClassID dbr.NullInt64 `db:"damage_class_id"`
+	DamageClassID sql.NullInt64 `db:"damage_class_id"`
 	Name          string        `db:"name"`
 }
 

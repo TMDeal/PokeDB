@@ -1,8 +1,6 @@
 package models
 
-import (
-	"github.com/gocraft/dbr"
-)
+import "database/sql"
 
 type Move struct {
 	ID                   int64         `db:"id"`
@@ -12,15 +10,15 @@ type Move struct {
 	TypeID               int64         `db:"type_id"`
 	TargetID             int64         `db:"target_id"`
 	DamageClassID        int64         `db:"damage_class_id"`
-	ContestTypeID        dbr.NullInt64 `db:"contest_type_id"`
-	ContestEffectID      dbr.NullInt64 `db:"contest_effect_id"`
-	SuperContestEffectID dbr.NullInt64 `db:"super_contest_effect_id"`
-	EffectID             dbr.NullInt64 `db:"effect_id"`
-	Power                dbr.NullInt64 `db:"power"`
-	PP                   dbr.NullInt64 `db:"pp"`
-	Accuracy             dbr.NullInt64 `db:"accuracy"`
+	ContestTypeID        sql.NullInt64 `db:"contest_type_id"`
+	ContestEffectID      sql.NullInt64 `db:"contest_effect_id"`
+	SuperContestEffectID sql.NullInt64 `db:"super_contest_effect_id"`
+	EffectID             sql.NullInt64 `db:"effect_id"`
+	Power                sql.NullInt64 `db:"power"`
+	PP                   sql.NullInt64 `db:"pp"`
+	Accuracy             sql.NullInt64 `db:"accuracy"`
 	Priority             int64         `db:"priority"`
-	EffectChance         dbr.NullInt64 `db:"effect_chance"`
+	EffectChance         sql.NullInt64 `db:"effect_chance"`
 }
 
 func (m Move) Targets(f Finder) (*MoveTarget, error) {
