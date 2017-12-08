@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/TMDeal/PokeDB/arguments"
-	"github.com/gocraft/dbr"
+	"github.com/TMDeal/PokeDB/models"
 )
 
 func (root *RootResolver) Moves(args arguments.Connection) MoveConnectionResolver {
@@ -13,8 +13,8 @@ func (root *RootResolver) Moves(args arguments.Connection) MoveConnectionResolve
 		log.Fatal(err)
 	}
 
-	items, err := root.db.FindMoves(limit, offset)
-	if err != nil && err != dbr.ErrNotFound {
+	var items []*models.Move
+	if err = root.db.FindAll(&items, limit, offset); err != nil {
 		log.Fatal(err)
 	}
 
@@ -32,8 +32,8 @@ func (root *RootResolver) Generations(args arguments.Connection) GenerationConne
 		log.Fatal(err)
 	}
 
-	items, err := root.db.FindGenerations(limit, offset)
-	if err != nil && err != dbr.ErrNotFound {
+	var items []*models.Generation
+	if err = root.db.FindAll(&items, limit, offset); err != nil {
 		log.Fatal(err)
 	}
 
@@ -51,8 +51,8 @@ func (root *RootResolver) Regions(args arguments.Connection) RegionConnectionRes
 		log.Fatal(err)
 	}
 
-	items, err := root.db.FindRegions(limit, offset)
-	if err != nil && err != dbr.ErrNotFound {
+	var items []*models.Region
+	if err = root.db.FindAll(&items, limit, offset); err != nil {
 		log.Fatal(err)
 	}
 
@@ -70,8 +70,8 @@ func (root *RootResolver) Types(args arguments.Connection) TypeConnectionResolve
 		log.Fatal(err)
 	}
 
-	items, err := root.db.FindTypes(limit, offset)
-	if err != nil && err != dbr.ErrNotFound {
+	var items []*models.Type
+	if err = root.db.FindAll(&items, limit, offset); err != nil {
 		log.Fatal(err)
 	}
 

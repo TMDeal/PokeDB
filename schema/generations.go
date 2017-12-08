@@ -10,7 +10,7 @@ type Generation implements Node {
 
 type GenerationEdge {
 	cursor: Cursor!
-	node: Region
+	node: Generation
 }
 
 type GenerationConnection {

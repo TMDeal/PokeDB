@@ -1,10 +1,12 @@
-hash: c1bd0eea5861d39438b74d66b39ce9a897fbd9ba82d4591215902b0749446927
-updated: 2017-11-20T13:45:00.204689746-05:00
+hash: 9951952b6d9ab7b5840d4140c9f1882487dd3edc1cc743b0ee77aa4a94eb3a9d
+updated: 2017-12-07T18:22:47.589019696-05:00
 imports:
-- name: github.com/elgris/sqrl
-  version: 852d8b353bc263808db088c342c3ead84a5ebcbd
 - name: github.com/gocraft/dbr
   version: b2f0ffcef2a64c0729d5818e103bc019caed7b22
+  subpackages:
+  - dialect
+- name: github.com/iancoleman/strcase
+  version: 3de563c3dc08a7504131e9d63f678b7d1c3e85d7
 - name: github.com/jmoiron/sqlx
   version: 3379e5993990b1f927fc8db926485e6f6becf2d2
   subpackages:

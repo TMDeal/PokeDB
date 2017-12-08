@@ -6,33 +6,3 @@ type Region struct {
 	Identifier string `db:"identifier"`
 	Name       string `db:"name"`
 }
-
-//RegionFinder says how to find information for a region model
-type RegionFinder interface {
-	FindRegions(limit uint64, offset uint64) ([]*Region, error)
-	FindRegion(query string, value interface{}) (*Region, error)
-}
-
-func (db DB) FindRegion(query string, value interface{}) (*Region, error) {
-	var r Region
-	sess := db.Session()
-
-	_, err := sess.Select("*").From("regions").Where(query, value).Load(&r)
-	if err != nil {
-		return nil, err
-	}
-
-	return &r, nil
-}
-
-func (db DB) FindRegions(limit uint64, offset uint64) ([]*Region, error) {
-	var rs []*Region
-	sess := db.Session()
-
-	_, err := sess.Select("*").From("regions").Limit(limit).Offset(offset).Load(&rs)
-	if err != nil {
-		return nil, err
-	}
-
-	return rs, nil
-}

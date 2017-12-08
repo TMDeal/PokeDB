@@ -9,50 +9,11 @@ type Stat struct {
 	DamageClassID int    `db:"damage_class_id"`
 }
 
-type StatFinder interface {
-	FindStats(limit uint64, offset uint64) ([]*Stat, error)
-	FindStat(query string, value interface{}) (*Stat, error)
-}
-
-func (s Stat) DamageClass(dcf DamageClassFinder) (*DamageClass, error) {
-	dc, err := dcf.FindDamageClass("id = ?", s.DamageClassID)
-	if err != nil {
+func (s Stat) DamageClass(f Finder) (*DamageClass, error) {
+	var dc DamageClass
+	if err := f.Find(&dc, "id = ?", s.DamageClassID); err != nil {
 		return nil, err
 	}
 
-	return dc, nil
-}
-
-func (db DB) FindStat(query string, value interface{}) (*Stat, error) {
-	var s Stat
-	sess := db.Session()
-
-	_, err := sess.Select("*").
-		From("stats").
-		Where(query, value).
-		Limit(1).
-		Load(&s)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &s, nil
-}
-
-func (db DB) FindStats(limit uint64, offset uint64) ([]*Stat, error) {
-	var ss []*Stat
-	sess := db.Session()
-
-	_, err := sess.Select("*").
-		From("stats").
-		Limit(limit).
-		Offset(offset).
-		Load(&ss)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return ss, nil
+	return &dc, nil
 }

@@ -16,7 +16,23 @@ func NewRootResolver(db *models.DB) *RootResolver {
 	return &RootResolver{db}
 }
 
-func GetLimitOffset(args arguments.Connection) (uint64, uint64, error) {
+func GetSearch(args arguments.Search) (name string, id int, err error) {
+	id = -1
+	if args.ID != nil {
+		_, id, err = FromGlobalID(*args.ID)
+		if err != nil {
+			return
+		}
+	}
+
+	if args.Name != nil {
+		name = *args.Name + "%"
+	}
+
+	return
+}
+
+func GetLimitOffset(args arguments.Connection) (int, int, error) {
 	offset := 0
 	limit := 20
 
@@ -33,5 +49,5 @@ func GetLimitOffset(args arguments.Connection) (uint64, uint64, error) {
 		limit = int(*args.First)
 	}
 
-	return uint64(limit), uint64(offset), nil
+	return limit, offset, nil
 }

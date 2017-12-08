@@ -23,76 +23,38 @@ type Move struct {
 	EffectChance         dbr.NullInt64 `db:"effect_chance"`
 }
 
-type MoveFinder interface {
-	FindMoves(limit uint64, offset uint64) ([]*Move, error)
-	FindMove(query string, values ...interface{}) (*Move, error)
-}
-
-func (m Move) Targets(mtf MoveTargetFinder) (*MoveTarget, error) {
-	mt, err := mtf.FindMoveTarget("id = ?", m.TargetID)
-	if err != nil {
+func (m Move) Targets(f Finder) (*MoveTarget, error) {
+	var t MoveTarget
+	if err := f.Find(&t, "id = ?", m.TargetID); err != nil {
 		return nil, err
 	}
 
-	return mt, nil
+	return &t, nil
 }
 
-func (m Move) Type(tf TypeFinder) (*Type, error) {
-	t, err := tf.FindType("id = ?", m.TypeID)
-	if err != nil {
+func (m Move) Type(f Finder) (*Type, error) {
+	var t Type
+	if err := f.Find(&t, "id = ?", m.TypeID); err != nil {
 		return nil, err
 	}
 
-	return t, nil
+	return &t, nil
 }
 
-func (m Move) Generation(gf GenerationFinder) (*Generation, error) {
-	gen, err := gf.FindGeneration("id = ?", m.GenerationID)
-	if err != nil {
+func (m Move) Generation(f Finder) (*Generation, error) {
+	var gen Generation
+	if err := f.Find(&gen, "id = ?", m.GenerationID); err != nil {
 		return nil, err
 	}
 
-	return gen, err
+	return &gen, nil
 }
 
-func (m Move) DamageClass(dcf DamageClassFinder) (*DamageClass, error) {
-	dc, err := dcf.FindDamageClass("id = ?", m.DamageClassID)
-	if err != nil {
+func (m Move) DamageClass(f Finder) (*DamageClass, error) {
+	var dc DamageClass
+	if err := f.Find(&dc, "id = ?", m.DamageClassID); err != nil {
 		return nil, err
 	}
 
-	return dc, nil
-}
-
-func (db DB) FindMoves(limit uint64, offset uint64) ([]*Move, error) {
-	var ms []*Move
-	sess := db.Session()
-
-	_, err := sess.Select("*").
-		From("moves").
-		Limit(limit).
-		Offset(offset).
-		Load(&ms)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return ms, nil
-}
-
-func (db DB) FindMove(query string, values ...interface{}) (*Move, error) {
-	var m Move
-	sess := db.Session()
-
-	_, err := sess.Select("*").
-		From("moves").
-		Where(query, values...).
-		Load(&m)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &m, nil
+	return &dc, nil
 }

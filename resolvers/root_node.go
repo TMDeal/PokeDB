@@ -2,6 +2,7 @@ package resolvers
 
 import (
 	"github.com/TMDeal/PokeDB/arguments"
+	"github.com/TMDeal/PokeDB/models"
 )
 
 func (root *RootResolver) Node(args arguments.ID) *NodeResolver {
@@ -15,36 +16,36 @@ func (root *RootResolver) Node(args arguments.ID) *NodeResolver {
 
 		switch typ {
 		case "Region":
-			r, err := root.db.FindRegion("id = ?", int(id))
-			if err != nil {
+			var r models.Region
+			if err := root.db.Find(&r, "id = ?", int(id)); err != nil {
 				return nil
 			}
 
-			node = NewRegionResolver(root.db, r)
+			node = NewRegionResolver(root.db, &r)
 
 		case "Generation":
-			gen, err := root.db.FindGeneration("id = ?", int(id))
-			if err != nil {
+			var gen models.Generation
+			if err := root.db.Find(&gen, "id = ?", int(id)); err != nil {
 				return nil
 			}
 
-			node = NewGenerationResolver(root.db, gen)
+			node = NewGenerationResolver(root.db, &gen)
 
 		case "Type":
-			t, err := root.db.FindType("id = ?", int(id))
-			if err != nil {
+			var t models.Type
+			if err := root.db.Find(&t, "id = ?", int(id)); err != nil {
 				return nil
 			}
 
-			node = NewTypeResolver(root.db, t)
+			node = NewTypeResolver(root.db, &t)
 
 		case "Move":
-			m, err := root.db.FindMove("id = ?", int(id))
-			if err != nil {
+			var m models.Move
+			if err := root.db.Find(&m, "id = ?", int(id)); err != nil {
 				return nil
 			}
 
-			node = NewMoveResolver(root.db, m)
+			node = NewMoveResolver(root.db, &m)
 		}
 
 		return NewNodeResolver(node)
