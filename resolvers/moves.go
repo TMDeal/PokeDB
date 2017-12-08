@@ -28,6 +28,30 @@ func (m *MoveResolver) Name() string {
 	return m.move.Name
 }
 
+func (m *MoveResolver) ContestEffect() *ContestEffectResolver {
+	c, err := m.move.ContestEffect(m.db)
+	if err != nil {
+		return nil
+	}
+	return NewContestEffectResolver(m.db, c)
+}
+
+func (m *MoveResolver) ContestType() *ContestTypeResolver {
+	c, err := m.move.ContestType(m.db)
+	if err != nil {
+		return nil
+	}
+	return NewContestTypeResolver(m.db, c)
+}
+
+func (m *MoveResolver) SuperContestEffect() *SuperContestEffectResolver {
+	c, err := m.move.SuperContestEffect(m.db)
+	if err != nil {
+		return nil
+	}
+	return NewSuperContestEffectResolver(m.db, c)
+}
+
 func (m *MoveResolver) Generation() *GenerationResolver {
 	gen, err := m.move.Generation(m.db)
 	if err != nil {

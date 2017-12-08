@@ -1,6 +1,9 @@
 package models
 
-import "database/sql"
+import (
+	"database/sql"
+	"log"
+)
 
 type Move struct {
 	ID                   int64         `db:"id"`
@@ -19,6 +22,46 @@ type Move struct {
 	Accuracy             sql.NullInt64 `db:"accuracy"`
 	Priority             int64         `db:"priority"`
 	EffectChance         sql.NullInt64 `db:"effect_chance"`
+}
+
+func (m Move) SuperContestEffect(f Finder) (*SuperContestEffect, error) {
+	if !m.SuperContestEffectID.Valid {
+		return nil, nil
+	}
+
+	var sce SuperContestEffect
+	if err := f.Find(&sce, "id = ?", m.SuperContestEffectID.Int64); err != nil {
+		return nil, err
+	}
+
+	return &sce, nil
+}
+
+func (m Move) ContestType(f Finder) (*ContestType, error) {
+	if !m.ContestTypeID.Valid {
+		return nil, nil
+	}
+
+	var ct ContestType
+	if err := f.Find(&ct, "id = ?", m.ContestTypeID.Int64); err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return &ct, nil
+}
+
+func (m Move) ContestEffect(f Finder) (*ContestEffect, error) {
+	if !m.ContestTypeID.Valid {
+		return nil, nil
+	}
+
+	var ce ContestEffect
+	if err := f.Find(&ce, "id = ?", m.ContestEffectID.Int64); err != nil {
+		return nil, err
+	}
+
+	return &ce, nil
 }
 
 func (m Move) Targets(f Finder) (*MoveTarget, error) {

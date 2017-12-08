@@ -12,6 +12,7 @@ func New() string {
 			regions,
 			types,
 			moves,
+			contests,
 		},
 		"",
 	)

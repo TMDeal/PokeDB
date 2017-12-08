@@ -7,6 +7,9 @@ type Move implements Node {
 	name: String!
 	generation: Generation!
 	damageClass: DamageClass!
+	contestEffect: ContestEffect
+	contestType: ContestType
+	superContestEffect: SuperContestEffect
 	type: Type!
 	power: Int
 	pp: Int
