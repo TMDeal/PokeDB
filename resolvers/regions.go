@@ -69,7 +69,7 @@ type RegionConnectionResolver struct {
 
 //NewRegionConnectionResolver returns a new RegionConnectionResolver
 func NewRegionConnectionResolver(db *models.DB, items []*models.Region, args arguments.Connection) (*RegionConnectionResolver, error) {
-	start, end, err := MakeCursors(len(items), args)
+	start, end, err := MakeCursors("regions", len(items), args)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +115,7 @@ func (c RegionConnectionResolver) Edges() (*[]*RegionEdgeResolver, error) {
 			return nil, err
 		}
 		cursorLocation := starti + i + 1
-		cursor := scalars.NewCursor(cursorLocation)
+		cursor := scalars.NewCursor("regions", cursorLocation)
 		e = append(e, NewRegionEdgeResolver(c.db, item, cursor))
 	}
 

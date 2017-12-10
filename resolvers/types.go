@@ -76,7 +76,7 @@ type TypeConnectionResolver struct {
 }
 
 func NewTypeConnectionResolver(db *models.DB, items []*models.Type, args arguments.Connection) (*TypeConnectionResolver, error) {
-	start, end, err := MakeCursors(len(items), args)
+	start, end, err := MakeCursors("types", len(items), args)
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +121,7 @@ func (c TypeConnectionResolver) Edges() (*[]*TypeEdgeResolver, error) {
 			return nil, err
 		}
 		cursorLocation := starti + i + 1
-		cursor := scalars.NewCursor(cursorLocation)
+		cursor := scalars.NewCursor("types", cursorLocation)
 		e = append(e, NewTypeEdgeResolver(c.db, item, cursor))
 	}
 

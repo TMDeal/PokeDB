@@ -73,7 +73,7 @@ type GenerationConnectionResolver struct {
 }
 
 func NewGenerationConnectionResolver(db *models.DB, items []*models.Generation, args arguments.Connection) (*GenerationConnectionResolver, error) {
-	start, end, err := MakeCursors(len(items), args)
+	start, end, err := MakeCursors("generations", len(items), args)
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +118,7 @@ func (c GenerationConnectionResolver) Edges() (*[]*GenerationEdgeResolver, error
 			return nil, err
 		}
 		cursorLocation := starti + i + 1
-		cursor := scalars.NewCursor(cursorLocation)
+		cursor := scalars.NewCursor("generations", cursorLocation)
 		e = append(e, NewGenerationEdgeResolver(c.db, item, cursor))
 	}
 

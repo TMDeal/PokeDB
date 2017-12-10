@@ -136,7 +136,7 @@ type MoveConnectionResolver struct {
 }
 
 func NewMoveConnectionResolver(db *models.DB, items []*models.Move, args arguments.Connection) (*MoveConnectionResolver, error) {
-	start, end, err := MakeCursors(len(items), args)
+	start, end, err := MakeCursors("regions", len(items), args)
 	if err != nil {
 		return nil, err
 	}
@@ -181,7 +181,7 @@ func (c MoveConnectionResolver) Edges() (*[]*MoveEdgeResolver, error) {
 			return nil, err
 		}
 		cursorLocation := starti + i + 1
-		cursor := scalars.NewCursor(cursorLocation)
+		cursor := scalars.NewCursor("regions", cursorLocation)
 		e = append(e, NewMoveEdgeResolver(c.db, item, cursor))
 	}
 

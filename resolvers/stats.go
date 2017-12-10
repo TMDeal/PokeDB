@@ -75,7 +75,7 @@ type StatConnectionResolver struct {
 }
 
 func NewStatConnectionResolver(db *models.DB, items []*models.Stat, args arguments.Connection) (*StatConnectionResolver, error) {
-	start, end, err := MakeCursors(len(items), args)
+	start, end, err := MakeCursors("stats", len(items), args)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func (c StatConnectionResolver) Edges() (*[]*StatEdgeResolver, error) {
 			return nil, err
 		}
 		cursorLocation := starti + i + 1
-		cursor := scalars.NewCursor(cursorLocation)
+		cursor := scalars.NewCursor("stats", cursorLocation)
 		e = append(e, NewStatEdgeResolver(c.db, item, cursor))
 	}
 

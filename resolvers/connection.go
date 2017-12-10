@@ -7,8 +7,8 @@ import (
 
 //MakeCursors creates two cursors, start and end, that corrospond to the page
 //queries first element and last element.
-func MakeCursors(size int, args arguments.Connection) (*scalars.Cursor, *scalars.Cursor, error) {
-	start := scalars.NewCursor(0)
+func MakeCursors(t string, size int, args arguments.Connection) (*scalars.Cursor, *scalars.Cursor, error) {
+	start := scalars.NewCursor(t, 0)
 	if args.After != nil {
 		start = *args.After
 	}
@@ -18,11 +18,11 @@ func MakeCursors(size int, args arguments.Connection) (*scalars.Cursor, *scalars
 		return nil, nil, err
 	}
 
-	end := scalars.NewCursor(size + starti)
+	end := scalars.NewCursor(t, size+starti)
 	if args.First != nil {
 		actualEnd := starti + int(*args.First)
 		if actualEnd > size {
-			end = scalars.NewCursor(actualEnd)
+			end = scalars.NewCursor(t, actualEnd)
 		}
 	}
 
