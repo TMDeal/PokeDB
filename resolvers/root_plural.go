@@ -14,7 +14,7 @@ func (root *RootResolver) Moves(args arguments.Connection) MoveConnectionResolve
 	}
 
 	var items []*models.Move
-	if err = root.db.FindAll(&items, limit, offset); err != nil {
+	if err = root.db.FindAll(&items, models.NewConditions().Limit(limit).Offset(offset)); err != nil {
 		log.Fatal(err)
 	}
 
@@ -33,7 +33,7 @@ func (root *RootResolver) Generations(args arguments.Connection) GenerationConne
 	}
 
 	var items []*models.Generation
-	if err = root.db.FindAll(&items, limit, offset); err != nil {
+	if err = root.db.FindAll(&items, models.NewConditions().Limit(limit).Offset(offset)); err != nil {
 		log.Fatal(err)
 	}
 
@@ -52,7 +52,7 @@ func (root *RootResolver) Regions(args arguments.Connection) RegionConnectionRes
 	}
 
 	var items []*models.Region
-	if err = root.db.FindAll(&items, limit, offset); err != nil {
+	if err = root.db.FindAll(&items, models.NewConditions().Limit(limit).Offset(offset)); err != nil {
 		log.Fatal(err)
 	}
 
@@ -71,7 +71,7 @@ func (root *RootResolver) Types(args arguments.Connection) TypeConnectionResolve
 	}
 
 	var items []*models.Type
-	if err = root.db.FindAll(&items, limit, offset); err != nil {
+	if err = root.db.FindAll(&items, models.NewConditions().Limit(limit).Offset(offset)); err != nil {
 		log.Fatal(err)
 	}
 

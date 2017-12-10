@@ -17,7 +17,7 @@ func (root *RootResolver) Node(args arguments.ID) *NodeResolver {
 		switch typ {
 		case "Region":
 			var r models.Region
-			if err := root.db.Find(&r, "id = ?", int(id)); err != nil {
+			if err := root.db.Find(&r, models.NewConditions().Where("id = ?", int(id))); err != nil {
 				return nil
 			}
 
@@ -25,7 +25,7 @@ func (root *RootResolver) Node(args arguments.ID) *NodeResolver {
 
 		case "Generation":
 			var gen models.Generation
-			if err := root.db.Find(&gen, "id = ?", int(id)); err != nil {
+			if err := root.db.Find(&gen, models.NewConditions().Where("id = ?", int(id))); err != nil {
 				return nil
 			}
 
@@ -33,7 +33,7 @@ func (root *RootResolver) Node(args arguments.ID) *NodeResolver {
 
 		case "Type":
 			var t models.Type
-			if err := root.db.Find(&t, "id = ?", int(id)); err != nil {
+			if err := root.db.Find(&t, models.NewConditions().Where("id = ?", int(id))); err != nil {
 				return nil
 			}
 
@@ -41,7 +41,7 @@ func (root *RootResolver) Node(args arguments.ID) *NodeResolver {
 
 		case "Move":
 			var m models.Move
-			if err := root.db.Find(&m, "id = ?", int(id)); err != nil {
+			if err := root.db.Find(&m, models.NewConditions().Where("id = ?", int(id))); err != nil {
 				return nil
 			}
 

@@ -21,8 +21,8 @@ type DB struct {
 
 //Finder is an interface that defines how to get data about pokemon
 type Finder interface {
-	Find(model interface{}, query string, values ...interface{}) error
-	FindAll(models interface{}, limit int, offset int) error
+	Find(model interface{}, conds Builder) error
+	FindAll(models interface{}, conds Builder) error
 }
 
 const (
@@ -67,7 +67,7 @@ func (db DB) Count(table string) (int, error) {
 	return count, nil
 }
 
-func (db DB) Find(model interface{}, query string, values ...interface{}) error {
+func (db DB) Find(model interface{}, conds Builder) error {
 	t := reflect.TypeOf(model)
 	if t.Kind() != reflect.Ptr {
 		return fmt.Errorf("model must be a pointer")
@@ -75,11 +75,12 @@ func (db DB) Find(model interface{}, query string, values ...interface{}) error 
 	t = t.Elem()
 
 	table := strings.ToLower(strcase.ToSnake(inflector.Pluralize(t.Name())))
+	conditions, args := conds.ToSQL()
 
-	query = fmt.Sprintf(`SELECT * FROM %s WHERE %s`, table, query)
+	query := fmt.Sprintf(`SELECT %s.* FROM %s %s`, table, table, conditions)
 	query = db.conn.Rebind(query)
 
-	err := db.conn.QueryRowx(query, values...).StructScan(model)
+	err := db.conn.QueryRowx(query, args...).StructScan(model)
 	if err != nil {
 		return err
 	}
@@ -87,7 +88,7 @@ func (db DB) Find(model interface{}, query string, values ...interface{}) error 
 	return nil
 }
 
-func (db DB) FindAll(models interface{}, limit int, offset int) error {
+func (db DB) FindAll(models interface{}, conds Builder) error {
 	t := reflect.TypeOf(models)
 	v := reflect.ValueOf(models).Elem()
 
@@ -102,10 +103,11 @@ func (db DB) FindAll(models interface{}, limit int, offset int) error {
 	t = t.Elem().Elem()
 
 	table := strings.ToLower(strcase.ToSnake(inflector.Pluralize(t.Name())))
+	conditions, args := conds.ToSQL()
 
-	query := fmt.Sprintf(`SELECT * FROM %s LIMIT ? OFFSET ?`, table)
+	query := fmt.Sprintf(`SELECT %s.* FROM %s %s`, table, table, conditions)
 	query = db.conn.Rebind(query)
-	rows, err := db.conn.Queryx(query, limit, offset)
+	rows, err := db.conn.Queryx(query, args...)
 	if err != nil {
 		return err
 	}

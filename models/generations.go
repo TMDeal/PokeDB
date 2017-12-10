@@ -9,7 +9,7 @@ type Generation struct {
 
 func (g Generation) Region(f Finder) (*Region, error) {
 	var r Region
-	if err := f.Find(&r, "id = ?", g.RegionID); err != nil {
+	if err := f.Find(&r, NewConditions().Where("id = ?", g.RegionID)); err != nil {
 		return nil, err
 	}
 

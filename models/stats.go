@@ -11,7 +11,7 @@ type Stat struct {
 
 func (s Stat) DamageClass(f Finder) (*DamageClass, error) {
 	var dc DamageClass
-	if err := f.Find(&dc, "id = ?", s.DamageClassID); err != nil {
+	if err := f.Find(&dc, NewConditions().Where("id = ?", s.DamageClassID)); err != nil {
 		return nil, err
 	}
 

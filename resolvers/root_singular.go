@@ -1,6 +1,8 @@
 package resolvers
 
 import (
+	"log"
+
 	"github.com/TMDeal/PokeDB/arguments"
 	"github.com/TMDeal/PokeDB/models"
 )
@@ -16,7 +18,8 @@ func (root *RootResolver) Generation(args arguments.Search) *GenerationResolver 
 	}
 
 	var gen models.Generation
-	if err = root.db.Find(&gen, "id = ? OR LOWER(name) LIKE LOWER(?)", id, name); err != nil {
+	conds := models.NewConditions().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	if err = root.db.Find(&gen, conds); err != nil {
 		return nil
 	}
 
@@ -34,7 +37,8 @@ func (root *RootResolver) Type(args arguments.Search) *TypeResolver {
 	}
 
 	var t models.Type
-	if err = root.db.Find(&t, "id = ? OR LOWER(name) LIKE LOWER(?)", id, name); err != nil {
+	conds := models.NewConditions().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	if err = root.db.Find(&t, conds); err != nil {
 		return nil
 	}
 
@@ -52,7 +56,9 @@ func (root *RootResolver) Move(args arguments.Search) *MoveResolver {
 	}
 
 	var m models.Move
-	if err = root.db.Find(&m, "id = ? OR LOWER(name) LIKE LOWER(?)", id, name); err != nil {
+	conds := models.NewConditions().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	if err = root.db.Find(&m, conds); err != nil {
+		log.Println(err)
 		return nil
 	}
 
@@ -70,7 +76,8 @@ func (root *RootResolver) Region(args arguments.Search) *RegionResolver {
 	}
 
 	var r models.Region
-	if err = root.db.Find(&r, "id = ? OR LOWER(name) LIKE LOWER(?)", id, name); err != nil {
+	conds := models.NewConditions().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	if err = root.db.Find(&r, conds); err != nil {
 		return nil
 	}
 

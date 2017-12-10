@@ -14,7 +14,7 @@ type Type struct {
 //Generation gets the generation info for a Type
 func (t Type) Generation(f Finder) (*Generation, error) {
 	var gen Generation
-	if err := f.Find(&gen, "id = ?", t.GenerationID); err != nil {
+	if err := f.Find(&gen, NewConditions().Where("id = ?", t.GenerationID)); err != nil {
 		return nil, err
 	}
 
@@ -24,7 +24,7 @@ func (t Type) Generation(f Finder) (*Generation, error) {
 //DamageClass gets the damage class info for a type
 func (t Type) DamageClass(f Finder) (*DamageClass, error) {
 	var dc DamageClass
-	if err := f.Find(&dc, "id = ?", t.DamageClassID); err != nil {
+	if err := f.Find(&dc, NewConditions().Where("id = ?", t.DamageClassID)); err != nil {
 		return nil, err
 	}
 
