@@ -10,8 +10,8 @@ import (
 
 type Cursor string
 
-func NewCursor(i int) Cursor {
-	v := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("cursor%d", i)))
+func NewCursor(t string, i int) Cursor {
+	v := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s-%d", t, i)))
 	return Cursor(v)
 }
 
@@ -21,7 +21,9 @@ func (c Cursor) IntValue() (int, error) {
 		return 0, err
 	}
 
-	i, err := strconv.Atoi(strings.TrimPrefix(string(b), "cursor"))
+	elems := strings.Split(string(b), "-")
+
+	i, err := strconv.Atoi(elems[1])
 	if err != nil {
 		return 0, err
 	}
@@ -43,14 +45,14 @@ func (c *Cursor) UnmarshalGraphQL(input interface{}) error {
 			return err
 		}
 
-		i, err := strconv.Atoi(strings.TrimPrefix(string(b), "cursor"))
+		elems := strings.Split(string(b), "-")
+
+		i, err := strconv.Atoi(elems[1])
 		if err != nil {
 			return err
 		}
 
-		*c = NewCursor(i)
-	case int32:
-		*c = NewCursor(int(input))
+		*c = NewCursor(elems[0], i)
 	default:
 		err = errors.New("wrong type")
 	}
