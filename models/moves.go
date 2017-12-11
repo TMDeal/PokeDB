@@ -24,6 +24,57 @@ type Move struct {
 	EffectChance         sql.NullInt64 `db:"effect_chance"`
 }
 
+type MoveFlag struct {
+	ID          int64
+	Identifier  string
+	Name        string
+	Description string
+}
+
+type MoveTarget struct {
+	ID          int64  `db:"id"`
+	Identifier  string `db:"identifier"`
+	Name        string `db:"name"`
+	Description string `db:"description"`
+}
+
+type MoveFlavorText struct {
+	MoveID         int64  `db:"move_id"`
+	VersionGroupID int64  `db:"version_group_id"`
+	Text           string `db:"flavor_text"`
+}
+
+func (m Move) FlavorText(f Finder, vg int) (*MoveFlavorText, error) {
+	var mft MoveFlavorText
+	if err := f.Find(&mft, NewConditions().Where("move_id = ?", m.ID).And("version_group_id = ?", vg)); err != nil {
+		return nil, err
+	}
+
+	return &mft, nil
+}
+
+func (m Move) Target(f Finder) (*MoveTarget, error) {
+	var mt MoveTarget
+	if err := f.Find(&mt, NewConditions().Where("id = ?", m.TargetID)); err != nil {
+		return nil, err
+	}
+
+	return &mt, nil
+}
+
+func (m Move) Flags(f Finder) ([]*MoveFlag, error) {
+	var mf []*MoveFlag
+	conds := NewConditions().
+		Join("move_flag_map ON move_flags.id = move_flag_map.move_flag_id").
+		Where("move_flag_map.move_id = ?", m.ID)
+
+	if err := f.FindAll(&mf, conds); err != nil {
+		return nil, err
+	}
+
+	return mf, nil
+}
+
 func (m Move) SuperContestEffect(f Finder) (*SuperContestEffect, error) {
 	if !m.SuperContestEffectID.Valid {
 		return nil, nil
@@ -62,15 +113,6 @@ func (m Move) ContestEffect(f Finder) (*ContestEffect, error) {
 	}
 
 	return &ce, nil
-}
-
-func (m Move) Targets(f Finder) (*MoveTarget, error) {
-	var t MoveTarget
-	if err := f.Find(&t, NewConditions().Where("id = ?", m.TargetID)); err != nil {
-		return nil, err
-	}
-
-	return &t, nil
 }
 
 func (m Move) Type(f Finder) (*Type, error) {

@@ -10,6 +10,9 @@ type Move implements Node {
 	contestEffect: ContestEffect
 	contestType: ContestType
 	superContestEffect: SuperContestEffect
+	flavorText(versionGroup: Int = 17): String!
+	target: MoveTarget!
+	flags: [MoveFlag]
 	type: Type!
 	power: Int
 	pp: Int
@@ -29,6 +32,12 @@ type MoveConnection {
 }
 
 type MoveTarget {
+    identifier: String!
+    name: String!
+    description: String!
+}
+
+type MoveFlag {
     identifier: String!
     name: String!
     description: String!

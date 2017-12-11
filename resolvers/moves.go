@@ -1,6 +1,8 @@
 package resolvers
 
 import (
+	"log"
+
 	"github.com/TMDeal/PokeDB/arguments"
 	"github.com/TMDeal/PokeDB/models"
 	"github.com/TMDeal/PokeDB/scalars"
@@ -76,7 +78,39 @@ func (m *MoveResolver) Type() *TypeResolver {
 	return NewTypeResolver(m.db, t)
 }
 
-// func (m *MoveResolver) Target() *MoveTargetResolver {}
+func (m *MoveResolver) Flags() *[]*MoveFlagResolver {
+	var mfs []*MoveFlagResolver
+
+	mf, err := m.move.Flags(m.db)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+
+	for _, v := range mf {
+		mfs = append(mfs, NewMoveFlagResolver(m.db, v))
+	}
+
+	return &mfs
+}
+
+func (m *MoveResolver) FlavorText(args struct{ VersionGroup int32 }) (string, error) {
+	mft, err := m.move.FlavorText(m.db, int(args.VersionGroup))
+	if err != nil {
+		return "", err
+	}
+
+	return mft.Text, nil
+}
+
+func (m *MoveResolver) Target() (*MoveTargetResolver, error) {
+	mt, err := m.move.Target(m.db)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewMoveTargetResolver(m.db, mt), nil
+}
 
 func (m *MoveResolver) Power() *int32 {
 	if !m.move.Power.Valid {
