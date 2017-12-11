@@ -44,6 +44,21 @@ type MoveFlavorText struct {
 	Text           string `db:"flavor_text"`
 }
 
+type MoveEffect struct {
+	ID          int64  `db:"id"`
+	ShortEffect string `db:"short_effect"`
+	Effect      string `db:"effect"`
+}
+
+func (m Move) Effect(f Finder) (*MoveEffect, error) {
+	var me MoveEffect
+	if err := f.Find(&me, NewConditions().Where("id = ?", m.EffectID)); err != nil {
+		return nil, err
+	}
+
+	return &me, nil
+}
+
 func (m Move) FlavorText(f Finder, vg int) (*MoveFlavorText, error) {
 	var mft MoveFlavorText
 	if err := f.Find(&mft, NewConditions().Where("move_id = ?", m.ID).And("version_group_id = ?", vg)); err != nil {

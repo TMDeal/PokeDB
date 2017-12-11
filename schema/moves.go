@@ -11,6 +11,7 @@ type Move implements Node {
 	contestType: ContestType
 	superContestEffect: SuperContestEffect
 	flavorText(versionGroup: Int = 17): String!
+	effect: MoveEffect
 	target: MoveTarget!
 	flags: [MoveFlag]
 	type: Type!
@@ -29,6 +30,11 @@ type MoveConnection {
 	totalCount: Int!
 	edges: [MoveEdge]
 	pageInfo: PageInfo!
+}
+
+type MoveEffect {
+	short: String!
+	long: String!
 }
 
 type MoveTarget {

@@ -103,6 +103,15 @@ func (m *MoveResolver) FlavorText(args struct{ VersionGroup int32 }) (string, er
 	return mft.Text, nil
 }
 
+func (m *MoveResolver) Effect() (*MoveEffectResolver, error) {
+	me, err := m.move.Effect(m.db)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewMoveEffectResolver(m.db, me), nil
+}
+
 func (m *MoveResolver) Target() (*MoveTargetResolver, error) {
 	mt, err := m.move.Target(m.db)
 	if err != nil {
