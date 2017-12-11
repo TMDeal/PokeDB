@@ -100,7 +100,11 @@ func (db DB) FindAll(models interface{}, conds Builder) error {
 	if t.Kind() != reflect.Slice {
 		return fmt.Errorf("models must be a slice")
 	}
-	t = t.Elem().Elem()
+	t = t.Elem()
+
+	if t.Kind() == reflect.Ptr {
+		t = t.Elem()
+	}
 
 	table := strings.ToLower(strcase.ToSnake(inflector.Pluralize(t.Name())))
 	conditions, args := conds.ToSQL()
