@@ -14,11 +14,43 @@ type Move implements Node {
 	effect: MoveEffect
 	target: MoveTarget!
 	flags: [MoveFlag]
+	meta: MoveMeta!
 	type: Type!
 	power: Int
 	pp: Int
 	accuracy: Int
 	priority: Int!
+}
+
+type MoveMeta {
+	minHits: Int
+	maxHits: Int
+	minTurns: Int
+	maxTurns: Int
+	drain: Int!
+	healing: Int!
+	critRate: Int!
+	ailmentChance: Int!
+	flinchChance: Int!
+	statChance: Int!
+	ailment: MoveMetaAilment!
+	category: MoveMetaCategory!
+	statChanges: [MoveMetaStatChange]!
+}
+
+type MoveMetaAilment {
+	identifier: String!
+	name: String!
+}
+
+type MoveMetaCategory {
+	identifier: String!
+	description: String!
+}
+
+type MoveMetaStatChange {
+	change: Int!
+	stat: Stat!
 }
 
 type MoveEdge {

@@ -32,8 +32,8 @@ func (r *StatResolver) BattleOnly() bool {
 	return r.stat.BattleOnly
 }
 
-func (r *StatResolver) GameIndex() int {
-	return r.stat.GameIndex
+func (r *StatResolver) GameIndex() int32 {
+	return int32(r.stat.GameIndex)
 }
 
 func (r *StatResolver) DamageClass() (*DamageClassResolver, error) {

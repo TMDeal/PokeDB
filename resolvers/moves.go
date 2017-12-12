@@ -121,6 +121,15 @@ func (m *MoveResolver) Target() (*MoveTargetResolver, error) {
 	return NewMoveTargetResolver(m.db, mt), nil
 }
 
+func (m *MoveResolver) Meta() (*MoveMetaResolver, error) {
+	meta, err := m.move.Meta(m.db)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewMoveMetaResolver(m.db, meta), nil
+}
+
 func (m *MoveResolver) Power() *int32 {
 	if !m.move.Power.Valid {
 		return nil

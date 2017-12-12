@@ -11,6 +11,7 @@ func New() string {
 			generations,
 			regions,
 			types,
+			stats,
 			moves,
 			contests,
 		},
