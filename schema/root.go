@@ -13,10 +13,14 @@ type Query {
 	generation(id: ID, name: String): Generation
 	type(id: ID, name: String): Type
 	move(id: ID, name: String): Move
+	version(id: ID, name: String): Version
+	versionGroup(id: ID, name: String): VersionGroup
 
 	regions(first: Int, after: Cursor): RegionConnection!
 	generations(first: Int, after: Cursor): GenerationConnection!
 	types(first: Int, after: Cursor): TypeConnection!
 	moves(first: Int, after: Cursor): MoveConnection!
+	versions(first: Int, after: Cursor): VersionConnection!
+	versionGroups(first: Int, after: Cursor): VersionGroupConnection!
 }
 `

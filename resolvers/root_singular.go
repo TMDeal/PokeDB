@@ -83,3 +83,41 @@ func (root *RootResolver) Region(args arguments.Search) *RegionResolver {
 
 	return NewRegionResolver(root.db, &r)
 }
+
+func (root *RootResolver) Version(args arguments.Search) *VersionResolver {
+	if args.ID == nil && args.Name == nil {
+		return nil
+	}
+
+	name, id, err := GetSearch(args)
+	if err != nil {
+		return nil
+	}
+
+	var v models.Version
+	conds := models.NewConditions().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	if err = root.db.Find(&v, conds); err != nil {
+		return nil
+	}
+
+	return NewVersionResolver(root.db, &v)
+}
+
+func (root *RootResolver) VersionGroup(args arguments.Search) *VersionGroupResolver {
+	if args.ID == nil && args.Name == nil {
+		return nil
+	}
+
+	name, id, err := GetSearch(args)
+	if err != nil {
+		return nil
+	}
+
+	var v models.VersionGroup
+	conds := models.NewConditions().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	if err = root.db.Find(&v, conds); err != nil {
+		return nil
+	}
+
+	return NewVersionGroupResolver(root.db, &v)
+}

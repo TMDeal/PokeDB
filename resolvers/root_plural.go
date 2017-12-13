@@ -82,3 +82,41 @@ func (root *RootResolver) Types(args arguments.Connection) TypeConnectionResolve
 
 	return *connections
 }
+
+func (root *RootResolver) Versions(args arguments.Connection) VersionConnectionResolver {
+	limit, offset, err := GetLimitOffset(args)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var items []*models.Version
+	if err = root.db.FindAll(&items, models.NewConditions().Limit(limit).Offset(offset)); err != nil {
+		log.Fatal(err)
+	}
+
+	connections, err := NewVersionConnectionResolver(root.db, items, args)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return *connections
+}
+
+func (root *RootResolver) VersionGroups(args arguments.Connection) VersionGroupConnectionResolver {
+	limit, offset, err := GetLimitOffset(args)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var items []*models.VersionGroup
+	if err = root.db.FindAll(&items, models.NewConditions().Limit(limit).Offset(offset)); err != nil {
+		log.Fatal(err)
+	}
+
+	connections, err := NewVersionGroupConnectionResolver(root.db, items, args)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return *connections
+}

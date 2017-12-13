@@ -47,6 +47,16 @@ func (r *NodeResolver) ToType() (*TypeResolver, bool) {
 	return to, ok
 }
 
+func (r *NodeResolver) ToVersion() (*VersionResolver, bool) {
+	to, ok := r.Node.(*VersionResolver)
+	return to, ok
+}
+
+func (r *NodeResolver) ToVersionGroup() (*VersionGroupResolver, bool) {
+	to, ok := r.Node.(*VersionGroupResolver)
+	return to, ok
+}
+
 func GlobalID(t interface{}, id int64) graphql.ID {
 	value := reflect.ValueOf(t)
 	if value.Kind() == reflect.Ptr {

@@ -13,6 +13,7 @@ func New() string {
 			types,
 			stats,
 			moves,
+			versions,
 			contests,
 		},
 		"",
