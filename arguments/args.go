@@ -18,3 +18,7 @@ type Search struct {
 	ID   *graphql.ID
 	Name *string
 }
+
+type FlavorText struct {
+	VersionGroup int32
+}

@@ -94,7 +94,7 @@ func (m *MoveResolver) Flags() *[]*MoveFlagResolver {
 	return &mfs
 }
 
-func (m *MoveResolver) FlavorText(args struct{ VersionGroup int32 }) (string, error) {
+func (m *MoveResolver) FlavorText(args arguments.FlavorText) (string, error) {
 	mft, err := m.move.FlavorText(m.db, int(args.VersionGroup))
 	if err != nil {
 		return "", err
