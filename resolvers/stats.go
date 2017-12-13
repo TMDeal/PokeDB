@@ -1,9 +1,9 @@
 package resolvers
 
+//go:generate go run ./connection/main.go -model=Stat -table=stats
+
 import (
-	"github.com/TMDeal/PokeDB/arguments"
 	"github.com/TMDeal/PokeDB/models"
-	"github.com/TMDeal/PokeDB/scalars"
 	graphql "github.com/neelance/graphql-go"
 )
 
@@ -43,86 +43,4 @@ func (r *StatResolver) DamageClass() (*DamageClassResolver, error) {
 	}
 
 	return NewDamageClassResolver(r.db, dc), nil
-}
-
-type StatEdgeResolver struct {
-	db     *models.DB
-	node   *models.Stat
-	cursor scalars.Cursor
-}
-
-func NewStatEdgeResolver(db *models.DB, gen *models.Stat, c scalars.Cursor) *StatEdgeResolver {
-	return &StatEdgeResolver{
-		db:     db,
-		node:   gen,
-		cursor: c,
-	}
-}
-
-func (e *StatEdgeResolver) Cursor() scalars.Cursor {
-	return e.cursor
-}
-
-func (e *StatEdgeResolver) Node() *StatResolver {
-	return NewStatResolver(e.db, e.node)
-}
-
-type StatConnectionResolver struct {
-	db    *models.DB
-	items []*models.Stat
-	start scalars.Cursor
-	end   scalars.Cursor
-}
-
-func NewStatConnectionResolver(db *models.DB, items []*models.Stat, args arguments.Connection) (*StatConnectionResolver, error) {
-	start, end, err := MakeCursors("stats", len(items), args)
-	if err != nil {
-		return nil, err
-	}
-
-	return &StatConnectionResolver{
-		db:    db,
-		items: items,
-		start: *start,
-		end:   *end,
-	}, nil
-}
-
-//TotalCount returns the total number of items in a connection
-func (c StatConnectionResolver) TotalCount() (int32, error) {
-	count, err := c.db.Count("stats")
-	if err != nil {
-		return 0, err
-	}
-	return int32(count), nil
-}
-
-//PageInfo returns the information about the current page
-func (c StatConnectionResolver) PageInfo() (*PageResolver, error) {
-	count, err := c.TotalCount()
-	if err != nil {
-		return nil, err
-	}
-	hasNext, err := HasNextPage(c.end, int(count))
-	if err != nil {
-		return nil, err
-	}
-
-	return NewPageResolver(c.start, c.end, hasNext), nil
-}
-
-func (c StatConnectionResolver) Edges() (*[]*StatEdgeResolver, error) {
-	var e []*StatEdgeResolver
-
-	for i, item := range c.items {
-		starti, err := c.start.IntValue()
-		if err != nil {
-			return nil, err
-		}
-		cursorLocation := starti + i + 1
-		cursor := scalars.NewCursor("stats", cursorLocation)
-		e = append(e, NewStatEdgeResolver(c.db, item, cursor))
-	}
-
-	return &e, nil
 }

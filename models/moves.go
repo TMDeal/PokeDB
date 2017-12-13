@@ -39,9 +39,8 @@ type MoveTarget struct {
 }
 
 type MoveFlavorText struct {
-	MoveID         int64  `db:"move_id"`
-	VersionGroupID int64  `db:"version_group_id"`
-	Text           string `db:"flavor_text"`
+	FlavorText
+	MoveID int64 `db:"move_id"`
 }
 
 type MoveEffect struct {

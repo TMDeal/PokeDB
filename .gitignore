@@ -3,3 +3,6 @@ PokeDB
 
 # dependencies
 vendor/
+
+# generated files
+resolvers/*_connection.go
