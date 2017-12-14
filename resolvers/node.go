@@ -52,6 +52,11 @@ func (r *NodeResolver) ToVersion() (*VersionResolver, bool) {
 	return to, ok
 }
 
+func (r *NodeResolver) ToAbility() (*AbilityResolver, bool) {
+	to, ok := r.Node.(*AbilityResolver)
+	return to, ok
+}
+
 func (r *NodeResolver) ToVersionGroup() (*VersionGroupResolver, bool) {
 	to, ok := r.Node.(*VersionGroupResolver)
 	return to, ok

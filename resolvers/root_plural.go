@@ -120,3 +120,22 @@ func (root *RootResolver) VersionGroups(args arguments.Connection) VersionGroupC
 
 	return *connections
 }
+
+func (root *RootResolver) Abilities(args arguments.Connection) AbilityConnectionResolver {
+	limit, offset, err := GetLimitOffset(args)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var items []*models.Ability
+	if err = root.db.FindAll(&items, models.NewConditions().Limit(limit).Offset(offset)); err != nil {
+		log.Fatal(err)
+	}
+
+	connections, err := NewAbilityConnectionResolver(root.db, items, args)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return *connections
+}

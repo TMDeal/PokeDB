@@ -121,3 +121,22 @@ func (root *RootResolver) VersionGroup(args arguments.Search) *VersionGroupResol
 
 	return NewVersionGroupResolver(root.db, &v)
 }
+
+func (root *RootResolver) Ability(args arguments.Search) *AbilityResolver {
+	if args.ID == nil && args.Name == nil {
+		return nil
+	}
+
+	name, id, err := GetSearch(args)
+	if err != nil {
+		return nil
+	}
+
+	var v models.Ability
+	conds := models.NewConditions().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	if err = root.db.Find(&v, conds); err != nil {
+		return nil
+	}
+
+	return NewAbilityResolver(root.db, &v)
+}

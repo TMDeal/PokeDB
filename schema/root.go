@@ -9,6 +9,8 @@ scalar Cursor
 
 type Query {
 	node(id: ID): Node
+
+	ability(id: ID, name: String): Ability
 	region(id: ID, name: String): Region
 	generation(id: ID, name: String): Generation
 	type(id: ID, name: String): Type
@@ -16,6 +18,7 @@ type Query {
 	version(id: ID, name: String): Version
 	versionGroup(id: ID, name: String): VersionGroup
 
+	abilities(first: Int, after: Cursor): AbilityConnection!
 	regions(first: Int, after: Cursor): RegionConnection!
 	generations(first: Int, after: Cursor): GenerationConnection!
 	types(first: Int, after: Cursor): TypeConnection!
