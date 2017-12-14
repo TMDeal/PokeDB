@@ -32,6 +32,19 @@ func (vg VersionGroup) Generation(f Finder) (*Generation, error) {
 	return &gen, nil
 }
 
+func (vg VersionGroup) Regions(f Finder) ([]*Region, error) {
+	var rs []*Region
+	conds := NewConditions().
+		Join("version_group_regions ON regions.id = version_group_regions.region_id").
+		Where("version_group_id = ?", vg.ID)
+
+	if err := f.FindAll(&rs, conds); err != nil {
+		return nil, err
+	}
+
+	return rs, nil
+}
+
 func (vg VersionGroup) Versions(f Finder) ([]*Version, error) {
 	var vs []*Version
 	if err := f.FindAll(&vs, NewConditions().Where("version_group_id = ?", vg.ID)); err != nil {

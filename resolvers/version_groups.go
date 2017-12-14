@@ -51,3 +51,18 @@ func (r VersionGroupResolver) Versions() ([]*VersionResolver, error) {
 
 	return vrs, nil
 }
+
+func (r VersionGroupResolver) Regions() ([]*RegionResolver, error) {
+	rs, err := r.vg.Regions(r.db)
+	if err != nil {
+		return nil, err
+	}
+
+	var rrs []*RegionResolver
+
+	for _, re := range rs {
+		rrs = append(rrs, NewRegionResolver(r.db, re))
+	}
+
+	return rrs, nil
+}

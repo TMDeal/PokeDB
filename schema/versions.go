@@ -25,6 +25,7 @@ type VersionGroup implements Node {
 	ordering: Int!
 	generation: Generation!
 	versions: [Version]!
+	regions: [Region]!
 }
 
 type VersionGroupEdge {
