@@ -10,7 +10,7 @@ type Move implements Node {
 	contestEffect: ContestEffect
 	contestType: ContestType
 	superContestEffect: SuperContestEffect
-	flavorText(versionGroup: Int = 17): String!
+	flavorText(versionGroup: Int = 17): MoveFlavortext!
 	effect: MoveEffect
 	target: MoveTarget!
 	flags: [MoveFlag]
@@ -79,6 +79,11 @@ type MoveFlag {
     identifier: String!
     name: String!
     description: String!
+}
+
+type MoveFlavortext implements FlavorText {
+	text: String!
+	versionGroup: VersionGroup
 }
 
 type DamageClass {

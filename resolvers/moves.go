@@ -92,13 +92,13 @@ func (m *MoveResolver) Flags() *[]*MoveFlagResolver {
 	return &mfs
 }
 
-func (m *MoveResolver) FlavorText(args arguments.FlavorText) (string, error) {
-	mft, err := m.move.FlavorText(m.db, int(args.VersionGroup))
+func (m *MoveResolver) FlavorText(args arguments.FlavorText) (*MoveFlavorTextResolver, error) {
+	flav, err := m.move.FlavorText(m.db, int(args.VersionGroup))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return mft.Text, nil
+	return NewMoveFlavorTextResolver(m.db, flav), nil
 }
 
 func (m *MoveResolver) Effect() (*MoveEffectResolver, error) {

@@ -8,7 +8,7 @@ type Ability implements Node {
 	shortEffect: String!
 	effect: String!
 	generation: Generation!
-	flavorText(versionGroup: Int = 17): String!
+	flavorText(versionGroup: Int = 17): AbilityFlavorText!
 }
 
 type AbilityEdge {
@@ -20,5 +20,10 @@ type AbilityConnection {
 	totalCount: Int!
 	pageInfo: PageInfo!
 	edges: [AbilityEdge]
+}
+
+type AbilityFlavorText implements FlavorText {
+	text: String!
+	versionGroup: VersionGroup
 }
 `

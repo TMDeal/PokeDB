@@ -46,11 +46,11 @@ func (r AbilityResolver) Generation() (*GenerationResolver, error) {
 	return NewGenerationResolver(r.db, gen), nil
 }
 
-func (r AbilityResolver) FlavorText(args arguments.FlavorText) (string, error) {
-	mft, err := r.a.FlavorText(r.db, int64(args.VersionGroup))
+func (r AbilityResolver) FlavorText(args arguments.FlavorText) (*AbilityFlavorTextResolver, error) {
+	flav, err := r.a.FlavorText(r.db, int64(args.VersionGroup))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return mft.Text, nil
+	return NewAbilityFlavorTextResolver(r.db, flav), nil
 }
