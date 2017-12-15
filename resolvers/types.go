@@ -45,3 +45,7 @@ func (r *TypeResolver) DamageClass() *DamageClassResolver {
 
 	return NewDamageClassResolver(r.db, dc)
 }
+
+func (r *TypeResolver) Efficacy() *TypeEfficacyResolver {
+	return NewTypeEfficacyResolver(r.db, r.t)
+}
