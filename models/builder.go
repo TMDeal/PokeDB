@@ -3,13 +3,16 @@ package models
 import (
 	"bytes"
 	"fmt"
+	"strings"
 )
 
 type Builder interface {
 	ToSQL() (string, []interface{})
 }
 
-type Conditions struct {
+type SelectBuilder struct {
+	table       string
+	columns     []string
 	where       map[string]interface{}
 	and         map[string]interface{}
 	or          map[string]interface{}
@@ -20,49 +23,59 @@ type Conditions struct {
 	offsetValid bool
 }
 
-func NewConditions() *Conditions {
-	return &Conditions{
-		where: make(map[string]interface{}),
-		and:   make(map[string]interface{}),
-		or:    make(map[string]interface{}),
+func Select(cols ...string) *SelectBuilder {
+	return &SelectBuilder{
+		columns: cols,
+		where:   make(map[string]interface{}),
+		and:     make(map[string]interface{}),
+		or:      make(map[string]interface{}),
 	}
 }
 
-func (s *Conditions) Where(clause string, value interface{}) *Conditions {
+func (s *SelectBuilder) From(table string) *SelectBuilder {
+	s.table = table
+	return s
+}
+
+func (s *SelectBuilder) Where(clause string, value interface{}) *SelectBuilder {
 	s.where[clause] = value
 	return s
 }
 
-func (s *Conditions) Or(clause string, value interface{}) *Conditions {
+func (s *SelectBuilder) Or(clause string, value interface{}) *SelectBuilder {
 	s.or[clause] = value
 	return s
 }
 
-func (s *Conditions) And(clause string, value interface{}) *Conditions {
+func (s *SelectBuilder) And(clause string, value interface{}) *SelectBuilder {
 	s.and[clause] = value
 	return s
 }
 
-func (s *Conditions) Join(join string) *Conditions {
+func (s *SelectBuilder) Join(join string) *SelectBuilder {
 	s.joins = append(s.joins, "JOIN "+join)
 	return s
 }
 
-func (s *Conditions) Limit(limit int) *Conditions {
+func (s *SelectBuilder) Limit(limit int) *SelectBuilder {
 	s.limit = limit
 	s.limitValid = true
 	return s
 }
 
-func (s *Conditions) Offset(offset int) *Conditions {
+func (s *SelectBuilder) Offset(offset int) *SelectBuilder {
 	s.offset = offset
 	s.offsetValid = true
 	return s
 }
 
-func (s *Conditions) ToSQL() (string, []interface{}) {
+func (s *SelectBuilder) ToSQL() (string, []interface{}) {
 	sql := &bytes.Buffer{}
 	var args []interface{}
+
+	sql.WriteString("Select ")
+	sql.WriteString(fmt.Sprintf("%s FROM ", strings.Join(s.columns, ",")))
+	sql.WriteString(s.table + " ")
 
 	if len(s.joins) > 0 {
 		for _, join := range s.joins {

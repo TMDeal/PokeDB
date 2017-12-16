@@ -16,7 +16,8 @@ type AbilityFlavorText struct {
 
 func (a Ability) Generation(f Finder) (*Generation, error) {
 	var gen Generation
-	if err := f.Find(&gen, NewConditions().Where("id = ?", a.GenerationID)); err != nil {
+	query := Select("*").From("generations").Where("id = ?", a.GenerationID)
+	if err := f.Find(&gen, query); err != nil {
 		return nil, err
 	}
 
@@ -25,7 +26,11 @@ func (a Ability) Generation(f Finder) (*Generation, error) {
 
 func (a Ability) FlavorText(f Finder, vg int64) (*AbilityFlavorText, error) {
 	var flav AbilityFlavorText
-	if err := f.Find(&flav, NewConditions().Where("ability_id = ?", a.ID).And("version_group_id = ?", vg)); err != nil {
+	query := Select("*").From("ability_flavor_text").
+		Where("ability_id = ?", a.ID).
+		And("version_group_id = ?", vg)
+
+	if err := f.Find(&flav, query); err != nil {
 		return nil, err
 	}
 

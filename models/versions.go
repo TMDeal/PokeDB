@@ -16,7 +16,8 @@ type VersionGroup struct {
 
 func (v Version) VersionGroup(f Finder) (*VersionGroup, error) {
 	var vg VersionGroup
-	if err := f.Find(&vg, NewConditions().Where("id = ?", v.VersionGroupID)); err != nil {
+	query := Select("*").From("version_groups").Where("id = ?", v.VersionGroupID)
+	if err := f.Find(&vg, query); err != nil {
 		return nil, err
 	}
 
@@ -25,7 +26,8 @@ func (v Version) VersionGroup(f Finder) (*VersionGroup, error) {
 
 func (vg VersionGroup) Generation(f Finder) (*Generation, error) {
 	var gen Generation
-	if err := f.Find(&gen, NewConditions().Where("id = ?", vg.GenerationID)); err != nil {
+	query := Select("*").From("generations").Where("id = ?", vg.GenerationID)
+	if err := f.Find(&gen, query); err != nil {
 		return nil, err
 	}
 
@@ -34,11 +36,12 @@ func (vg VersionGroup) Generation(f Finder) (*Generation, error) {
 
 func (vg VersionGroup) Regions(f Finder) ([]*Region, error) {
 	var rs []*Region
-	conds := NewConditions().
+	query := Select("*").
+		From("regions").
 		Join("version_group_regions ON regions.id = version_group_regions.region_id").
 		Where("version_group_id = ?", vg.ID)
 
-	if err := f.FindAll(&rs, conds); err != nil {
+	if err := f.FindAll(&rs, query); err != nil {
 		return nil, err
 	}
 
@@ -47,7 +50,8 @@ func (vg VersionGroup) Regions(f Finder) ([]*Region, error) {
 
 func (vg VersionGroup) Versions(f Finder) ([]*Version, error) {
 	var vs []*Version
-	if err := f.FindAll(&vs, NewConditions().Where("version_group_id = ?", vg.ID)); err != nil {
+	query := Select("*").From("versions").Where("version_group_id = ?", vg.ID)
+	if err := f.FindAll(&vs, query); err != nil {
 		return nil, err
 	}
 

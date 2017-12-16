@@ -22,12 +22,13 @@ type Type struct {
 
 func (t Type) DamageTo(f Finder, fact DamageMult) ([]*Type, error) {
 	var ts []*Type
-	conds := NewConditions().
+	query := Select("*").
+		From("types").
 		Join("type_efficacies as te on types.id = te.target_type_id").
 		Where("te.damage_type_id = ?", t.ID).
 		And("te.damage_factor = ?", fact)
 
-	if err := f.FindAll(&ts, conds); err != nil {
+	if err := f.FindAll(&ts, query); err != nil {
 		return nil, err
 	}
 
@@ -36,12 +37,13 @@ func (t Type) DamageTo(f Finder, fact DamageMult) ([]*Type, error) {
 
 func (t Type) DamageFrom(f Finder, fact DamageMult) ([]*Type, error) {
 	var ts []*Type
-	conds := NewConditions().
+	query := Select("*").
+		From("types").
 		Join("type_efficacies as te on types.id = te.damage_type_id").
 		Where("te.target_type_id = ?", t.ID).
 		And("te.damage_factor = ?", fact)
 
-	if err := f.FindAll(&ts, conds); err != nil {
+	if err := f.FindAll(&ts, query); err != nil {
 		return nil, err
 	}
 
@@ -51,7 +53,8 @@ func (t Type) DamageFrom(f Finder, fact DamageMult) ([]*Type, error) {
 //Generation gets the generation info for a Type
 func (t Type) Generation(f Finder) (*Generation, error) {
 	var gen Generation
-	if err := f.Find(&gen, NewConditions().Where("id = ?", t.GenerationID)); err != nil {
+	query := Select("*").From("generations").Where("id = ?", t.GenerationID)
+	if err := f.Find(&gen, query); err != nil {
 		return nil, err
 	}
 
@@ -61,7 +64,8 @@ func (t Type) Generation(f Finder) (*Generation, error) {
 //DamageClass gets the damage class info for a type
 func (t Type) DamageClass(f Finder) (*DamageClass, error) {
 	var dc DamageClass
-	if err := f.Find(&dc, NewConditions().Where("id = ?", t.DamageClassID)); err != nil {
+	query := Select("*").From("damage_classes").Where("id = ?", t.DamageClassID)
+	if err := f.Find(&dc, query); err != nil {
 		return nil, err
 	}
 

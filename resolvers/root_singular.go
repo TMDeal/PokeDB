@@ -18,8 +18,8 @@ func (root *RootResolver) Generation(args arguments.Search) *GenerationResolver 
 	}
 
 	var gen models.Generation
-	conds := models.NewConditions().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
-	if err = root.db.Find(&gen, conds); err != nil {
+	query := models.Select("*").From("generations").Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	if err = root.db.Find(&gen, query); err != nil {
 		return nil
 	}
 
@@ -37,8 +37,8 @@ func (root *RootResolver) Type(args arguments.Search) *TypeResolver {
 	}
 
 	var t models.Type
-	conds := models.NewConditions().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
-	if err = root.db.Find(&t, conds); err != nil {
+	query := models.Select("*").From("types").Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	if err = root.db.Find(&t, query); err != nil {
 		return nil
 	}
 
@@ -56,8 +56,8 @@ func (root *RootResolver) Move(args arguments.Search) *MoveResolver {
 	}
 
 	var m models.Move
-	conds := models.NewConditions().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
-	if err = root.db.Find(&m, conds); err != nil {
+	query := models.Select("*").From("moves").Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	if err = root.db.Find(&m, query); err != nil {
 		log.Println(err)
 		return nil
 	}
@@ -76,8 +76,8 @@ func (root *RootResolver) Region(args arguments.Search) *RegionResolver {
 	}
 
 	var r models.Region
-	conds := models.NewConditions().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
-	if err = root.db.Find(&r, conds); err != nil {
+	query := models.Select("*").From("regions").Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	if err = root.db.Find(&r, query); err != nil {
 		return nil
 	}
 
@@ -95,8 +95,8 @@ func (root *RootResolver) Version(args arguments.Search) *VersionResolver {
 	}
 
 	var v models.Version
-	conds := models.NewConditions().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
-	if err = root.db.Find(&v, conds); err != nil {
+	query := models.Select("*").From("versions").Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	if err = root.db.Find(&v, query); err != nil {
 		return nil
 	}
 
@@ -114,8 +114,8 @@ func (root *RootResolver) VersionGroup(args arguments.Search) *VersionGroupResol
 	}
 
 	var v models.VersionGroup
-	conds := models.NewConditions().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
-	if err = root.db.Find(&v, conds); err != nil {
+	query := models.Select("*").From("version_groups").Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	if err = root.db.Find(&v, query); err != nil {
 		return nil
 	}
 
@@ -132,11 +132,11 @@ func (root *RootResolver) Ability(args arguments.Search) *AbilityResolver {
 		return nil
 	}
 
-	var v models.Ability
-	conds := models.NewConditions().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
-	if err = root.db.Find(&v, conds); err != nil {
+	var a models.Ability
+	query := models.Select("*").From("abilities").Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	if err = root.db.Find(&a, query); err != nil {
 		return nil
 	}
 
-	return NewAbilityResolver(root.db, &v)
+	return NewAbilityResolver(root.db, &a)
 }

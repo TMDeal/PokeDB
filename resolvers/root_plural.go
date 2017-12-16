@@ -14,7 +14,8 @@ func (root *RootResolver) Moves(args arguments.Connection) MoveConnectionResolve
 	}
 
 	var items []*models.Move
-	if err = root.db.FindAll(&items, models.NewConditions().Limit(limit).Offset(offset)); err != nil {
+	query := models.Select("*").From("moves").Limit(limit).Offset(offset)
+	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
 	}
 
@@ -33,7 +34,8 @@ func (root *RootResolver) Generations(args arguments.Connection) GenerationConne
 	}
 
 	var items []*models.Generation
-	if err = root.db.FindAll(&items, models.NewConditions().Limit(limit).Offset(offset)); err != nil {
+	query := models.Select("*").From("generations").Limit(limit).Offset(offset)
+	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
 	}
 
@@ -52,7 +54,8 @@ func (root *RootResolver) Regions(args arguments.Connection) RegionConnectionRes
 	}
 
 	var items []*models.Region
-	if err = root.db.FindAll(&items, models.NewConditions().Limit(limit).Offset(offset)); err != nil {
+	query := models.Select("*").From("regions").Limit(limit).Offset(offset)
+	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
 	}
 
@@ -71,7 +74,8 @@ func (root *RootResolver) Types(args arguments.Connection) TypeConnectionResolve
 	}
 
 	var items []*models.Type
-	if err = root.db.FindAll(&items, models.NewConditions().Limit(limit).Offset(offset)); err != nil {
+	query := models.Select("*").From("types").Limit(limit).Offset(offset)
+	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
 	}
 
@@ -90,7 +94,8 @@ func (root *RootResolver) Versions(args arguments.Connection) VersionConnectionR
 	}
 
 	var items []*models.Version
-	if err = root.db.FindAll(&items, models.NewConditions().Limit(limit).Offset(offset)); err != nil {
+	query := models.Select("*").From("versions").Limit(limit).Offset(offset)
+	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
 	}
 
@@ -109,7 +114,8 @@ func (root *RootResolver) VersionGroups(args arguments.Connection) VersionGroupC
 	}
 
 	var items []*models.VersionGroup
-	if err = root.db.FindAll(&items, models.NewConditions().Limit(limit).Offset(offset)); err != nil {
+	query := models.Select("*").From("version_groups").Limit(limit).Offset(offset)
+	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
 	}
 
@@ -128,7 +134,8 @@ func (root *RootResolver) Abilities(args arguments.Connection) AbilityConnection
 	}
 
 	var items []*models.Ability
-	if err = root.db.FindAll(&items, models.NewConditions().Limit(limit).Offset(offset)); err != nil {
+	query := models.Select("*").From("abilities").Limit(limit).Offset(offset)
+	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
 	}
 

@@ -4,10 +4,7 @@ import (
 	"fmt"
 	"log"
 	"reflect"
-	"strings"
 
-	"github.com/gedex/inflector"
-	"github.com/iancoleman/strcase"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
@@ -67,20 +64,15 @@ func (db DB) Count(table string) (int, error) {
 	return count, nil
 }
 
-func (db DB) Find(model interface{}, conds Builder) error {
-	t := reflect.TypeOf(model)
-	if t.Kind() != reflect.Ptr {
+func (db DB) Find(model interface{}, stmt Builder) error {
+	if reflect.TypeOf(model).Kind() != reflect.Ptr {
 		return fmt.Errorf("model must be a pointer")
 	}
-	t = t.Elem()
 
-	table := strings.ToLower(strcase.ToSnake(inflector.Pluralize(t.Name())))
-	conditions, args := conds.ToSQL()
+	sql, args := stmt.ToSQL()
+	sql = db.conn.Rebind(sql)
 
-	query := fmt.Sprintf(`SELECT %s.* FROM %s %s`, table, table, conditions)
-	query = db.conn.Rebind(query)
-
-	err := db.conn.QueryRowx(query, args...).StructScan(model)
+	err := db.conn.QueryRowx(sql, args...).StructScan(model)
 	if err != nil {
 		return err
 	}
@@ -88,7 +80,7 @@ func (db DB) Find(model interface{}, conds Builder) error {
 	return nil
 }
 
-func (db DB) FindAll(models interface{}, conds Builder) error {
+func (db DB) FindAll(models interface{}, stmt Builder) error {
 	t := reflect.TypeOf(models)
 	v := reflect.ValueOf(models).Elem()
 
@@ -106,12 +98,10 @@ func (db DB) FindAll(models interface{}, conds Builder) error {
 		t = t.Elem()
 	}
 
-	table := strings.ToLower(strcase.ToSnake(inflector.Pluralize(t.Name())))
-	conditions, args := conds.ToSQL()
+	sql, args := stmt.ToSQL()
+	sql = db.conn.Rebind(sql)
 
-	query := fmt.Sprintf(`SELECT %s.* FROM %s %s`, table, table, conditions)
-	query = db.conn.Rebind(query)
-	rows, err := db.conn.Queryx(query, args...)
+	rows, err := db.conn.Queryx(sql, args...)
 	if err != nil {
 		return err
 	}

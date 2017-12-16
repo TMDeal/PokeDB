@@ -38,7 +38,8 @@ type MoveMetaStatChange struct {
 
 func (m Move) Meta(f Finder) (*MoveMeta, error) {
 	var meta MoveMeta
-	if err := f.Find(&meta, NewConditions().Where("move_id = ?", m.ID)); err != nil {
+	query := Select("*").From("moves").Where("move_id = ?", m.ID)
+	if err := f.Find(&meta, query); err != nil {
 		return nil, err
 	}
 
@@ -47,7 +48,8 @@ func (m Move) Meta(f Finder) (*MoveMeta, error) {
 
 func (m MoveMeta) Category(f Finder) (*MoveMetaCategory, error) {
 	var cat MoveMetaCategory
-	if err := f.Find(&cat, NewConditions().Where("id = ?", m.MetaCategoryID)); err != nil {
+	query := Select("*").From("move_meta_categories").Where("id = ?", m.MetaCategoryID)
+	if err := f.Find(&cat, query); err != nil {
 		return nil, err
 	}
 
@@ -56,7 +58,8 @@ func (m MoveMeta) Category(f Finder) (*MoveMetaCategory, error) {
 
 func (m MoveMeta) Ailment(f Finder) (*MoveMetaAilment, error) {
 	var ail MoveMetaAilment
-	if err := f.Find(&ail, NewConditions().Where("id = ?", m.MetaAilmentID)); err != nil {
+	query := Select("*").From("move_meta_ailments").Where("id = ?", m.MetaAilmentID)
+	if err := f.Find(&ail, query); err != nil {
 		return nil, err
 	}
 
@@ -65,7 +68,8 @@ func (m MoveMeta) Ailment(f Finder) (*MoveMetaAilment, error) {
 
 func (m MoveMeta) StatChanges(f Finder) ([]*MoveMetaStatChange, error) {
 	var msc []*MoveMetaStatChange
-	if err := f.FindAll(&msc, NewConditions().Where("move_id = ?", m.MoveID)); err != nil {
+	query := Select("*").From("move_meta_stat_changes").Where("move_id = ?", m.MoveID)
+	if err := f.FindAll(&msc, query); err != nil {
 		return nil, err
 	}
 
@@ -74,7 +78,8 @@ func (m MoveMeta) StatChanges(f Finder) ([]*MoveMetaStatChange, error) {
 
 func (m MoveMetaStatChange) Stat(f Finder) (*Stat, error) {
 	var s Stat
-	if err := f.Find(&s, NewConditions().Where("id = ?", m.StatID)); err != nil {
+	query := Select("*").From("stats").Where("id = ?", m.StatID)
+	if err := f.Find(&s, query); err != nil {
 		return nil, err
 	}
 

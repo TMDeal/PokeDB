@@ -7,7 +7,8 @@ type FlavorText struct {
 
 func (flav FlavorText) VersionGroup(f Finder) (*VersionGroup, error) {
 	var vg VersionGroup
-	if err := f.Find(&vg, NewConditions().Where("id = ?", flav.VersionGroupID)); err != nil {
+	query := Select("*").From("version_groups").Where("id = ?", flav.VersionGroupID)
+	if err := f.Find(&vg, query); err != nil {
 		return nil, err
 	}
 
