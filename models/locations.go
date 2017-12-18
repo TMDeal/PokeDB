@@ -16,6 +16,26 @@ type LocationArea struct {
 	Name       sql.NullString `db:"name"`
 }
 
+type LocationEncounterMethod struct {
+	EncounterMethod
+	VersionID int64 `db:"version_id"`
+	Rate      int64 `db:"rate"`
+}
+
+func (l LocationArea) Encounters(f Finder) ([]*LocationEncounterMethod, error) {
+	var le []*LocationEncounter
+	query := Select("*").From("location_area_encounter_rates as laer").
+		Join("encounter_methods as em ON em.id = laer.encounter_method_id").
+		Where("laer.location_area_id = ?", l.ID)
+
+	if err := f.Find(&le, query); err != nil {
+		return nil, err
+	}
+
+	return le, nil
+
+}
+
 func (l Location) Region(f Finder) (*Region, error) {
 	var r Region
 	query := Select("*").From("regions").Where("id = ?", l.RegionID)
