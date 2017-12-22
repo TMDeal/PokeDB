@@ -24,5 +24,6 @@ generate: connection
 
 .PHONY: clean
 clean:
-	rm ${OUT}
+	rm ${SERVER_OUT}
+	rm ${GENERATOR_OUT}
 	rm ./resolvers/*_connection.go
