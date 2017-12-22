@@ -1,7 +1,7 @@
 OUT := pokedb
 
 build: generate
-	go build -o ${OUT} cmd/server/pokedb.go
+	go build -o ${OUT} cmd/pokedb/main.go
 
 run: build
 	./${OUT}
