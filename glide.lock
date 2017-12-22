@@ -1,10 +1,6 @@
-hash: 0e513fbd4c71b68637f53b1f1d57f7418d7ba1654f4f0cc1d7b0aa416a237645
-updated: 2017-12-13T21:36:05.845158689-05:00
+hash: e8da919cfa5ab90ba66660c430f124c67104669b43189bc9bf5263a68a2de407
+updated: 2017-12-22T15:42:18.289702668-05:00
 imports:
-- name: github.com/gedex/inflector
-  version: 16278e9db8130ac7ec405dc174cfb94344f16325
-- name: github.com/iancoleman/strcase
-  version: 3de563c3dc08a7504131e9d63f678b7d1c3e85d7
 - name: github.com/jmoiron/sqlx
   version: 3379e5993990b1f927fc8db926485e6f6becf2d2
   subpackages:
