@@ -9,9 +9,8 @@ type Ability struct {
 	Effect       string `db:"effect"`
 }
 
-type AbilityFlavorText struct {
-	FlavorText
-	AbilityID int64 `db:"ability_id"`
+func Abilities() *SelectBuilder {
+	return Select("*").From("abilities")
 }
 
 func (a Ability) Generation(f Finder) (*Generation, error) {
@@ -24,9 +23,9 @@ func (a Ability) Generation(f Finder) (*Generation, error) {
 	return &gen, nil
 }
 
-func (a Ability) FlavorText(f Finder, vg int64) (*AbilityFlavorText, error) {
-	var flav AbilityFlavorText
-	query := Select("*").From("ability_flavor_text").
+func (a Ability) FlavorText(f Finder, vg int64) (*FlavorText, error) {
+	var flav FlavorText
+	query := Select("version_group_id", "flavor_text").From("ability_flavor_text").
 		Where("ability_id = ?", a.ID).
 		And("version_group_id = ?", vg)
 

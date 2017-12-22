@@ -38,15 +38,14 @@ type MoveTarget struct {
 	Description string `db:"description"`
 }
 
-type MoveFlavorText struct {
-	FlavorText
-	MoveID int64 `db:"move_id"`
-}
-
 type MoveEffect struct {
 	ID          int64  `db:"id"`
 	ShortEffect string `db:"short_effect"`
 	Effect      string `db:"effect"`
+}
+
+func Moves() *SelectBuilder {
+	return Select("*").From("moves")
 }
 
 func (m Move) Effect(f Finder) (*MoveEffect, error) {
@@ -59,9 +58,9 @@ func (m Move) Effect(f Finder) (*MoveEffect, error) {
 	return &me, nil
 }
 
-func (m Move) FlavorText(f Finder, vg int) (*MoveFlavorText, error) {
-	var mft MoveFlavorText
-	query := Select("*").From("move_flavor_text").
+func (m Move) FlavorText(f Finder, vg int) (*FlavorText, error) {
+	var mft FlavorText
+	query := Select("version_group_id", "flavor_text").From("move_flavor_text").
 		Where("move_id = ?", m.ID).
 		And("version_group_id = ?", vg)
 
@@ -82,8 +81,8 @@ func (m Move) Target(f Finder) (*MoveTarget, error) {
 	return &mt, nil
 }
 
-func (m Move) Flags(f Finder) ([]*MoveFlag, error) {
-	var mf []*MoveFlag
+func (m Move) Flags(f Finder) ([]MoveFlag, error) {
+	var mf []MoveFlag
 	query := Select("*").
 		From("move_flags").
 		Join("move_flag_map ON move_flags.id = move_flag_map.move_flag_id").

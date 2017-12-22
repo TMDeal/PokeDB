@@ -14,11 +14,6 @@ type Item struct {
 	CategoryID    int64         `db:"category_id"`
 }
 
-type ItemFlavorText struct {
-	FlavorText
-	ItemID int64 `db:"item_id"`
-}
-
 type ItemCategory struct {
 	ID         int64  `db:"id"`
 	PocketID   int64  `db:"pocket_id"`
@@ -45,9 +40,13 @@ type ItemPocket struct {
 	Name       string `db:"name"`
 }
 
-func (i Item) FlavorText(f Finder, vg int) (*ItemFlavorText, error) {
-	var flav ItemFlavorText
-	query := Select("*").From("item_flavor_text").
+func Items() *SelectBuilder {
+	return Select("*").From("items")
+}
+
+func (i Item) FlavorText(f Finder, vg int) (*FlavorText, error) {
+	var flav FlavorText
+	query := Select("version_group_id", "flavor_text").From("item_flavor_text").
 		Where("item_id = ?", i.ID).
 		And("version_group_id = ?", vg)
 
@@ -58,8 +57,8 @@ func (i Item) FlavorText(f Finder, vg int) (*ItemFlavorText, error) {
 	return &flav, nil
 }
 
-func (i Item) Flags(f Finder) ([]*ItemFlag, error) {
-	var flags []*ItemFlag
+func (i Item) Flags(f Finder) ([]ItemFlag, error) {
+	var flags []ItemFlag
 	query := Select("*").
 		From("item_flags").
 		Join("item_flag_map ON item_flags.id = item_flag_map.item_flag_id").
