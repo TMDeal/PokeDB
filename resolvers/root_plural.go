@@ -13,7 +13,7 @@ func (root *RootResolver) Moves(args arguments.Connection) MoveConnectionResolve
 		log.Fatal(err)
 	}
 
-	var items []*models.Move
+	var items []models.Move
 	query := models.Select("*").From("moves").Limit(limit).Offset(offset)
 	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
@@ -33,7 +33,7 @@ func (root *RootResolver) Generations(args arguments.Connection) GenerationConne
 		log.Fatal(err)
 	}
 
-	var items []*models.Generation
+	var items []models.Generation
 	query := models.Select("*").From("generations").Limit(limit).Offset(offset)
 	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
@@ -53,7 +53,7 @@ func (root *RootResolver) Regions(args arguments.Connection) RegionConnectionRes
 		log.Fatal(err)
 	}
 
-	var items []*models.Region
+	var items []models.Region
 	query := models.Select("*").From("regions").Limit(limit).Offset(offset)
 	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
@@ -73,7 +73,7 @@ func (root *RootResolver) Types(args arguments.Connection) TypeConnectionResolve
 		log.Fatal(err)
 	}
 
-	var items []*models.Type
+	var items []models.Type
 	query := models.Select("*").From("types").Limit(limit).Offset(offset)
 	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
@@ -93,7 +93,7 @@ func (root *RootResolver) Versions(args arguments.Connection) VersionConnectionR
 		log.Fatal(err)
 	}
 
-	var items []*models.Version
+	var items []models.Version
 	query := models.Select("*").From("versions").Limit(limit).Offset(offset)
 	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
@@ -113,7 +113,7 @@ func (root *RootResolver) VersionGroups(args arguments.Connection) VersionGroupC
 		log.Fatal(err)
 	}
 
-	var items []*models.VersionGroup
+	var items []models.VersionGroup
 	query := models.Select("*").From("version_groups").Limit(limit).Offset(offset)
 	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
@@ -133,7 +133,7 @@ func (root *RootResolver) Abilities(args arguments.Connection) AbilityConnection
 		log.Fatal(err)
 	}
 
-	var items []*models.Ability
+	var items []models.Ability
 	query := models.Select("*").From("abilities").Limit(limit).Offset(offset)
 	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
