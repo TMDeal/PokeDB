@@ -1,6 +1,6 @@
 package resolvers
 
-//go:generate go run ./connection/main.go -model=VersionGroup -table=version_groups
+//go:generate ../connection -model=VersionGroup -table=version_groups
 
 import (
 	"github.com/TMDeal/PokeDB/models"

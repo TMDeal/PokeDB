@@ -1,6 +1,6 @@
 package resolvers
 
-//go:generate go run ./connection/main.go -model=Region -table=regions
+//go:generate ../connection -model=Region -table=regions
 
 import (
 	"github.com/TMDeal/PokeDB/models"

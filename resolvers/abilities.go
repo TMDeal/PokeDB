@@ -1,6 +1,6 @@
 package resolvers
 
-//go:generate go run ./connection/main.go -model=Ability -table=abilities
+//go:generate ../connection -model=Ability -table=abilities
 
 import (
 	"github.com/TMDeal/PokeDB/arguments"
