@@ -10,6 +10,10 @@ type Pokedex struct {
 	Description  string        `db:"description"`
 }
 
+func Pokedexes() *SelectBuilder {
+	return Select("*").From("pokedexes")
+}
+
 func (p Pokedex) Region(f Finder) (*Region, error) {
 	if !p.RegionID.Valid {
 		return nil, nil
@@ -24,8 +28,8 @@ func (p Pokedex) Region(f Finder) (*Region, error) {
 	return &r, nil
 }
 
-func (p Pokedex) VersionGroups(f Finder) ([]*VersionGroup, error) {
-	var vgs []*VersionGroup
+func (p Pokedex) VersionGroups(f Finder) ([]VersionGroup, error) {
+	var vgs []VersionGroup
 	query := Select("*").From("pokemon_version_groups as pvg").
 		Join("version_groups as vg ON pvg.version_group_id = vg.id").
 		Where("pokedex_id = ?", p.ID)

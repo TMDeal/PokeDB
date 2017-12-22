@@ -11,6 +11,10 @@ type Nature struct {
 	Name            string `db:"name"`
 }
 
+func Natures() *SelectBuilder {
+	return Select("*").From("natures")
+}
+
 func (n Nature) Decreased(f Finder) (*Stat, error) {
 	var s Stat
 	query := Select("*").From("stats").Where("id = ?", n.DecreasedStatID)

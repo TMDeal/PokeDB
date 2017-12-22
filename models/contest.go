@@ -8,6 +8,10 @@ type ContestType struct {
 	Color      string `db:"color"`
 }
 
+func ContestTypes() *SelectBuilder {
+	return Select("*").From("contest_types")
+}
+
 type ContestEffect struct {
 	ID         int    `db:"id"`
 	Appeal     int    `db:"appeal"`
@@ -16,9 +20,8 @@ type ContestEffect struct {
 	Effect     string `db:"effect"`
 }
 
-type ContestCombo struct {
-	FirstMoveID  int `db:"first_move_id"`
-	SecondMoveID int `db:"second_move_id"`
+func ContestEffects() *SelectBuilder {
+	return Select("*").From("contest_effects")
 }
 
 type SuperContestEffect struct {
@@ -27,7 +30,39 @@ type SuperContestEffect struct {
 	FlavorText string `db:"flavor_text"`
 }
 
-type SuperContestCombo struct {
+func SuperContestEffects() *SelectBuilder {
+	return Select("*").From("super_contest_effects")
+}
+
+type Combo struct {
 	FirstMoveID  int `db:"first_move_id"`
 	SecondMoveID int `db:"second_move_id"`
+}
+
+type ContestCombo struct {
+	Combo
+}
+
+type SuperContestCombo struct {
+	Combo
+}
+
+func (c Combo) FirstMove(f Finder) (*Move, error) {
+	var m Move
+	query := Select("*").From("moves").Where("id = ?", c.FirstMoveID)
+	if err := f.Find(&m, query); err != nil {
+		return nil, err
+	}
+
+	return &m, nil
+}
+
+func (c Combo) SecondMove(f Finder) (*Move, error) {
+	var m Move
+	query := Select("*").From("moves").Where("id = ?", c.SecondMoveID)
+	if err := f.Find(&m, query); err != nil {
+		return nil, err
+	}
+
+	return &m, nil
 }

@@ -7,6 +7,10 @@ type Generation struct {
 	RegionID   int    `db:"main_region_id"`
 }
 
+func Generations() *SelectBuilder {
+	return Select("*").From("generations")
+}
+
 func (g Generation) Region(f Finder) (*Region, error) {
 	var r Region
 	query := Select("*").From("regions").Where("id = ?", g.RegionID)

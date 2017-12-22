@@ -1,10 +1,15 @@
 package models
 
 type Machine struct {
+	Item
 	MachineNumber  int64 `db:"machine_number"`
 	VersionGroupID int64 `db:"version_group_id"`
-	ItemID         int64 `db:"item_id"`
 	MoveID         int64 `db:"move_id"`
+}
+
+func Machines() *SelectBuilder {
+	return Select("*").From("machines AS m").
+		Join("items AS i ON i.id = m.item_id")
 }
 
 func (m Machine) VersionGroup(f Finder) (*VersionGroup, error) {
@@ -15,16 +20,6 @@ func (m Machine) VersionGroup(f Finder) (*VersionGroup, error) {
 	}
 
 	return &vg, nil
-}
-
-func (m Machine) Item(f Finder) (*Item, error) {
-	var i Item
-	query := Select("*").From("items").Where("id = ?", m.ItemID)
-	if err := f.Find(&i, query); err != nil {
-		return nil, err
-	}
-
-	return &i, nil
 }
 
 func (m Machine) Move(f Finder) (*Move, error) {

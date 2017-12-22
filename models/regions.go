@@ -6,3 +6,7 @@ type Region struct {
 	Identifier string `db:"identifier"`
 	Name       string `db:"name"`
 }
+
+func Regions() *SelectBuilder {
+	return Select("*").From("regions")
+}

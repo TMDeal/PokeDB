@@ -38,7 +38,7 @@ type MoveMetaStatChange struct {
 
 func (m Move) Meta(f Finder) (*MoveMeta, error) {
 	var meta MoveMeta
-	query := Select("*").From("moves").Where("move_id = ?", m.ID)
+	query := Select("*").From("move_metas").Where("move_id = ?", m.ID)
 	if err := f.Find(&meta, query); err != nil {
 		return nil, err
 	}
@@ -66,8 +66,8 @@ func (m MoveMeta) Ailment(f Finder) (*MoveMetaAilment, error) {
 	return &ail, nil
 }
 
-func (m MoveMeta) StatChanges(f Finder) ([]*MoveMetaStatChange, error) {
-	var msc []*MoveMetaStatChange
+func (m MoveMeta) StatChanges(f Finder) ([]MoveMetaStatChange, error) {
+	var msc []MoveMetaStatChange
 	query := Select("*").From("move_meta_stat_changes").Where("move_id = ?", m.MoveID)
 	if err := f.FindAll(&msc, query); err != nil {
 		return nil, err

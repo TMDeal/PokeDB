@@ -5,3 +5,7 @@ type EggGroup struct {
 	Identifier string `db:"identifier"`
 	Name       string `db:"name"`
 }
+
+func EggGroups() *SelectBuilder {
+	return Select("*").From("egg_groups")
+}

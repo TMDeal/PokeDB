@@ -9,6 +9,10 @@ type Stat struct {
 	DamageClassID int    `db:"damage_class_id"`
 }
 
+func Stats() *SelectBuilder {
+	return Select("*").From("Stats")
+}
+
 func (s Stat) DamageClass(f Finder) (*DamageClass, error) {
 	var dc DamageClass
 	query := Select("*").From("damage_classes").Where("id = ?", s.DamageClassID)

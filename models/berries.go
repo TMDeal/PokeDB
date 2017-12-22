@@ -1,8 +1,8 @@
 package models
 
 type Berry struct {
+	Item
 	ID                int64 `db:"id"`
-	ItemID            int64 `db:"item_id"`
 	FirmnessID        int64 `db:"firmness_id"`
 	NaturalGiftPower  int64 `db:"natural_gift_power"`
 	NaturalGiftTypeID int64 `db:"natural_gift_type_id"`
@@ -11,6 +11,24 @@ type Berry struct {
 	GrowthTime        int64 `db:"growth_time"`
 	SoilDryness       int64 `db:"soil_dryness"`
 	Smoothness        int64 `db:"smoothness"`
+}
+
+func Berries() *SelectBuilder {
+	cols := []string{
+		"i.*",
+		"b.id",
+		"b.firmness_id",
+		"b.natural_gift_power_id",
+		"b.natural_gift_type_id",
+		"b.size",
+		"b.max_harvest",
+		"b.growth_time",
+		"b.soil_dryness",
+		"b.smoothness",
+	}
+
+	return Select(cols...).From("berries AS b").
+		Join("items AS i ON i.id = b.item_id")
 }
 
 type BerryFlavor struct {
@@ -45,18 +63,8 @@ func (b Berry) Firmness(f Finder) (*BerryFirmness, error) {
 	return &bf, nil
 }
 
-func (b Berry) Item(f Finder) (*Item, error) {
-	var i Item
-	query := Select("*").From("items").Where("id = ?", b.ItemID)
-	if err := f.Find(&i, query); err != nil {
-		return nil, err
-	}
-
-	return &i, nil
-}
-
-func (b Berry) Flavors(f Finder) ([]*BerryFlavor, error) {
-	var bfs []*BerryFlavor
+func (b Berry) Flavors(f Finder) ([]BerryFlavor, error) {
+	var bfs []BerryFlavor
 	query := Select("*").From("berry_flavors").Where("berry_id = ?", b.ID)
 	if err := f.FindAll(&bfs, query); err != nil {
 		return nil, err

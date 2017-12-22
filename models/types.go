@@ -20,8 +20,12 @@ type Type struct {
 	Name          string        `db:"name"`
 }
 
-func (t Type) DamageTo(f Finder, fact DamageMult) ([]*Type, error) {
-	var ts []*Type
+func Types() *SelectBuilder {
+	return Select("*").From("types")
+}
+
+func (t Type) DamageTo(f Finder, fact DamageMult) ([]Type, error) {
+	var ts []Type
 	query := Select("*").
 		From("types").
 		Join("type_efficacies as te on types.id = te.target_type_id").
@@ -35,8 +39,8 @@ func (t Type) DamageTo(f Finder, fact DamageMult) ([]*Type, error) {
 	return ts, nil
 }
 
-func (t Type) DamageFrom(f Finder, fact DamageMult) ([]*Type, error) {
-	var ts []*Type
+func (t Type) DamageFrom(f Finder, fact DamageMult) ([]Type, error) {
+	var ts []Type
 	query := Select("*").
 		From("types").
 		Join("type_efficacies as te on types.id = te.damage_type_id").

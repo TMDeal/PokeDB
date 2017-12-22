@@ -35,8 +35,12 @@ type EncounterConditionValue struct {
 	ID                   int64  `db:"id"`
 	EncounterConditionID int64  `db:"encounter_condition_id"`
 	IsDefault            bool   `db:"is_default"`
-	identifier           string `db:"identifier"`
+	Identifier           string `db:"identifier"`
 	Name                 string `db:"name"`
+}
+
+func Encounters() *SelectBuilder {
+	return Select("*").From("encounters")
 }
 
 func (e Encounter) Condition(f Finder) (*EncounterCondition, error) {
@@ -102,8 +106,8 @@ func (e EncounterSlot) VersionGroup(f Finder) (*VersionGroup, error) {
 	return &vg, nil
 }
 
-func (e EncounterCondition) Values(f Finder) ([]*EncounterConditionValue, error) {
-	var ecv []*EncounterConditionValue
+func (e EncounterCondition) Values(f Finder) ([]EncounterConditionValue, error) {
+	var ecv []EncounterConditionValue
 	query := Select("*").From("encounter_condition_values").Where("encounter_condition_id = ?", e.ID)
 	if err := f.FindAll(&ecv, query); err != nil {
 		return nil, err

@@ -14,6 +14,14 @@ type VersionGroup struct {
 	Ordering     int64  `db:"ordering"`
 }
 
+func Versions() *SelectBuilder {
+	return Select("*").From("versions")
+}
+
+func VersionGroups() *SelectBuilder {
+	return Select("*").From("version_groups")
+}
+
 func (v Version) VersionGroup(f Finder) (*VersionGroup, error) {
 	var vg VersionGroup
 	query := Select("*").From("version_groups").Where("id = ?", v.VersionGroupID)
@@ -34,8 +42,8 @@ func (vg VersionGroup) Generation(f Finder) (*Generation, error) {
 	return &gen, nil
 }
 
-func (vg VersionGroup) Regions(f Finder) ([]*Region, error) {
-	var rs []*Region
+func (vg VersionGroup) Regions(f Finder) ([]Region, error) {
+	var rs []Region
 	query := Select("*").
 		From("regions").
 		Join("version_group_regions ON regions.id = version_group_regions.region_id").
@@ -48,8 +56,8 @@ func (vg VersionGroup) Regions(f Finder) ([]*Region, error) {
 	return rs, nil
 }
 
-func (vg VersionGroup) Versions(f Finder) ([]*Version, error) {
-	var vs []*Version
+func (vg VersionGroup) Versions(f Finder) ([]Version, error) {
+	var vs []Version
 	query := Select("*").From("versions").Where("version_group_id = ?", vg.ID)
 	if err := f.FindAll(&vs, query); err != nil {
 		return nil, err

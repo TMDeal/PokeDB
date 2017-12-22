@@ -22,8 +22,12 @@ type LocationEncounterMethod struct {
 	Rate      int64 `db:"rate"`
 }
 
-func (l LocationArea) Encounters(f Finder) ([]*LocationEncounterMethod, error) {
-	var le []*LocationEncounter
+func Locations() *SelectBuilder {
+	return Select("*").From("locations")
+}
+
+func (l LocationArea) Encounters(f Finder) ([]LocationEncounterMethod, error) {
+	var le []LocationEncounterMethod
 	query := Select("*").From("location_area_encounter_rates as laer").
 		Join("encounter_methods as em ON em.id = laer.encounter_method_id").
 		Where("laer.location_area_id = ?", l.ID)
@@ -46,8 +50,8 @@ func (l Location) Region(f Finder) (*Region, error) {
 	return &r, nil
 }
 
-func (l Location) Areas(f Finder) ([]*LocationArea, error) {
-	var la []*LocationArea
+func (l Location) Areas(f Finder) ([]LocationArea, error) {
+	var la []LocationArea
 	query := Select("*").From("location_areas").Where("location_id = ?", l.ID)
 	if err := f.FindAll(&la, query); err != nil {
 		return nil, err
