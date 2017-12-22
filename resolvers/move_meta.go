@@ -98,7 +98,7 @@ func (r MoveMetaResolver) StatChanges() ([]*MoveMetaStatChangeResolver, error) {
 	var mscr []*MoveMetaStatChangeResolver
 
 	for _, v := range msc {
-		mscr = append(mscr, NewMoveMetaStatChangeResolver(r.db, v))
+		mscr = append(mscr, NewMoveMetaStatChangeResolver(r.db, &v))
 	}
 
 	return mscr, nil
