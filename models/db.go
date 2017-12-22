@@ -18,8 +18,8 @@ type DB struct {
 
 //Finder is an interface that defines how to get data about pokemon
 type Finder interface {
-	Find(model interface{}, conds Builder) error
-	FindAll(models interface{}, conds Builder) error
+	Find(dest interface{}, conds Builder) error
+	FindAll(dest interface{}, conds Builder) error
 }
 
 const (
@@ -64,15 +64,15 @@ func (db DB) Count(table string) (int, error) {
 	return count, nil
 }
 
-func (db DB) Find(model interface{}, stmt Builder) error {
-	if reflect.TypeOf(model).Kind() != reflect.Ptr {
+func (db DB) Find(dest interface{}, stmt Builder) error {
+	if reflect.TypeOf(dest).Kind() != reflect.Ptr {
 		return fmt.Errorf("model must be a pointer")
 	}
 
 	sql, args := stmt.ToSQL()
 	sql = db.conn.Rebind(sql)
 
-	err := db.conn.QueryRowx(sql, args...).StructScan(model)
+	err := db.conn.QueryRowx(sql, args...).StructScan(dest)
 	if err != nil {
 		return err
 	}
@@ -80,17 +80,17 @@ func (db DB) Find(model interface{}, stmt Builder) error {
 	return nil
 }
 
-func (db DB) FindAll(models interface{}, stmt Builder) error {
-	t := reflect.TypeOf(models)
-	v := reflect.ValueOf(models).Elem()
+func (db DB) FindAll(dest interface{}, stmt Builder) error {
+	t := reflect.TypeOf(dest)
+	v := reflect.ValueOf(dest).Elem()
 
 	if t.Kind() != reflect.Ptr {
-		return fmt.Errorf("models must be a pointer")
+		return fmt.Errorf("dest must be a pointer")
 	}
 	t = t.Elem()
 
 	if t.Kind() != reflect.Slice {
-		return fmt.Errorf("models must be a slice")
+		return fmt.Errorf("dest must be a slice")
 	}
 	t = t.Elem()
 
@@ -113,7 +113,7 @@ func (db DB) FindAll(models interface{}, stmt Builder) error {
 		if err != nil {
 			return err
 		}
-		v.Set(reflect.Append(v, r))
+		v.Set(reflect.Append(v, r.Elem()))
 	}
 
 	return nil
