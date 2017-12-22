@@ -84,13 +84,13 @@ func (e *{{ .Model }}EdgeResolver) Node() *{{ .Model }}Resolver {
 //{{ .Model }}ConnectionResolver resolves the fields of a region connection
 type {{ .Model }}ConnectionResolver struct {
 	db    *models.DB
-	items []*models.{{ .Model }}
+	items []models.{{ .Model }}
 	start scalars.Cursor
 	end   scalars.Cursor
 }
 
 //New{{ .Model }}ConnectionResolver returns a new {{ .Model }}ConnectionResolver
-func New{{ .Model }}ConnectionResolver(db *models.DB, items []*models.{{ .Model }}, args arguments.Connection) (*{{ .Model }}ConnectionResolver, error) {
+func New{{ .Model }}ConnectionResolver(db *models.DB, items []models.{{ .Model }}, args arguments.Connection) (*{{ .Model }}ConnectionResolver, error) {
 	size := len(items)
 
 	start := scalars.NewCursor("{{ .Table }}", 0)
@@ -158,7 +158,7 @@ func (c {{ .Model }}ConnectionResolver) Edges() (*[]*{{ .Model }}EdgeResolver, e
 		}
 		cursorLocation := starti + i + 1
 		cursor := scalars.NewCursor("{{ .Table }}", cursorLocation)
-		e = append(e, New{{ .Model }}EdgeResolver(c.db, item, cursor))
+		e = append(e, New{{ .Model }}EdgeResolver(c.db, &item, cursor))
 	}
 
 	return &e, nil
