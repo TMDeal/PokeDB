@@ -1,24 +1,25 @@
 package resolvers
 
-type FlavorText interface {
-	Text() string
-	VersionGroup() (*VersionGroupResolver, error)
-}
+import "github.com/TMDeal/PokeDB/models"
 
 type FlavorTextResolver struct {
-	FlavorText
+	db   *models.DB
+	flav *models.FlavorText
 }
 
-func NewFlavorTextResolver(flav FlavorText) *FlavorTextResolver {
-	return &FlavorTextResolver{flav}
+func NewFlavorTextResolver(db *models.DB, flav *models.FlavorText) *FlavorTextResolver {
+	return &FlavorTextResolver{db, flav}
 }
 
-func (r FlavorTextResolver) ToAbilityFlavorText() (*AbilityFlavorTextResolver, bool) {
-	flav, ok := r.FlavorText.(*AbilityFlavorTextResolver)
-	return flav, ok
+func (r FlavorTextResolver) Text() string {
+	return r.flav.Text
 }
 
-func (r FlavorTextResolver) ToMoveFlavorText() (*MoveFlavorTextResolver, bool) {
-	flav, ok := r.FlavorText.(*MoveFlavorTextResolver)
-	return flav, ok
+func (r FlavorTextResolver) VersionGroup() (*VersionGroupResolver, error) {
+	vg, err := r.flav.VersionGroup(r.db)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewVersionGroupResolver(r.db, vg), nil
 }

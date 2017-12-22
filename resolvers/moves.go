@@ -86,19 +86,19 @@ func (m *MoveResolver) Flags() *[]*MoveFlagResolver {
 	}
 
 	for _, v := range mf {
-		mfs = append(mfs, NewMoveFlagResolver(m.db, v))
+		mfs = append(mfs, NewMoveFlagResolver(m.db, &v))
 	}
 
 	return &mfs
 }
 
-func (m *MoveResolver) FlavorText(args arguments.FlavorText) (*MoveFlavorTextResolver, error) {
+func (m *MoveResolver) FlavorText(args arguments.FlavorText) (*FlavorTextResolver, error) {
 	flav, err := m.move.FlavorText(m.db, int(args.VersionGroup))
 	if err != nil {
 		return nil, err
 	}
 
-	return NewMoveFlavorTextResolver(m.db, flav), nil
+	return NewFlavorTextResolver(m.db, flav), nil
 }
 
 func (m *MoveResolver) Effect() (*MoveEffectResolver, error) {
