@@ -16,4 +16,4 @@ clean:
 	rm ${OUT}
 	rm ./resolvers/*_connection.go
 
-.PHONY: run build test generate
+.PHONY: build run test generate clean
