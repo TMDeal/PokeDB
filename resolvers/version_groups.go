@@ -46,7 +46,7 @@ func (r VersionGroupResolver) Versions() ([]*VersionResolver, error) {
 	var vrs []*VersionResolver
 
 	for _, v := range vs {
-		vrs = append(vrs, NewVersionResolver(r.db, v))
+		vrs = append(vrs, NewVersionResolver(r.db, &v))
 	}
 
 	return vrs, nil
@@ -61,7 +61,7 @@ func (r VersionGroupResolver) Regions() ([]*RegionResolver, error) {
 	var rrs []*RegionResolver
 
 	for _, re := range rs {
-		rrs = append(rrs, NewRegionResolver(r.db, re))
+		rrs = append(rrs, NewRegionResolver(r.db, &re))
 	}
 
 	return rrs, nil
