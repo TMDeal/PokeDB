@@ -57,6 +57,11 @@ func (s *SelectBuilder) Join(join string) *SelectBuilder {
 	return s
 }
 
+func (s *SelectBuilder) LeftJoin(join string) *SelectBuilder {
+	s.joins = append(s.joins, "LEFT JOIN "+join)
+	return s
+}
+
 func (s *SelectBuilder) Limit(limit int) *SelectBuilder {
 	s.limit = limit
 	s.limitValid = true
