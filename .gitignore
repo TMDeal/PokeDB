@@ -7,3 +7,4 @@ vendor/
 
 # generated files
 resolvers/*_connection.go
+schema/assets.go

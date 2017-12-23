@@ -1,6 +1,3 @@
-package schema
-
-const generations = `
 type Generation implements Node {
     id: ID!
     identifier: String!
@@ -18,4 +15,3 @@ type GenerationConnection {
 	edges: [GenerationEdge]
 	pageInfo: PageInfo!
 }
-`

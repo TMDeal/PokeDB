@@ -1,6 +1,3 @@
-package schema
-
-const types = `
 type Type implements Node {
 	id: ID!
 	identifier: String!
@@ -32,4 +29,3 @@ type TypeConnection {
 	edges: [TypeEdge]
 	pageInfo: PageInfo!
 }
-`

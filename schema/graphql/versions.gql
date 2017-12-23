@@ -1,6 +1,3 @@
-package schema
-
-var versions = `
 type Version implements Node {
 	id: ID!
 	identifier: String!
@@ -38,4 +35,3 @@ type VersionGroupConnection {
 	pageInfo: PageInfo!
 	edges: [VersionGroupEdge]
 }
-`

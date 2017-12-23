@@ -1,6 +1,3 @@
-package schema
-
-var abilities = `
 type Ability implements Node {
 	id: ID!
 	identifier: String!
@@ -22,8 +19,7 @@ type AbilityConnection {
 	edges: [AbilityEdge]
 }
 
-type AbilityFlavorText implements FlavorText {
+type AbilityFlavorText {
 	text: String!
 	versionGroup: VersionGroup
 }
-`

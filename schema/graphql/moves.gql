@@ -1,6 +1,3 @@
-package schema
-
-const moves = `
 type Move implements Node {
 	id: ID!
 	identifier: String!
@@ -81,7 +78,7 @@ type MoveFlag {
     description: String!
 }
 
-type MoveFlavortext implements FlavorText {
+type MoveFlavortext {
 	text: String!
 	versionGroup: VersionGroup
 }
@@ -91,4 +88,3 @@ type DamageClass {
     name: String!
     description: String!
 }
-`
