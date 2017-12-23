@@ -140,3 +140,22 @@ func (root *RootResolver) Ability(args arguments.Search) *AbilityResolver {
 
 	return NewAbilityResolver(root.db, &a)
 }
+
+func (root *RootResolver) Item(args arguments.Search) *ItemResolver {
+	if args.ID == nil && args.Name == nil {
+		return nil
+	}
+
+	name, id, err := GetSearch(args)
+	if err != nil {
+		return nil
+	}
+
+	var a models.Item
+	query := models.Items().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	if err = root.db.Find(&a, query); err != nil {
+		return nil
+	}
+
+	return NewItemResolver(root.db, &a)
+}

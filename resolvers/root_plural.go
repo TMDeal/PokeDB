@@ -146,3 +146,23 @@ func (root *RootResolver) Abilities(args arguments.Connection) AbilityConnection
 
 	return *connections
 }
+
+func (root *RootResolver) Items(args arguments.Connection) ItemConnectionResolver {
+	limit, offset, err := GetLimitOffset(args)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var items []models.Item
+	query := models.Items().Limit(limit).Offset(offset)
+	if err = root.db.FindAll(&items, query); err != nil {
+		log.Fatal(err)
+	}
+
+	connections, err := NewItemConnectionResolver(root.db, items, args)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return *connections
+}
