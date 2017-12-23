@@ -1,6 +1,6 @@
 # binaries
-pokedb
-connection
+./pokedb
+./connection
 
 # dependencies
 vendor/
