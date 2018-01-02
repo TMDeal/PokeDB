@@ -7,33 +7,38 @@ GO_BINDATA_BINARY := $(GOPATH)/bin/go-bindata
 all: pokedb
 
 pokedb: vendor generate
-	go build -o ${SERVER_OUT} cmd/pokedb/main.go
+	@go build -o ${SERVER_OUT} cmd/pokedb/main.go
+	@echo "built pokedb binary"
 
 connection:
-	go build -o ${CONNECTION_OUT} cmd/connection/main.go
+	@go build -o ${CONNECTION_OUT} cmd/connection/main.go
+	@echo "built connection binary"
 
 vendor:
-	glide install
+	@glide install
 
 .PHONY: run
 run: generate
-	go run ./cmd/pokedb/main.go
+	@go run ./cmd/pokedb/main.go
 
 .PHONY: test
 test:
-	go test ./...
+	@go test ./...
 
 $(GO_BINDATA_BINARY):
-	go get -u github.com/jteeuwen/go-bindata/...
+	@go get -u github.com/jteeuwen/go-bindata/...
+	@echo "Installed go-bindata dependency"
 
 .PHONY: generate
 generate: connection $(GO_BINDATA_BINARY)
-	go generate ./resolvers
-	go generate ./schema
+	@go generate ./resolvers
+	@echo "Generated resolvers"
+	@go generate ./schema
+	@echo "Generated schema"
 
 .PHONY: clean
 clean:
-	rm ${SERVER_OUT}
-	rm ${CONNECTION_OUT}
-	rm ${GRAPHQL_OUT}
-	rm ./resolvers/*_connection.go
+	@rm -f ${SERVER_OUT}
+	@rm -f ${CONNECTION_OUT}
+	@rm -f ${GRAPHQL_OUT}
+	@rm -f ./resolvers/*_connection.go
