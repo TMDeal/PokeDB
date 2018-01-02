@@ -8,11 +8,11 @@ all: pokedb
 
 pokedb: vendor generate
 	@go build -o ${SERVER_OUT} cmd/pokedb/main.go
-	@echo "built pokedb binary"
+	@echo "built $(value SERVER_OUT) binary"
 
 connection:
 	@go build -o ${CONNECTION_OUT} cmd/connection/main.go
-	@echo "built connection binary"
+	@echo "built $(value CONNECTION_OUT) binary"
 
 vendor:
 	@glide install
