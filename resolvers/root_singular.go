@@ -159,3 +159,29 @@ func (root *RootResolver) Item(args arguments.Search) *ItemResolver {
 
 	return NewItemResolver(root.db, &a)
 }
+
+func (root *RootResolver) Machine(args struct {
+	arguments.Search
+	VersionGroup int32
+}) *MachineResolver {
+	if args.ID == nil && args.Name == nil {
+		return nil
+	}
+
+	name, id, err := GetSearch(args.Search)
+	if err != nil {
+		return nil
+	}
+
+	var a models.Machine
+	query := models.Machines().
+		Where("id = ?", id).
+		Or("LOWER(name) LIKE LOWER(?)", name).
+		And("version_group_id = ?", args.VersionGroup)
+
+	if err = root.db.Find(&a, query); err != nil {
+		return nil
+	}
+
+	return NewMachineResolver(root.db, &a)
+}

@@ -67,6 +67,11 @@ func (r *NodeResolver) ToItem() (*ItemResolver, bool) {
 	return to, ok
 }
 
+func (r *NodeResolver) ToMachine() (*MachineResolver, bool) {
+	to, ok := r.Node.(*MachineResolver)
+	return to, ok
+}
+
 func GlobalID(t interface{}, id int64) graphql.ID {
 	value := reflect.ValueOf(t)
 	if value.Kind() == reflect.Ptr {

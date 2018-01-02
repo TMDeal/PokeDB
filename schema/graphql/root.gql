@@ -13,6 +13,7 @@ type Query {
 	type(id: ID, name: String): Type
 	move(id: ID, name: String): Move
     item(id: ID, name: String): Item
+    machine(versionGroup: Int = 17, id: ID, name: String): Machine
 	version(id: ID, name: String): Version
 	versionGroup(id: ID, name: String): VersionGroup
 
@@ -22,6 +23,7 @@ type Query {
 	types(first: Int, after: Cursor): TypeConnection!
 	moves(first: Int, after: Cursor): MoveConnection!
     items(first: Int, after: Cursor): ItemConnection!
+    machines(versionGroup: Int = 17, first: Int, after: Cursor): MachineConnection!
 	versions(first: Int, after: Cursor): VersionConnection!
 	versionGroups(first: Int, after: Cursor): VersionGroupConnection!
 }

@@ -95,13 +95,22 @@ func ResolveType(db *models.DB, t string, id int) (*NodeResolver, error) {
 		node = NewVersionGroupResolver(db, &vg)
 
 	case "Item":
-		var vg models.Item
+		var i models.Item
 		query := models.Items().Where("id = ?", id)
-		if err := db.Find(&vg, query); err != nil {
+		if err := db.Find(&i, query); err != nil {
 			return nil, err
 		}
 
-		node = NewItemResolver(db, &vg)
+		node = NewItemResolver(db, &i)
+
+	case "Machine":
+		var m models.Machine
+		query := models.Machines().Where("id = ?", id)
+		if err := db.Find(&m, query); err != nil {
+			return nil, err
+		}
+
+		node = NewMachineResolver(db, &m)
 	}
 
 	return NewNodeResolver(node), nil

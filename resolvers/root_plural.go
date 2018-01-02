@@ -166,3 +166,28 @@ func (root *RootResolver) Items(args arguments.Connection) ItemConnectionResolve
 
 	return *connections
 }
+
+func (root *RootResolver) Machines(args struct {
+	arguments.Connection
+	VersionGroup int32
+}) MachineConnectionResolver {
+	limit, offset, err := GetLimitOffset(args.Connection)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var items []models.Machine
+	query := models.Machines().Limit(limit).Offset(offset).
+		Where("version_group_id = ?", args.VersionGroup)
+
+	if err = root.db.FindAll(&items, query); err != nil {
+		log.Fatal(err)
+	}
+
+	connections, err := NewMachineConnectionResolver(root.db, items, args.Connection)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return *connections
+}

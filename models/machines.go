@@ -8,7 +8,8 @@ type Machine struct {
 }
 
 func Machines() *SelectBuilder {
-	return Select("*").From("machines AS m").
+	return Select("i.*", "m.machine_number", "m.version_group_id", "m.move_id").
+		From("machines AS m").
 		Join("items AS i ON i.id = m.item_id")
 }
 
@@ -24,7 +25,7 @@ func (m Machine) VersionGroup(f Finder) (*VersionGroup, error) {
 
 func (m Machine) Move(f Finder) (*Move, error) {
 	var mv Move
-	query := Select("*").From("items").Where("id = ?", m.MoveID)
+	query := Select("*").From("moves").Where("id = ?", m.MoveID)
 	if err := f.Find(&mv, query); err != nil {
 		return nil, err
 	}

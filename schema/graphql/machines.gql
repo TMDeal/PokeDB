@@ -1,0 +1,27 @@
+type Machine implements Node{
+    id: ID!
+    identifier: String!
+    name: String!
+    shortEffect: String!
+    effect: String!
+    cost: Int!
+    flingPower: Int
+    flingEffect: ItemFlingEffect
+    category: ItemCategory!
+    flags: [ItemFlag]!
+    flavorText(versionGroup: Int = 17): ItemFlavorText!
+    number: Int!
+    versionGroup: VersionGroup!
+    move: Move!
+}
+
+type MachineEdge {
+    cursor: Cursor!
+    node: Machine
+}
+
+type MachineConnection {
+    totalCount: Int!
+    edges: [MachineEdge]
+    pageInfo: PageInfo!
+}
