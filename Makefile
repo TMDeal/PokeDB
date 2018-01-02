@@ -6,11 +6,14 @@ GO_BINDATA_BINARY := $(GOPATH)/bin/go-bindata
 .PHONY: all
 all: pokedb
 
-pokedb: generate
+pokedb: vendor generate
 	go build -o ${SERVER_OUT} cmd/pokedb/main.go
 
 connection:
 	go build -o ${CONNECTION_OUT} cmd/connection/main.go
+
+vendor:
+	glide install
 
 .PHONY: run
 run: generate
