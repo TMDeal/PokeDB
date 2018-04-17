@@ -91,7 +91,7 @@ func (s *SelectBuilder) ToSQL() (string, []interface{}) {
 	if len(s.where) > 0 {
 		sql.WriteString("WHERE ")
 		for k, v := range s.where {
-			sql.WriteString(fmt.Sprintf("%s ", k))
+			sql.WriteString(fmt.Sprintf("%s.%s ", s.table, k))
 			args = append(args, v)
 		}
 
