@@ -72,6 +72,11 @@ func (r *NodeResolver) ToMachine() (*MachineResolver, bool) {
 	return to, ok
 }
 
+func (r *NodeResolver) ToBerry() (*BerryResolver, bool) {
+	to, ok := r.Node.(*BerryResolver)
+	return to, ok
+}
+
 func GlobalID(t interface{}, id int64) graphql.ID {
 	value := reflect.ValueOf(t)
 	if value.Kind() == reflect.Ptr {

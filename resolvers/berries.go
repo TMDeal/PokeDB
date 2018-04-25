@@ -1,5 +1,7 @@
 package resolvers
 
+//go:generate ../connection -model=Berry -table=berries
+
 import (
 	"github.com/TMDeal/PokeDB/models"
 	graphql "github.com/neelance/graphql-go"
@@ -17,6 +19,10 @@ func NewBerryResolver(db *models.DB, b *models.Berry) *BerryResolver {
 
 func (r BerryResolver) ID() graphql.ID {
 	return GlobalID(models.Berry{}, r.b.ID)
+}
+
+func (r BerryResolver) ItemID() graphql.ID {
+	return r.ItemResolver.ID()
 }
 
 func (r BerryResolver) NaturalGiftPower() int32 {

@@ -1,0 +1,31 @@
+type Berry implements Node {
+    id: ID!
+    itemID: ID!
+    identifier: String!
+    name: String!
+    shortEffect: String!
+    effect: String!
+    cost: Int!
+    flingPower: Int
+    flingEffect: ItemFlingEffect
+    category: ItemCategory!
+    flags: [ItemFlag]!
+    flavorText(versionGroup: Int = 17): ItemFlavorText!
+    naturalGiftPower: Int!
+    size: Int!
+    maxharvest: Int!
+    growthTime: Int!
+    soilDryness: Int!
+    smoothness: Int! 
+}
+
+type BerryEdge {
+    cursor: Cursor!
+    node: Berry
+}
+
+type BerryConnection {
+    totalCount: Int!
+    edges: [BerryEdge]
+    pageInfo: PageInfo!
+}

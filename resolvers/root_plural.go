@@ -191,3 +191,23 @@ func (root *RootResolver) Machines(args struct {
 
 	return *connections
 }
+
+func (root *RootResolver) Berries(args arguments.Connection) BerryConnectionResolver {
+	limit, offset, err := GetLimitOffset(args)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var items []models.Berry
+	query := models.Berries().Limit(limit).Offset(offset)
+	if err = root.db.FindAll(&items, query); err != nil {
+		log.Fatal(err)
+	}
+
+	connections, err := NewBerryConnectionResolver(root.db, items, args)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return *connections
+}

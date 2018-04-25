@@ -185,3 +185,22 @@ func (root *RootResolver) Machine(args struct {
 
 	return NewMachineResolver(root.db, &a)
 }
+
+func (root *RootResolver) Berry(args arguments.Search) *BerryResolver {
+	if args.ID == nil && args.Name == nil {
+		return nil
+	}
+
+	name, id, err := GetSearch(args)
+	if err != nil {
+		return nil
+	}
+
+	var a models.Berry
+	query := models.Berries().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	if err = root.db.Find(&a, query); err != nil {
+		return nil
+	}
+
+	return NewBerryResolver(root.db, &a)
+}

@@ -111,6 +111,15 @@ func ResolveType(db *models.DB, t string, id int) (*NodeResolver, error) {
 		}
 
 		node = NewMachineResolver(db, &m)
+
+	case "Berry":
+		var i models.Berry
+		query := models.Berries().Where("id = ?", id)
+		if err := db.Find(&i, query); err != nil {
+			return nil, err
+		}
+
+		node = NewBerryResolver(db, &i)
 	}
 
 	return NewNodeResolver(node), nil
