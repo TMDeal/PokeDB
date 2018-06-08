@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/TMDeal/PokeDB/models"
 	"github.com/TMDeal/PokeDB/resolvers"
@@ -16,7 +17,8 @@ func init() {
 }
 
 func main() {
-	db, err := models.NewDB()
+	logger := log.New(os.Stdout, "[sql]", log.LstdFlags|log.Lshortfile)
+	db, err := models.NewDB(logger)
 	if err != nil {
 		log.Fatal(err)
 	}
