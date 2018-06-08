@@ -17,6 +17,19 @@ type Berry implements Node {
     growthTime: Int!
     soilDryness: Int!
     smoothness: Int! 
+    firmness: BerryFirmness
+    flavors: [BerryFlavor]!
+}
+
+type BerryFirmness {
+    identifier: String!
+    name: String!
+}
+
+type BerryFlavor {
+    name: String!
+    potency: Int!
+    contestType: ContestType
 }
 
 type BerryEdge {
