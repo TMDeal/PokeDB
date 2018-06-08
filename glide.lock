@@ -1,14 +1,20 @@
-hash: e8da919cfa5ab90ba66660c430f124c67104669b43189bc9bf5263a68a2de407
-updated: 2018-01-10T22:48:04.079926655-05:00
+hash: bd9078df87dd9a7f39ac321c712041bffeed3bb2d67d6214e471bd645733c11f
+updated: 2018-06-05T16:56:26.159687638-04:00
 imports:
 - name: github.com/jmoiron/sqlx
   version: 3379e5993990b1f927fc8db926485e6f6becf2d2
   subpackages:
   - reflectx
+- name: github.com/lann/builder
+  version: 1b87b36280d04fe7882d1512bf038ea2967ad534
+- name: github.com/lann/ps
+  version: 62de8c46ede02a7675c4c79c84883eb164cb71e3
 - name: github.com/lib/pq
   version: b609790bd85edf8e9ab7e0f8912750a786177bcf
   subpackages:
   - oid
+- name: github.com/Masterminds/squirrel
+  version: 40ef4f86bf59a996c348a9f56ddb4c4d3d49a6df
 - name: github.com/neelance/graphql-go
   version: beff08417b04a91f0a7618b55786d63eec833b9f
   subpackages:
