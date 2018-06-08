@@ -1,6 +1,10 @@
 package models
 
-import "database/sql"
+import (
+	"database/sql"
+
+	sq "github.com/Masterminds/squirrel"
+)
 
 type PokemonSpecies struct {
 	ID                   int64          `db:"id"`
@@ -52,10 +56,9 @@ type PokemonDexNumber struct {
 
 func (s PokemonSpecies) FlavorText(f Finder, vg int64) (*FlavorText, error) {
 	var flav FlavorText
-	query := Select("version_group_id", "flavor_text").
+	query := sq.Select("version_group_id", "flavor_text").
 		From("pokemon_species_flavor_text").
-		Where("species_id = ?", s.ID).
-		And("version_group_id = ?", vg)
+		Where(sq.Eq{"species_id": s.ID, "version_group_id": vg})
 
 	if err := f.Find(&flav, query); err != nil {
 		return nil, err
@@ -68,8 +71,7 @@ func (s PokemonSpecies) Evolution(f Finder) (*EvolutionChain, error) {
 	var c EvolutionChain
 
 	query := EvolutionChains().
-		Where("evolution_chain_id = ?", s.EvolutionChainID).
-		And("ps.id = ?", s.ID)
+		Where(sq.Eq{"evolution_chain_id": s.EvolutionChainID, "ps.id": s.ID})
 
 	if err := f.Find(&c, query); err != nil {
 		return nil, err
@@ -80,7 +82,7 @@ func (s PokemonSpecies) Evolution(f Finder) (*EvolutionChain, error) {
 
 func (s PokemonSpecies) Generation(f Finder) (*Generation, error) {
 	var gen Generation
-	query := Select("*").From("generations").Where("id = ?", s.GenerationID)
+	query := sq.Select("*").From("generations").Where("id = ?", s.GenerationID)
 	if err := f.Find(&gen, query); err != nil {
 		return nil, err
 	}
@@ -94,7 +96,7 @@ func (s PokemonSpecies) EvolvesFrom(f Finder) (*PokemonSpecies, error) {
 	}
 
 	var ev PokemonSpecies
-	query := Select("*").From("pokemon_species").Where("id = ?", s.EvolvesFromSpeciesID.Int64)
+	query := sq.Select("*").From("pokemon_species").Where("id = ?", s.EvolvesFromSpeciesID.Int64)
 	if err := f.Find(&ev, query); err != nil {
 		return nil, err
 	}
@@ -104,7 +106,7 @@ func (s PokemonSpecies) EvolvesFrom(f Finder) (*PokemonSpecies, error) {
 
 func (s PokemonSpecies) Color(f Finder) (*PokemonColor, error) {
 	var c PokemonColor
-	query := Select("*").From("pokemon_colors").Where("id = ?", s.ColorID)
+	query := sq.Select("*").From("pokemon_colors").Where("id = ?", s.ColorID)
 	if err := f.Find(&c, query); err != nil {
 		return nil, err
 	}
@@ -114,7 +116,7 @@ func (s PokemonSpecies) Color(f Finder) (*PokemonColor, error) {
 
 func (s PokemonSpecies) Shape(f Finder) (*PokemonShape, error) {
 	var sh PokemonShape
-	query := Select("*").From("pokemon_shapes").Where("id = ?", s.ShapeID)
+	query := sq.Select("*").From("pokemon_shapes").Where("id = ?", s.ShapeID)
 	if err := f.Find(&sh, query); err != nil {
 		return nil, err
 	}
@@ -128,7 +130,7 @@ func (s PokemonSpecies) Habitat(f Finder) (*PokemonHabitat, error) {
 	}
 
 	var h PokemonHabitat
-	query := Select("*").From("pokemon_habitats").Where("id = ?", s.HabitatID.Int64)
+	query := sq.Select("*").From("pokemon_habitats").Where("id = ?", s.HabitatID.Int64)
 	if err := f.Find(&h, query); err != nil {
 		return nil, err
 	}
@@ -138,7 +140,7 @@ func (s PokemonSpecies) Habitat(f Finder) (*PokemonHabitat, error) {
 
 func (s PokemonSpecies) Growth(f Finder) (*GrowthRate, error) {
 	var r GrowthRate
-	query := Select("*").From("growth_rates").Where("id = ?", s.GrowthRateID)
+	query := sq.Select("*").From("growth_rates").Where("id = ?", s.GrowthRateID)
 	if err := f.Find(&r, query); err != nil {
 		return nil, err
 	}
@@ -148,7 +150,7 @@ func (s PokemonSpecies) Growth(f Finder) (*GrowthRate, error) {
 
 func (s PokemonSpecies) EggGroups(f Finder) ([]EggGroup, error) {
 	var egg []EggGroup
-	query := Select("id", "identifier", "name").From("pokemon_egg_groups as peg").
+	query := sq.Select("id", "identifier", "name").From("pokemon_egg_groups as peg").
 		Join("egg_groups AS eg ON eg.id = peg.egg_group_id").
 		Where("species_id = ?", s.ID)
 
@@ -161,7 +163,7 @@ func (s PokemonSpecies) EggGroups(f Finder) ([]EggGroup, error) {
 
 func (d PokemonDexNumber) PokeDex(f Finder) (*Pokedex, error) {
 	var p Pokedex
-	query := Select("*").From("pokedexes").Where("id = ?", d.PokedexID)
+	query := sq.Select("*").From("pokedexes").Where("id = ?", d.PokedexID)
 	if err := f.Find(&p, query); err != nil {
 		return nil, err
 	}

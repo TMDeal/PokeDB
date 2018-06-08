@@ -1,5 +1,7 @@
 package models
 
+import sq "github.com/Masterminds/squirrel"
+
 type Version struct {
 	ID             int64  `db:"id"`
 	VersionGroupID int64  `db:"version_group_id"`
@@ -14,17 +16,17 @@ type VersionGroup struct {
 	Ordering     int64  `db:"ordering"`
 }
 
-func Versions() *SelectBuilder {
-	return Select("*").From("versions")
+func Versions() sq.SelectBuilder {
+	return sq.Select("*").From("versions")
 }
 
-func VersionGroups() *SelectBuilder {
-	return Select("*").From("version_groups")
+func VersionGroups() sq.SelectBuilder {
+	return sq.Select("*").From("version_groups")
 }
 
 func (v Version) VersionGroup(f Finder) (*VersionGroup, error) {
 	var vg VersionGroup
-	query := Select("*").From("version_groups").Where("id = ?", v.VersionGroupID)
+	query := sq.Select("*").From("version_groups").Where("id = ?", v.VersionGroupID)
 	if err := f.Find(&vg, query); err != nil {
 		return nil, err
 	}
@@ -34,7 +36,7 @@ func (v Version) VersionGroup(f Finder) (*VersionGroup, error) {
 
 func (vg VersionGroup) Generation(f Finder) (*Generation, error) {
 	var gen Generation
-	query := Select("*").From("generations").Where("id = ?", vg.GenerationID)
+	query := sq.Select("*").From("generations").Where("id = ?", vg.GenerationID)
 	if err := f.Find(&gen, query); err != nil {
 		return nil, err
 	}
@@ -44,7 +46,7 @@ func (vg VersionGroup) Generation(f Finder) (*Generation, error) {
 
 func (vg VersionGroup) Regions(f Finder) ([]Region, error) {
 	var rs []Region
-	query := Select("*").
+	query := sq.Select("*").
 		From("regions").
 		Join("version_group_regions ON regions.id = version_group_regions.region_id").
 		Where("version_group_id = ?", vg.ID)
@@ -58,7 +60,7 @@ func (vg VersionGroup) Regions(f Finder) ([]Region, error) {
 
 func (vg VersionGroup) Versions(f Finder) ([]Version, error) {
 	var vs []Version
-	query := Select("*").From("versions").Where("version_group_id = ?", vg.ID)
+	query := sq.Select("*").From("versions").Where("version_group_id = ?", vg.ID)
 	if err := f.FindAll(&vs, query); err != nil {
 		return nil, err
 	}

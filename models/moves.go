@@ -2,7 +2,10 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+
+	sq "github.com/Masterminds/squirrel"
 )
 
 type Move struct {
@@ -44,13 +47,13 @@ type MoveEffect struct {
 	Effect      string `db:"effect"`
 }
 
-func Moves() *SelectBuilder {
-	return Select("*").From("moves")
+func Moves() sq.SelectBuilder {
+	return sq.Select("*").From("moves")
 }
 
 func (m Move) Effect(f Finder) (*MoveEffect, error) {
 	var me MoveEffect
-	query := Select("*").From("move_effects").Where("id = ?", m.EffectID)
+	query := sq.Select("*").From("move_effects").Where("id = ?", m.EffectID)
 	if err := f.Find(&me, query); err != nil {
 		return nil, err
 	}
@@ -60,9 +63,8 @@ func (m Move) Effect(f Finder) (*MoveEffect, error) {
 
 func (m Move) FlavorText(f Finder, vg int) (*FlavorText, error) {
 	var mft FlavorText
-	query := Select("version_group_id", "flavor_text").From("move_flavor_text").
-		Where("move_id = ?", m.ID).
-		And("version_group_id = ?", vg)
+	query := sq.Select("version_group_id", "flavor_text").From("move_flavor_text").
+		Where(sq.Eq{"move_id": m.ID, "version_group_id": vg})
 
 	if err := f.Find(&mft, query); err != nil {
 		return nil, err
@@ -73,7 +75,7 @@ func (m Move) FlavorText(f Finder, vg int) (*FlavorText, error) {
 
 func (m Move) Target(f Finder) (*MoveTarget, error) {
 	var mt MoveTarget
-	query := Select("*").From("move_targets").Where("id = ?", m.TargetID)
+	query := sq.Select("*").From("move_targets").Where("id = ?", m.TargetID)
 	if err := f.Find(&mt, query); err != nil {
 		return nil, err
 	}
@@ -83,12 +85,13 @@ func (m Move) Target(f Finder) (*MoveTarget, error) {
 
 func (m Move) Flags(f Finder) ([]MoveFlag, error) {
 	var mf []MoveFlag
-	query := Select("*").
+	query := sq.Select("id", "identifier", "name", "description").
 		From("move_flags").
 		Join("move_flag_map ON move_flags.id = move_flag_map.move_flag_id").
 		Where("move_flag_map.move_id = ?", m.ID)
 
 	if err := f.FindAll(&mf, query); err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 
@@ -101,7 +104,7 @@ func (m Move) SuperContestEffect(f Finder) (*SuperContestEffect, error) {
 	}
 
 	var sce SuperContestEffect
-	query := Select("*").From("super_contest_effects").Where("id = ?", m.SuperContestEffectID)
+	query := sq.Select("*").From("super_contest_effects").Where("id = ?", m.SuperContestEffectID)
 	if err := f.Find(&sce, query); err != nil {
 		return nil, err
 	}
@@ -115,7 +118,7 @@ func (m Move) ContestType(f Finder) (*ContestType, error) {
 	}
 
 	var ct ContestType
-	query := Select("*").From("contest_types").Where("id = ?", m.ContestTypeID.Int64)
+	query := sq.Select("*").From("contest_types").Where("id = ?", m.ContestTypeID.Int64)
 	if err := f.Find(&ct, query); err != nil {
 		log.Println(err)
 		return nil, err
@@ -130,7 +133,7 @@ func (m Move) ContestEffect(f Finder) (*ContestEffect, error) {
 	}
 
 	var ce ContestEffect
-	query := Select("*").From("contest_effects").Where("id = ?", m.ContestEffectID.Int64)
+	query := sq.Select("*").From("contest_effects").Where("id = ?", m.ContestEffectID.Int64)
 	if err := f.Find(&ce, query); err != nil {
 		return nil, err
 	}
@@ -140,7 +143,7 @@ func (m Move) ContestEffect(f Finder) (*ContestEffect, error) {
 
 func (m Move) Type(f Finder) (*Type, error) {
 	var t Type
-	query := Select("*").From("types").Where("id = ?", m.TypeID)
+	query := sq.Select("*").From("types").Where("id = ?", m.TypeID)
 	if err := f.Find(&t, query); err != nil {
 		return nil, err
 	}
@@ -150,7 +153,7 @@ func (m Move) Type(f Finder) (*Type, error) {
 
 func (m Move) Generation(f Finder) (*Generation, error) {
 	var gen Generation
-	query := Select("*").From("generations").Where("id = ?", m.GenerationID)
+	query := sq.Select("*").From("generations").Where("id = ?", m.GenerationID)
 	if err := f.Find(&gen, query); err != nil {
 		return nil, err
 	}
@@ -160,7 +163,7 @@ func (m Move) Generation(f Finder) (*Generation, error) {
 
 func (m Move) DamageClass(f Finder) (*DamageClass, error) {
 	var dc DamageClass
-	query := Select("*").From("damage_classes").Where("id = ?", m.DamageClassID)
+	query := sq.Select("*").From("damage_classes").Where("id = ?", m.DamageClassID)
 	if err := f.Find(&dc, query); err != nil {
 		return nil, err
 	}

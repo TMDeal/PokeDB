@@ -1,15 +1,13 @@
 package models
 
+import sq "github.com/Masterminds/squirrel"
+
 type ContestType struct {
 	ID         int    `db:"id"`
 	Identifier string `db:"identifier"`
 	Name       string `db:"name"`
 	Flavor     string `db:"flavor"`
 	Color      string `db:"color"`
-}
-
-func ContestTypes() *SelectBuilder {
-	return Select("*").From("contest_types")
 }
 
 type ContestEffect struct {
@@ -20,18 +18,10 @@ type ContestEffect struct {
 	Effect     string `db:"effect"`
 }
 
-func ContestEffects() *SelectBuilder {
-	return Select("*").From("contest_effects")
-}
-
 type SuperContestEffect struct {
 	ID         int    `db:"id"`
 	Appeal     string `db:"appeal"`
 	FlavorText string `db:"flavor_text"`
-}
-
-func SuperContestEffects() *SelectBuilder {
-	return Select("*").From("super_contest_effects")
 }
 
 type Combo struct {
@@ -47,9 +37,29 @@ type SuperContestCombo struct {
 	Combo
 }
 
+func ContestEffects() sq.SelectBuilder {
+	return sq.Select("*").From("contest_effects")
+}
+
+func ContestTypes() sq.SelectBuilder {
+	return sq.Select("*").From("contest_types")
+}
+
+func SuperContestEffects() sq.SelectBuilder {
+	return sq.Select("*").From("super_contest_effects")
+}
+
+func ContestCombos() sq.SelectBuilder {
+	return sq.Select("*").From("contest_combos")
+}
+
+func SuperContestCombos() sq.SelectBuilder {
+	return sq.Select("*").From("super_contest_combos")
+}
+
 func (c Combo) FirstMove(f Finder) (*Move, error) {
 	var m Move
-	query := Select("*").From("moves").Where("id = ?", c.FirstMoveID)
+	query := sq.Select("*").From("moves").Where("id = ?", c.FirstMoveID)
 	if err := f.Find(&m, query); err != nil {
 		return nil, err
 	}
@@ -59,7 +69,7 @@ func (c Combo) FirstMove(f Finder) (*Move, error) {
 
 func (c Combo) SecondMove(f Finder) (*Move, error) {
 	var m Move
-	query := Select("*").From("moves").Where("id = ?", c.SecondMoveID)
+	query := sq.Select("*").From("moves").Where("id = ?", c.SecondMoveID)
 	if err := f.Find(&m, query); err != nil {
 		return nil, err
 	}

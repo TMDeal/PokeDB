@@ -1,5 +1,7 @@
 package models
 
+import sq "github.com/Masterminds/squirrel"
+
 type Encounter struct {
 	ID              int64 `db:"id"`
 	VersionID       int64 `db:"version_id"`
@@ -39,13 +41,13 @@ type EncounterConditionValue struct {
 	Name                 string `db:"name"`
 }
 
-func Encounters() *SelectBuilder {
-	return Select("*").From("encounters")
+func Encounters() sq.SelectBuilder {
+	return sq.Select("*").From("encounters")
 }
 
 func (e Encounter) Condition(f Finder) (*EncounterCondition, error) {
 	var ec EncounterCondition
-	query := Select("*").From("encounter_slot_id as ecv").
+	query := sq.Select("*").From("encounter_slot_id as ecv").
 		Join("encounter_condition_value_map as ecvm ON ecv.id = ecvm.encounter_condition_value_id").
 		Where("encounter_id = ?", e.ID)
 
@@ -58,7 +60,7 @@ func (e Encounter) Condition(f Finder) (*EncounterCondition, error) {
 
 func (e Encounter) Version(f Finder) (*Version, error) {
 	var v Version
-	query := Select("*").From("versions").Where("id = ?", e.VersionID)
+	query := sq.Select("*").From("versions").Where("id = ?", e.VersionID)
 	if err := f.Find(&v, query); err != nil {
 		return nil, err
 	}
@@ -68,7 +70,7 @@ func (e Encounter) Version(f Finder) (*Version, error) {
 
 func (e Encounter) Area(f Finder) (*LocationArea, error) {
 	var la LocationArea
-	query := Select("*").From("location_areas").Where("id = ", e.LocationAreaID)
+	query := sq.Select("*").From("location_areas").Where("id = ", e.LocationAreaID)
 	if err := f.Find(&la, query); err != nil {
 		return nil, err
 	}
@@ -78,7 +80,7 @@ func (e Encounter) Area(f Finder) (*LocationArea, error) {
 
 func (e Encounter) Slot(f Finder) (*EncounterSlot, error) {
 	var es EncounterSlot
-	query := Select("*").From("encounter_slots").Where("id = ?", e.EncounterSlotID)
+	query := sq.Select("*").From("encounter_slots").Where("id = ?", e.EncounterSlotID)
 	if err := f.Find(&es, query); err != nil {
 		return nil, err
 	}
@@ -88,7 +90,7 @@ func (e Encounter) Slot(f Finder) (*EncounterSlot, error) {
 
 func (e EncounterSlot) Method(f Finder) (*EncounterMethod, error) {
 	var em EncounterMethod
-	query := Select("*").From("encounter_methods").Where("id = ?", e.EncounterMethodID)
+	query := sq.Select("*").From("encounter_methods").Where("id = ?", e.EncounterMethodID)
 	if err := f.Find(&em, query); err != nil {
 		return nil, err
 	}
@@ -98,7 +100,7 @@ func (e EncounterSlot) Method(f Finder) (*EncounterMethod, error) {
 
 func (e EncounterSlot) VersionGroup(f Finder) (*VersionGroup, error) {
 	var vg VersionGroup
-	query := Select("*").From("version_groups").Where("id = ?", e.VersionGroupID)
+	query := sq.Select("*").From("version_groups").Where("id = ?", e.VersionGroupID)
 	if err := f.Find(&vg, query); err != nil {
 		return nil, err
 	}
@@ -108,7 +110,7 @@ func (e EncounterSlot) VersionGroup(f Finder) (*VersionGroup, error) {
 
 func (e EncounterCondition) Values(f Finder) ([]EncounterConditionValue, error) {
 	var ecv []EncounterConditionValue
-	query := Select("*").From("encounter_condition_values").Where("encounter_condition_id = ?", e.ID)
+	query := sq.Select("*").From("encounter_condition_values").Where("encounter_condition_id = ?", e.ID)
 	if err := f.FindAll(&ecv, query); err != nil {
 		return nil, err
 	}

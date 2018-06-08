@@ -5,6 +5,7 @@ import (
 	"log"
 	"reflect"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
@@ -13,13 +14,14 @@ import (
 //functions required to find information from the database, as defined by the
 //Finder interface
 type DB struct {
-	conn *sqlx.DB
+	conn   *sqlx.DB
+	logger *log.Logger
 }
 
 //Finder is an interface that defines how to get data about pokemon
 type Finder interface {
-	Find(dest interface{}, conds Builder) error
-	FindAll(dest interface{}, conds Builder) error
+	Find(dest interface{}, conds sq.Sqlizer) error
+	FindAll(dest interface{}, conds sq.Sqlizer) error
 }
 
 const (
@@ -31,21 +33,28 @@ const (
 )
 
 //NewDB returns a new DB and an error if a failure occurs
-func NewDB() (*DB, error) {
+func NewDB(logger *log.Logger) (*DB, error) {
 	info := fmt.Sprintf("postgresql://%s:%s@%s/%s?sslmode=%s", user, pass, host, dbName, sslMode)
+
 	db, err := sqlx.Open("postgres", info)
 	if err != nil {
-		log.Printf("Error connecting to database")
+		logger.Printf("Error connecting to database")
 		return nil, err
 	}
+	logger.Println("Connected to database successfully!")
 
 	err = db.Ping()
 	if err != nil {
-		log.Printf("Error establishing database connection")
+		logger.Printf("Error establishing database connection")
 		return nil, err
 	}
+	logger.Println("Connection to database established!")
 
-	return &DB{conn: db}, nil
+	return &DB{conn: db, logger: logger}, nil
+}
+
+func (db DB) Log(msg ...interface{}) {
+	db.logger.Println(msg)
 }
 
 func (db DB) Close() error {
@@ -64,15 +73,18 @@ func (db DB) Count(table string) (int, error) {
 	return count, nil
 }
 
-func (db DB) Find(dest interface{}, stmt Builder) error {
+func (db DB) Find(dest interface{}, stmt sq.Sqlizer) error {
 	if reflect.TypeOf(dest).Kind() != reflect.Ptr {
 		return fmt.Errorf("model must be a pointer")
 	}
 
-	sql, args := stmt.ToSQL()
+	sql, args, err := stmt.ToSql()
+	if err != nil {
+		return err
+	}
 	sql = db.conn.Rebind(sql)
 
-	err := db.conn.QueryRowx(sql, args...).StructScan(dest)
+	err = db.conn.QueryRowx(sql, args...).StructScan(dest)
 	if err != nil {
 		return err
 	}
@@ -80,7 +92,7 @@ func (db DB) Find(dest interface{}, stmt Builder) error {
 	return nil
 }
 
-func (db DB) FindAll(dest interface{}, stmt Builder) error {
+func (db DB) FindAll(dest interface{}, stmt sq.Sqlizer) error {
 	t := reflect.TypeOf(dest)
 	v := reflect.ValueOf(dest).Elem()
 
@@ -98,7 +110,10 @@ func (db DB) FindAll(dest interface{}, stmt Builder) error {
 		t = t.Elem()
 	}
 
-	sql, args := stmt.ToSQL()
+	sql, args, err := stmt.ToSql()
+	if err != nil {
+		return err
+	}
 	sql = db.conn.Rebind(sql)
 
 	rows, err := db.conn.Queryx(sql, args...)

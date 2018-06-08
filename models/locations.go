@@ -1,6 +1,10 @@
 package models
 
-import "database/sql"
+import (
+	"database/sql"
+
+	sq "github.com/Masterminds/squirrel"
+)
 
 type Location struct {
 	ID         int64  `db:"id"`
@@ -22,13 +26,13 @@ type LocationEncounterMethod struct {
 	Rate      int64 `db:"rate"`
 }
 
-func Locations() *SelectBuilder {
-	return Select("*").From("locations")
+func Locations() sq.SelectBuilder {
+	return sq.Select("*").From("locations")
 }
 
 func (l LocationArea) Encounters(f Finder) ([]LocationEncounterMethod, error) {
 	var le []LocationEncounterMethod
-	query := Select("*").From("location_area_encounter_rates as laer").
+	query := sq.Select("*").From("location_area_encounter_rates as laer").
 		Join("encounter_methods as em ON em.id = laer.encounter_method_id").
 		Where("laer.location_area_id = ?", l.ID)
 
@@ -42,7 +46,7 @@ func (l LocationArea) Encounters(f Finder) ([]LocationEncounterMethod, error) {
 
 func (l Location) Region(f Finder) (*Region, error) {
 	var r Region
-	query := Select("*").From("regions").Where("id = ?", l.RegionID)
+	query := sq.Select("*").From("regions").Where("id = ?", l.RegionID)
 	if err := f.Find(&r, query); err != nil {
 		return nil, err
 	}
@@ -52,7 +56,7 @@ func (l Location) Region(f Finder) (*Region, error) {
 
 func (l Location) Areas(f Finder) ([]LocationArea, error) {
 	var la []LocationArea
-	query := Select("*").From("location_areas").Where("location_id = ?", l.ID)
+	query := sq.Select("*").From("location_areas").Where("location_id = ?", l.ID)
 	if err := f.FindAll(&la, query); err != nil {
 		return nil, err
 	}

@@ -1,5 +1,7 @@
 package models
 
+import sq "github.com/Masterminds/squirrel"
+
 type Nature struct {
 	ID              int64  `db:"id"`
 	Identifier      string `db:"identifier"`
@@ -11,13 +13,13 @@ type Nature struct {
 	Name            string `db:"name"`
 }
 
-func Natures() *SelectBuilder {
-	return Select("*").From("natures")
+func Natures() sq.SelectBuilder {
+	return sq.Select("*").From("natures")
 }
 
 func (n Nature) Decreased(f Finder) (*Stat, error) {
 	var s Stat
-	query := Select("*").From("stats").Where("id = ?", n.DecreasedStatID)
+	query := sq.Select("*").From("stats").Where("id = ?", n.DecreasedStatID)
 	if err := f.Find(&s, query); err != nil {
 		return nil, err
 	}
@@ -27,7 +29,7 @@ func (n Nature) Decreased(f Finder) (*Stat, error) {
 
 func (n Nature) Increased(f Finder) (*Stat, error) {
 	var s Stat
-	query := Select("*").From("stats").Where("id = ?", n.IncreasedStatID)
+	query := sq.Select("*").From("stats").Where("id = ?", n.IncreasedStatID)
 	if err := f.Find(&s, query); err != nil {
 		return nil, err
 	}
@@ -37,7 +39,7 @@ func (n Nature) Increased(f Finder) (*Stat, error) {
 
 func (n Nature) Likes(f Finder) (*ContestType, error) {
 	var ct ContestType
-	query := Select("*").From("contest_types").Where("id = ?", n.LikesFlavorID)
+	query := sq.Select("*").From("contest_types").Where("id = ?", n.LikesFlavorID)
 	if err := f.Find(&ct, query); err != nil {
 		return nil, err
 	}
@@ -47,7 +49,7 @@ func (n Nature) Likes(f Finder) (*ContestType, error) {
 
 func (n Nature) Hates(f Finder) (*ContestType, error) {
 	var ct ContestType
-	query := Select("*").From("contest_types").Where("id = ?", n.HatesFlavorID)
+	query := sq.Select("*").From("contest_types").Where("id = ?", n.HatesFlavorID)
 	if err := f.Find(&ct, query); err != nil {
 		return nil, err
 	}

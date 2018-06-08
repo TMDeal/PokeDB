@@ -1,5 +1,7 @@
 package models
 
+import sq "github.com/Masterminds/squirrel"
+
 type FlavorText struct {
 	VersionGroupID int64  `db:"version_group_id"`
 	Text           string `db:"flavor_text"`
@@ -7,7 +9,7 @@ type FlavorText struct {
 
 func (flav FlavorText) VersionGroup(f Finder) (*VersionGroup, error) {
 	var vg VersionGroup
-	query := Select("*").From("version_groups").Where("id = ?", flav.VersionGroupID)
+	query := sq.Select("*").From("version_groups").Where(sq.Eq{"id": flav.VersionGroupID})
 	if err := f.Find(&vg, query); err != nil {
 		return nil, err
 	}

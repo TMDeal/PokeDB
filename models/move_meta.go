@@ -1,6 +1,10 @@
 package models
 
-import "database/sql"
+import (
+	"database/sql"
+
+	sq "github.com/Masterminds/squirrel"
+)
 
 type MoveMeta struct {
 	MoveID         int64         `db:"move_id"`
@@ -38,7 +42,7 @@ type MoveMetaStatChange struct {
 
 func (m Move) Meta(f Finder) (*MoveMeta, error) {
 	var meta MoveMeta
-	query := Select("*").From("move_metas").Where("move_id = ?", m.ID)
+	query := sq.Select("*").From("move_metas").Where("move_id = ?", m.ID)
 	if err := f.Find(&meta, query); err != nil {
 		return nil, err
 	}
@@ -48,7 +52,7 @@ func (m Move) Meta(f Finder) (*MoveMeta, error) {
 
 func (m MoveMeta) Category(f Finder) (*MoveMetaCategory, error) {
 	var cat MoveMetaCategory
-	query := Select("*").From("move_meta_categories").Where("id = ?", m.MetaCategoryID)
+	query := sq.Select("*").From("move_meta_categories").Where("id = ?", m.MetaCategoryID)
 	if err := f.Find(&cat, query); err != nil {
 		return nil, err
 	}
@@ -58,7 +62,7 @@ func (m MoveMeta) Category(f Finder) (*MoveMetaCategory, error) {
 
 func (m MoveMeta) Ailment(f Finder) (*MoveMetaAilment, error) {
 	var ail MoveMetaAilment
-	query := Select("*").From("move_meta_ailments").Where("id = ?", m.MetaAilmentID)
+	query := sq.Select("*").From("move_meta_ailments").Where("id = ?", m.MetaAilmentID)
 	if err := f.Find(&ail, query); err != nil {
 		return nil, err
 	}
@@ -68,7 +72,7 @@ func (m MoveMeta) Ailment(f Finder) (*MoveMetaAilment, error) {
 
 func (m MoveMeta) StatChanges(f Finder) ([]MoveMetaStatChange, error) {
 	var msc []MoveMetaStatChange
-	query := Select("*").From("move_meta_stat_changes").Where("move_id = ?", m.MoveID)
+	query := sq.Select("*").From("move_meta_stat_changes").Where("move_id = ?", m.MoveID)
 	if err := f.FindAll(&msc, query); err != nil {
 		return nil, err
 	}
@@ -78,7 +82,7 @@ func (m MoveMeta) StatChanges(f Finder) ([]MoveMetaStatChange, error) {
 
 func (m MoveMetaStatChange) Stat(f Finder) (*Stat, error) {
 	var s Stat
-	query := Select("*").From("stats").Where("id = ?", m.StatID)
+	query := sq.Select("*").From("stats").Where("id = ?", m.StatID)
 	if err := f.Find(&s, query); err != nil {
 		return nil, err
 	}

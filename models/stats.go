@@ -1,5 +1,7 @@
 package models
 
+import sq "github.com/Masterminds/squirrel"
+
 type Stat struct {
 	ID            int64  `db:"id"`
 	Identifier    string `db:"identifier"`
@@ -9,13 +11,13 @@ type Stat struct {
 	DamageClassID int    `db:"damage_class_id"`
 }
 
-func Stats() *SelectBuilder {
-	return Select("*").From("Stats")
+func Stats() sq.SelectBuilder {
+	return sq.Select("*").From("Stats")
 }
 
 func (s Stat) DamageClass(f Finder) (*DamageClass, error) {
 	var dc DamageClass
-	query := Select("*").From("damage_classes").Where("id = ?", s.DamageClassID)
+	query := sq.Select("*").From("damage_classes").Where("id = ?", s.DamageClassID)
 	if err := f.Find(&dc, query); err != nil {
 		return nil, err
 	}

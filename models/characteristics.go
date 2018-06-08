@@ -1,5 +1,7 @@
 package models
 
+import sq "github.com/Masterminds/squirrel"
+
 type Characteristic struct {
 	ID          int64  `db:"id"`
 	StatID      int64  `db:"stat_id"`
@@ -7,13 +9,13 @@ type Characteristic struct {
 	Text        string `db:"text"`
 }
 
-func Characteristics() *SelectBuilder {
-	return Select("*").From("characteristics")
+func Characteristics() sq.SelectBuilder {
+	return sq.Select("*").From("characteristics")
 }
 
 func (c Characteristic) Stat(f Finder) (*Stat, error) {
 	var s Stat
-	query := Select("*").From("stats").Where("id = ?", c.StatID)
+	query := sq.Select("*").From("stats").Where("id = ?", c.StatID)
 	if err := f.Find(&s, query); err != nil {
 		return nil, err
 	}

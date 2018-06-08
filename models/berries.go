@@ -1,5 +1,7 @@
 package models
 
+import sq "github.com/Masterminds/squirrel"
+
 type Berry struct {
 	Item              `db:"item"`
 	ID                int64 `db:"id"`
@@ -13,7 +15,7 @@ type Berry struct {
 	Smoothness        int64 `db:"smoothness"`
 }
 
-func Berries() *SelectBuilder {
+func Berries() sq.SelectBuilder {
 	cols := []string{
 		`items.id as "item.id"`,
 		`items.identifier as "item.identifier"`,
@@ -35,12 +37,12 @@ func Berries() *SelectBuilder {
 		"berries.smoothness",
 	}
 
-	return Select(cols...).From("berries").
+	return sq.Select(cols...).From("berries").
 		Join("items ON items.id = berries.item_id")
 }
 
 type BerryFlavor struct {
-	Name          string `db:"flavor"`
+	Name          string `db:"name"`
 	Potency       int64  `db:"potency"`
 	BerryID       int64  `db:"berry_id"`
 	ContestTypeID int64  `db:"contest_type_id"`
@@ -54,7 +56,7 @@ type BerryFirmness struct {
 
 func (b Berry) NaturalGiftType(f Finder) (*Type, error) {
 	var t Type
-	query := Select("*").From("types").Where("id = ?", b.NaturalGiftTypeID)
+	query := sq.Select("*").From("types").Where("id = ?", b.NaturalGiftTypeID)
 	if err := f.Find(&t, query); err != nil {
 		return nil, err
 	}
@@ -64,7 +66,7 @@ func (b Berry) NaturalGiftType(f Finder) (*Type, error) {
 
 func (b Berry) Firmness(f Finder) (*BerryFirmness, error) {
 	var bf BerryFirmness
-	query := Select("*").From("berry_firmness").Where("id = ?", b.FirmnessID)
+	query := sq.Select("*").From("berry_firmness").Where("id = ?", b.FirmnessID)
 	if err := f.Find(&bf, query); err != nil {
 		return nil, err
 	}
@@ -74,7 +76,7 @@ func (b Berry) Firmness(f Finder) (*BerryFirmness, error) {
 
 func (b Berry) Flavors(f Finder) ([]BerryFlavor, error) {
 	var bfs []BerryFlavor
-	query := Select("*").From("berry_flavors").Where("berry_id = ?", b.ID)
+	query := sq.Select("*").From("berry_flavors").Where("berry_id = ?", b.ID)
 
 	if err := f.FindAll(&bfs, query); err != nil {
 		return nil, err
@@ -85,7 +87,7 @@ func (b Berry) Flavors(f Finder) ([]BerryFlavor, error) {
 
 func (b BerryFlavor) ContestType(f Finder) (*ContestType, error) {
 	var ct ContestType
-	query := Select("*").From("contest_types").Where("id = ?", b.ContestTypeID)
+	query := sq.Select("*").From("contest_types").Where("id = ?", b.ContestTypeID)
 	if err := f.Find(&ct, query); err != nil {
 		return nil, err
 	}

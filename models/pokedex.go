@@ -1,6 +1,10 @@
 package models
 
-import "database/sql"
+import (
+	"database/sql"
+
+	sq "github.com/Masterminds/squirrel"
+)
 
 type Pokedex struct {
 	ID           int64         `db:"id"`
@@ -10,8 +14,8 @@ type Pokedex struct {
 	Description  string        `db:"description"`
 }
 
-func Pokedexes() *SelectBuilder {
-	return Select("*").From("pokedexes")
+func Pokedexes() sq.SelectBuilder {
+	return sq.Select("*").From("pokedexes")
 }
 
 func (p Pokedex) Region(f Finder) (*Region, error) {
@@ -20,7 +24,7 @@ func (p Pokedex) Region(f Finder) (*Region, error) {
 	}
 
 	var r Region
-	query := Select("*").From("regions").Where("id = ?", p.RegionID.Int64)
+	query := sq.Select("*").From("regions").Where("id = ?", p.RegionID.Int64)
 	if err := f.Find(&r, query); err != nil {
 		return nil, err
 	}
@@ -30,7 +34,7 @@ func (p Pokedex) Region(f Finder) (*Region, error) {
 
 func (p Pokedex) VersionGroups(f Finder) ([]VersionGroup, error) {
 	var vgs []VersionGroup
-	query := Select("*").From("pokemon_version_groups as pvg").
+	query := sq.Select("*").From("pokemon_version_groups as pvg").
 		Join("version_groups as vg ON pvg.version_group_id = vg.id").
 		Where("pokedex_id = ?", p.ID)
 

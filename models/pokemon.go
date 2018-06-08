@@ -1,6 +1,10 @@
 package models
 
-import "database/sql"
+import (
+	"database/sql"
+
+	sq "github.com/Masterminds/squirrel"
+)
 
 type Pokemon struct {
 	ID             int64  `db:"id"`
@@ -66,13 +70,13 @@ type PokemonType struct {
 	Slot int64 `db:"slot"`
 }
 
-func Pokemons() *SelectBuilder {
-	return Select("*").From("pokemon")
+func Pokemons() sq.SelectBuilder {
+	return sq.Select("*").From("pokemon")
 }
 
 func (p Pokemon) Forms(f Finder) ([]PokemonForm, error) {
 	var pf []PokemonForm
-	query := Select("*").From("pokemon_forms").Where("pokemon_id = ?", p.ID)
+	query := sq.Select("*").From("pokemon_forms").Where("pokemon_id = ?", p.ID)
 	if err := f.FindAll(&pf, query); err != nil {
 		return nil, err
 	}
@@ -82,7 +86,7 @@ func (p Pokemon) Forms(f Finder) ([]PokemonForm, error) {
 
 func (p Pokemon) Species(f Finder) (*PokemonSpecies, error) {
 	var s PokemonSpecies
-	query := Select("*").From("pokemon_species").Where("id = ?", p.SpeciesID)
+	query := sq.Select("*").From("pokemon_species").Where("id = ?", p.SpeciesID)
 	if err := f.Find(&s, query); err != nil {
 		return nil, err
 	}
@@ -92,7 +96,7 @@ func (p Pokemon) Species(f Finder) (*PokemonSpecies, error) {
 
 func (p Pokemon) Abilities(f Finder) ([]PokemonAbility, error) {
 	var a []PokemonAbility
-	query := Select("a.*", "pa.is_hidden", "pa.slot").From("pokemon_abilities AS pa").
+	query := sq.Select("a.*", "pa.is_hidden", "pa.slot").From("pokemon_abilities AS pa").
 		Join("abilities AS a ON a.id = pa.ability_id").
 		Where("pokemon_id = ?", p.ID)
 
@@ -105,7 +109,7 @@ func (p Pokemon) Abilities(f Finder) ([]PokemonAbility, error) {
 
 func (p Pokemon) Items(f Finder) ([]PokemonItem, error) {
 	var i []PokemonItem
-	query := Select("i.*", "pi.rarity", "pi.version_id").From("pokemon_items AS pi").
+	query := sq.Select("i.*", "pi.rarity", "pi.version_id").From("pokemon_items AS pi").
 		Join("items AS i ON i.id = pi.item_id").
 		Where("pokemon_id = ?", p.ID)
 
@@ -118,7 +122,7 @@ func (p Pokemon) Items(f Finder) ([]PokemonItem, error) {
 
 func (p Pokemon) Stats(f Finder) ([]PokemonStat, error) {
 	var s []PokemonStat
-	query := Select("s.*", "ps.base_stat", "ps.effort").From("pokemon_stats AS ps").
+	query := sq.Select("s.*", "ps.base_stat", "ps.effort").From("pokemon_stats AS ps").
 		Join("stats AS s ON s.id = ps.stat_id").
 		Where("pokemon_id = ?", p.ID)
 
@@ -131,7 +135,7 @@ func (p Pokemon) Stats(f Finder) ([]PokemonStat, error) {
 
 func (p Pokemon) Moves(f Finder) ([]PokemonMove, error) {
 	var m []PokemonMove
-	query := Select("m.*", "pm.level", "pm.ordering", "pm.pokemon_move_method_id", "pm.version_group_id").
+	query := sq.Select("m.*", "pm.level", "pm.ordering", "pm.pokemon_move_method_id", "pm.version_group_id").
 		From("pokemon_moves AS pm").
 		Join("moves AS m ON m.id = pm.move_id").
 		Where("pokemon_id = ?", p.ID)
@@ -145,7 +149,7 @@ func (p Pokemon) Moves(f Finder) ([]PokemonMove, error) {
 
 func (p Pokemon) Types(f Finder) ([]PokemonType, error) {
 	var t []PokemonType
-	query := Select("t.*", "pt.slot").From("pokemon_types AS pt").
+	query := sq.Select("t.*", "pt.slot").From("pokemon_types AS pt").
 		Join("types AS t ON t.id = pt.type_id").
 		Where("pokemon_id = ?", p.ID)
 
@@ -158,7 +162,7 @@ func (p Pokemon) Types(f Finder) ([]PokemonType, error) {
 
 func (pf PokemonForm) VersionGroup(f Finder) (*VersionGroup, error) {
 	var vg VersionGroup
-	query := Select("*").From("version_groups").Where("id = ?", pf.IntroducedInVersionGroupID)
+	query := sq.Select("*").From("version_groups").Where("id = ?", pf.IntroducedInVersionGroupID)
 	if err := f.Find(&vg, query); err != nil {
 		return nil, err
 	}
@@ -168,7 +172,7 @@ func (pf PokemonForm) VersionGroup(f Finder) (*VersionGroup, error) {
 
 func (pi PokemonItem) Version(f Finder) (*Version, error) {
 	var v Version
-	query := Select("*").From("versions").Where("id = ?", pi.VersionID)
+	query := sq.Select("*").From("versions").Where("id = ?", pi.VersionID)
 	if err := f.Find(&v, query); err != nil {
 		return nil, err
 	}
@@ -178,7 +182,7 @@ func (pi PokemonItem) Version(f Finder) (*Version, error) {
 
 func (pm PokemonMove) VersionGroup(f Finder) (*VersionGroup, error) {
 	var vg VersionGroup
-	query := Select("*").From("version_groups").Where("id = ?", pm.VersionGroupID)
+	query := sq.Select("*").From("version_groups").Where("id = ?", pm.VersionGroupID)
 	if err := f.Find(&vg, query); err != nil {
 		return nil, err
 	}
@@ -188,7 +192,7 @@ func (pm PokemonMove) VersionGroup(f Finder) (*VersionGroup, error) {
 
 func (pm PokemonMove) MoveMethod(f Finder) (*PokemonMoveMethod, error) {
 	var m PokemonMoveMethod
-	query := Select("*").From("pokemon_move_methods").Where("id = ?", pm.PokemonMoveMethodID)
+	query := sq.Select("*").From("pokemon_move_methods").Where("id = ?", pm.PokemonMoveMethodID)
 	if err := f.Find(&m, query); err != nil {
 		return nil, err
 	}

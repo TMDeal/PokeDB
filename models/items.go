@@ -1,6 +1,10 @@
 package models
 
-import "database/sql"
+import (
+	"database/sql"
+
+	sq "github.com/Masterminds/squirrel"
+)
 
 type Item struct {
 	ID            int64         `db:"id"`
@@ -40,15 +44,14 @@ type ItemPocket struct {
 	Name       string `db:"name"`
 }
 
-func Items() *SelectBuilder {
-	return Select("*").From("items")
+func Items() sq.SelectBuilder {
+	return sq.Select("*").From("items")
 }
 
 func (i Item) FlavorText(f Finder, vg int) (*FlavorText, error) {
 	var flav FlavorText
-	query := Select("version_group_id", "flavor_text").From("item_flavor_text").
-		Where("item_id = ?", i.ID).
-		And("version_group_id = ?", vg)
+	query := sq.Select("version_group_id", "flavor_text").From("item_flavor_text").
+		Where(sq.Eq{"item_id": i.ID, "version_group_id": vg})
 
 	if err := f.Find(&flav, query); err != nil {
 		return nil, err
@@ -59,7 +62,7 @@ func (i Item) FlavorText(f Finder, vg int) (*FlavorText, error) {
 
 func (i Item) Flags(f Finder) ([]ItemFlag, error) {
 	var flags []ItemFlag
-	query := Select("*").
+	query := sq.Select("id", "name", "identifier", "description").
 		From("item_flags").
 		Join("item_flag_map ON item_flags.id = item_flag_map.item_flag_id").
 		Where("item_flag_map.item_id = ?", i.ID)
@@ -77,7 +80,7 @@ func (i Item) FlingEffect(f Finder) (*ItemFlingEffect, error) {
 	}
 
 	var e ItemFlingEffect
-	query := Select("*").From("item_fling_effects").Where("id = ?", i.FlingEffectID.Int64)
+	query := sq.Select("*").From("item_fling_effects").Where("id = ?", i.FlingEffectID.Int64)
 	if err := f.Find(&e, query); err != nil {
 		return nil, err
 	}
@@ -87,7 +90,7 @@ func (i Item) FlingEffect(f Finder) (*ItemFlingEffect, error) {
 
 func (i Item) Category(f Finder) (*ItemCategory, error) {
 	var c ItemCategory
-	query := Select("*").From("item_categories").Where("id = ?", i.CategoryID)
+	query := sq.Select("*").From("item_categories").Where("id = ?", i.CategoryID)
 	if err := f.Find(&c, query); err != nil {
 		return nil, err
 	}
@@ -97,7 +100,7 @@ func (i Item) Category(f Finder) (*ItemCategory, error) {
 
 func (c ItemCategory) Pocket(f Finder) (*ItemPocket, error) {
 	var p ItemPocket
-	query := Select("*").From("item_pockets").Where("id = ?", c.PocketID)
+	query := sq.Select("*").From("item_pockets").Where("id = ?", c.PocketID)
 	if err := f.Find(&p, query); err != nil {
 		return nil, err
 	}
