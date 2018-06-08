@@ -19,25 +19,26 @@ func NewGenerationResolver(db *models.DB, g *models.Generation) *GenerationResol
 }
 
 //ID resolves the ID field of a Generation
-func (r *GenerationResolver) ID() graphql.ID {
+func (r GenerationResolver) ID() graphql.ID {
 	return GlobalID(models.Generation{}, r.generation.ID)
 }
 
 //Identifier resolves the Identifier field of a Generation
-func (r *GenerationResolver) Identifier() string {
+func (r GenerationResolver) Identifier() string {
 	return r.generation.Identifier
 }
 
 //Name resolves the Name field of a Generation
-func (r *GenerationResolver) Name() string {
+func (r GenerationResolver) Name() string {
 	return r.generation.Name
 }
 
 //Region resolves the Region of a generation, by finding the region based on a
 //Generations RegionID, and returning a RegionResolver for that Region
-func (r *GenerationResolver) Region() *RegionResolver {
+func (r GenerationResolver) Region() *RegionResolver {
 	rn, err := r.generation.Region(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil
 	}
 	return NewRegionResolver(r.db, rn)

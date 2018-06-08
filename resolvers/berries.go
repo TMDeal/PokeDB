@@ -48,3 +48,28 @@ func (r BerryResolver) SoilDryness() int32 {
 func (r BerryResolver) Smoothness() int32 {
 	return int32(r.b.Smoothness)
 }
+
+func (r BerryResolver) Firmness() (*BerryFirmnessResolver, error) {
+	firm, err := r.b.Firmness(r.db)
+	if err != nil {
+		r.db.Log(err)
+		return nil, err
+	}
+
+	return NewBerryFirmnessResolver(r.db, firm), nil
+}
+
+func (r BerryResolver) Flavors() ([]*BerryFlavorResolver, error) {
+	flavs, err := r.b.Flavors(r.db)
+	if err != nil {
+		r.db.Log(err)
+		return nil, err
+	}
+
+	var flavsr []*BerryFlavorResolver
+	for i, _ := range flavs {
+		flavsr = append(flavsr, NewBerryFlavorResolver(r.db, &flavs[i]))
+	}
+
+	return flavsr, nil
+}

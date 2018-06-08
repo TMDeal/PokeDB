@@ -1,8 +1,7 @@
 package resolvers
 
 import (
-	"log"
-
+	sq "github.com/Masterminds/squirrel"
 	"github.com/TMDeal/PokeDB/arguments"
 	"github.com/TMDeal/PokeDB/models"
 )
@@ -18,8 +17,9 @@ func (root *RootResolver) Generation(args arguments.Search) *GenerationResolver 
 	}
 
 	var gen models.Generation
-	query := models.Select("*").From("generations").Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	query := sq.Select("*").From("generations").Where("id = ? OR LOWER(name) LIKE LOWER(?)", id, name)
 	if err = root.db.Find(&gen, query); err != nil {
+		root.db.Log(err)
 		return nil
 	}
 
@@ -37,8 +37,9 @@ func (root *RootResolver) Type(args arguments.Search) *TypeResolver {
 	}
 
 	var t models.Type
-	query := models.Select("*").From("types").Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	query := sq.Select("*").From("types").Where("id = ? OR LOWER(name) LIKE LOWER(?)", id, name)
 	if err = root.db.Find(&t, query); err != nil {
+		root.db.Log(err)
 		return nil
 	}
 
@@ -56,9 +57,9 @@ func (root *RootResolver) Move(args arguments.Search) *MoveResolver {
 	}
 
 	var m models.Move
-	query := models.Select("*").From("moves").Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	query := sq.Select("*").From("moves").Where("id = ? OR LOWER(name) LIKE LOWER(?)", id, name)
 	if err = root.db.Find(&m, query); err != nil {
-		log.Println(err)
+		root.db.Log(err)
 		return nil
 	}
 
@@ -76,8 +77,9 @@ func (root *RootResolver) Region(args arguments.Search) *RegionResolver {
 	}
 
 	var r models.Region
-	query := models.Select("*").From("regions").Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	query := sq.Select("*").From("regions").Where("id = ? OR LOWER(name) LIKE LOWER(?)", id, name)
 	if err = root.db.Find(&r, query); err != nil {
+		root.db.Log(err)
 		return nil
 	}
 
@@ -95,8 +97,9 @@ func (root *RootResolver) Version(args arguments.Search) *VersionResolver {
 	}
 
 	var v models.Version
-	query := models.Select("*").From("versions").Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	query := sq.Select("*").From("versions").Where("id = ? OR LOWER(name) LIKE LOWER(?)", id, name)
 	if err = root.db.Find(&v, query); err != nil {
+		root.db.Log(err)
 		return nil
 	}
 
@@ -114,8 +117,9 @@ func (root *RootResolver) VersionGroup(args arguments.Search) *VersionGroupResol
 	}
 
 	var v models.VersionGroup
-	query := models.Select("*").From("version_groups").Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	query := sq.Select("*").From("version_groups").Where("id = ? OR LOWER(name) LIKE LOWER(?)", id, name)
 	if err = root.db.Find(&v, query); err != nil {
+		root.db.Log(err)
 		return nil
 	}
 
@@ -133,8 +137,9 @@ func (root *RootResolver) Ability(args arguments.Search) *AbilityResolver {
 	}
 
 	var a models.Ability
-	query := models.Select("*").From("abilities").Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	query := sq.Select("*").From("abilities").Where("id = ? OR LOWER(name) LIKE LOWER(?)", id, name)
 	if err = root.db.Find(&a, query); err != nil {
+		root.db.Log(err)
 		return nil
 	}
 
@@ -152,8 +157,9 @@ func (root *RootResolver) Item(args arguments.Search) *ItemResolver {
 	}
 
 	var a models.Item
-	query := models.Items().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	query := models.Items().Where("id = ? OR LOWER(name) LIKE LOWER(?)", id, name)
 	if err = root.db.Find(&a, query); err != nil {
+		root.db.Log(err)
 		return nil
 	}
 
@@ -170,16 +176,15 @@ func (root *RootResolver) Machine(args struct {
 
 	name, id, err := GetSearch(args.Search)
 	if err != nil {
+		root.db.Log(err)
 		return nil
 	}
 
 	var a models.Machine
-	query := models.Machines().
-		Where("id = ?", id).
-		Or("LOWER(name) LIKE LOWER(?)", name).
-		And("version_group_id = ?", args.VersionGroup)
+	query := models.Machines().Where("id = ? OR LOWER(name) LIKE LOWER(?) AND version_group_id = ?", id, name, args.VersionGroup)
 
 	if err = root.db.Find(&a, query); err != nil {
+		root.db.Log(err)
 		return nil
 	}
 
@@ -197,8 +202,9 @@ func (root *RootResolver) Berry(args arguments.Search) *BerryResolver {
 	}
 
 	var a models.Berry
-	query := models.Berries().Where("id = ?", id).Or("LOWER(name) LIKE LOWER(?)", name)
+	query := models.Berries().Where("id = ? OR LOWER(name) LIKE LOWER(?)", id, name)
 	if err = root.db.Find(&a, query); err != nil {
+		root.db.Log(err)
 		return nil
 	}
 

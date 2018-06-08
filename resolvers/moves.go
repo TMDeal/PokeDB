@@ -17,141 +17,151 @@ func NewMoveResolver(db *models.DB, m *models.Move) *MoveResolver {
 	return &MoveResolver{db, m}
 }
 
-func (m *MoveResolver) ID() graphql.ID {
-	return GlobalID(models.Move{}, m.move.ID)
+func (r MoveResolver) ID() graphql.ID {
+	return GlobalID(models.Move{}, r.move.ID)
 }
 
-func (m *MoveResolver) Identifier() string {
-	return m.move.Identifier
+func (r MoveResolver) Identifier() string {
+	return r.move.Identifier
 }
 
-func (m *MoveResolver) Name() string {
-	return m.move.Name
+func (r MoveResolver) Name() string {
+	return r.move.Name
 }
 
-func (m *MoveResolver) ContestEffect() *ContestEffectResolver {
-	c, err := m.move.ContestEffect(m.db)
+func (r MoveResolver) ContestEffect() *ContestEffectResolver {
+	c, err := r.move.ContestEffect(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil
 	}
-	return NewContestEffectResolver(m.db, c)
+	return NewContestEffectResolver(r.db, c)
 }
 
-func (m *MoveResolver) ContestType() *ContestTypeResolver {
-	c, err := m.move.ContestType(m.db)
+func (r MoveResolver) ContestType() *ContestTypeResolver {
+	c, err := r.move.ContestType(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil
 	}
-	return NewContestTypeResolver(m.db, c)
+	return NewContestTypeResolver(r.db, c)
 }
 
-func (m *MoveResolver) SuperContestEffect() *SuperContestEffectResolver {
-	c, err := m.move.SuperContestEffect(m.db)
+func (r MoveResolver) SuperContestEffect() *SuperContestEffectResolver {
+	c, err := r.move.SuperContestEffect(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil
 	}
-	return NewSuperContestEffectResolver(m.db, c)
+	return NewSuperContestEffectResolver(r.db, c)
 }
 
-func (m *MoveResolver) Generation() *GenerationResolver {
-	gen, err := m.move.Generation(m.db)
+func (r MoveResolver) Generation() *GenerationResolver {
+	gen, err := r.move.Generation(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil
 	}
-	return NewGenerationResolver(m.db, gen)
+	return NewGenerationResolver(r.db, gen)
 }
 
-func (m *MoveResolver) DamageClass() *DamageClassResolver {
-	dc, err := m.move.DamageClass(m.db)
+func (r MoveResolver) DamageClass() *DamageClassResolver {
+	dc, err := r.move.DamageClass(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil
 	}
-	return NewDamageClassResolver(m.db, dc)
+	return NewDamageClassResolver(r.db, dc)
 }
 
-func (m *MoveResolver) Type() *TypeResolver {
-	t, err := m.move.Type(m.db)
+func (r MoveResolver) Type() *TypeResolver {
+	t, err := r.move.Type(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil
 	}
-	return NewTypeResolver(m.db, t)
+	return NewTypeResolver(r.db, t)
 }
 
-func (m *MoveResolver) Flags() *[]*MoveFlagResolver {
+func (r MoveResolver) Flags() *[]*MoveFlagResolver {
+	mf, err := r.move.Flags(r.db)
+	if err != nil {
+		r.db.Log(err)
+		return nil
+	}
+
 	var mfs []*MoveFlagResolver
-
-	mf, err := m.move.Flags(m.db)
-	if err != nil {
-		return nil
-	}
-
-	for _, v := range mf {
-		mfs = append(mfs, NewMoveFlagResolver(m.db, &v))
+	for i, _ := range mf {
+		mfs = append(mfs, NewMoveFlagResolver(r.db, &mf[i]))
 	}
 
 	return &mfs
 }
 
-func (m *MoveResolver) FlavorText(args arguments.FlavorText) (*FlavorTextResolver, error) {
-	flav, err := m.move.FlavorText(m.db, int(args.VersionGroup))
+func (r MoveResolver) FlavorText(args arguments.FlavorText) (*FlavorTextResolver, error) {
+	flav, err := r.move.FlavorText(r.db, int(args.VersionGroup))
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
-	return NewFlavorTextResolver(m.db, flav), nil
+	return NewFlavorTextResolver(r.db, flav), nil
 }
 
-func (m *MoveResolver) Effect() (*MoveEffectResolver, error) {
-	me, err := m.move.Effect(m.db)
+func (r MoveResolver) Effect() (*MoveEffectResolver, error) {
+	me, err := r.move.Effect(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
-	return NewMoveEffectResolver(m.db, me), nil
+	return NewMoveEffectResolver(r.db, me), nil
 }
 
-func (m *MoveResolver) Target() (*MoveTargetResolver, error) {
-	mt, err := m.move.Target(m.db)
+func (r MoveResolver) Target() (*MoveTargetResolver, error) {
+	mt, err := r.move.Target(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
-	return NewMoveTargetResolver(m.db, mt), nil
+	return NewMoveTargetResolver(r.db, mt), nil
 }
 
-func (m *MoveResolver) Meta() (*MoveMetaResolver, error) {
-	meta, err := m.move.Meta(m.db)
+func (r MoveResolver) Meta() (*MoveMetaResolver, error) {
+	meta, err := r.move.Meta(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
-	return NewMoveMetaResolver(m.db, meta), nil
+	return NewMoveMetaResolver(r.db, meta), nil
 }
 
-func (m *MoveResolver) Power() *int32 {
-	if !m.move.Power.Valid {
+func (r MoveResolver) Power() *int32 {
+	if !r.move.Power.Valid {
 		return nil
 	}
-	p := int32(m.move.Power.Int64)
+	p := int32(r.move.Power.Int64)
 	return &p
 }
 
-func (m *MoveResolver) PP() *int32 {
-	if !m.move.PP.Valid {
+func (r MoveResolver) PP() *int32 {
+	if !r.move.PP.Valid {
 		return nil
 	}
-	pp := int32(m.move.PP.Int64)
+	pp := int32(r.move.PP.Int64)
 	return &pp
 }
 
-func (m *MoveResolver) Accuracy() *int32 {
-	if !m.move.Accuracy.Valid {
+func (r MoveResolver) Accuracy() *int32 {
+	if !r.move.Accuracy.Valid {
 		return nil
 	}
-	acc := int32(m.move.Accuracy.Int64)
+	acc := int32(r.move.Accuracy.Int64)
 	return &acc
 }
 
-func (m *MoveResolver) Priority() int32 {
-	return int32(m.move.PP.Int64)
+func (r MoveResolver) Priority() int32 {
+	return int32(r.move.PP.Int64)
 }

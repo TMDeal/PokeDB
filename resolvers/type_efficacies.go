@@ -40,12 +40,13 @@ func (r TypeEfficacyResolver) None() *TypeEfficacyDirectionResolver {
 func (r TypeEfficacyDirectionResolver) From() ([]*TypeResolver, error) {
 	ts, err := r.t.DamageFrom(r.db, r.mult)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
 	var trs []*TypeResolver
-	for _, t := range ts {
-		trs = append(trs, NewTypeResolver(r.db, &t))
+	for i, _ := range ts {
+		trs = append(trs, NewTypeResolver(r.db, &ts[i]))
 	}
 
 	return trs, nil
@@ -54,12 +55,13 @@ func (r TypeEfficacyDirectionResolver) From() ([]*TypeResolver, error) {
 func (r TypeEfficacyDirectionResolver) To() ([]*TypeResolver, error) {
 	ts, err := r.t.DamageTo(r.db, r.mult)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
 	var trs []*TypeResolver
-	for _, t := range ts {
-		trs = append(trs, NewTypeResolver(r.db, &t))
+	for i, _ := range ts {
+		trs = append(trs, NewTypeResolver(r.db, &ts[i]))
 	}
 
 	return trs, nil

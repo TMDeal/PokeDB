@@ -31,6 +31,7 @@ func (r VersionResolver) Name() string {
 func (r VersionResolver) Group() (*VersionGroupResolver, error) {
 	vg, err := r.v.VersionGroup(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 

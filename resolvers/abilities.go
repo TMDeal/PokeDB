@@ -40,6 +40,7 @@ func (r AbilityResolver) Effect() string {
 func (r AbilityResolver) Generation() (*GenerationResolver, error) {
 	gen, err := r.a.Generation(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
@@ -49,6 +50,7 @@ func (r AbilityResolver) Generation() (*GenerationResolver, error) {
 func (r AbilityResolver) FlavorText(args arguments.FlavorText) (*FlavorTextResolver, error) {
 	flav, err := r.a.FlavorText(r.db, int64(args.VersionGroup))
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 

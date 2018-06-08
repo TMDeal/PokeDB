@@ -32,7 +32,7 @@ func GetSearch(args arguments.Search) (name string, id int, err error) {
 	return
 }
 
-func GetLimitOffset(args arguments.Connection) (int, int, error) {
+func GetLimitOffset(args arguments.Connection) (uint64, uint64, error) {
 	offset := 0
 	limit := 20
 
@@ -49,5 +49,5 @@ func GetLimitOffset(args arguments.Connection) (int, int, error) {
 		limit = int(*args.First)
 	}
 
-	return limit, offset, nil
+	return uint64(limit), uint64(offset), nil
 }

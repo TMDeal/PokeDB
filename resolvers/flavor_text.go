@@ -18,6 +18,7 @@ func (r FlavorTextResolver) Text() string {
 func (r FlavorTextResolver) VersionGroup() (*VersionGroupResolver, error) {
 	vg, err := r.flav.VersionGroup(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 

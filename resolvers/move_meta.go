@@ -74,6 +74,7 @@ func (r MoveMetaResolver) StatChance() int32 {
 func (r MoveMetaResolver) Ailment() (*MoveMetaAilmentResolver, error) {
 	ail, err := r.meta.Ailment(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
@@ -83,6 +84,7 @@ func (r MoveMetaResolver) Ailment() (*MoveMetaAilmentResolver, error) {
 func (r MoveMetaResolver) Category() (*MoveMetaCategoryResolver, error) {
 	cat, err := r.meta.Category(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
@@ -92,6 +94,7 @@ func (r MoveMetaResolver) Category() (*MoveMetaCategoryResolver, error) {
 func (r MoveMetaResolver) StatChanges() ([]*MoveMetaStatChangeResolver, error) {
 	msc, err := r.meta.StatChanges(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 

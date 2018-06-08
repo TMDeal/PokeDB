@@ -22,6 +22,7 @@ func (r BerryFlavorResolver) Potency() int32 {
 func (r BerryFlavorResolver) ContestType() (*ContestTypeResolver, error) {
 	ct, err := r.bf.ContestType(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 

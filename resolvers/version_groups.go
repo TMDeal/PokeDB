@@ -31,6 +31,7 @@ func (r VersionGroupResolver) Ordering() int32 {
 func (r VersionGroupResolver) Generation() (*GenerationResolver, error) {
 	gen, err := r.vg.Generation(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
@@ -40,13 +41,13 @@ func (r VersionGroupResolver) Generation() (*GenerationResolver, error) {
 func (r VersionGroupResolver) Versions() ([]*VersionResolver, error) {
 	vs, err := r.vg.Versions(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
 	var vrs []*VersionResolver
-
-	for _, v := range vs {
-		vrs = append(vrs, NewVersionResolver(r.db, &v))
+	for i, _ := range vs {
+		vrs = append(vrs, NewVersionResolver(r.db, &vs[i]))
 	}
 
 	return vrs, nil
@@ -55,13 +56,13 @@ func (r VersionGroupResolver) Versions() ([]*VersionResolver, error) {
 func (r VersionGroupResolver) Regions() ([]*RegionResolver, error) {
 	rs, err := r.vg.Regions(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
 	var rrs []*RegionResolver
-
-	for _, re := range rs {
-		rrs = append(rrs, NewRegionResolver(r.db, &re))
+	for i, _ := range rs {
+		rrs = append(rrs, NewRegionResolver(r.db, &rs[i]))
 	}
 
 	return rrs, nil

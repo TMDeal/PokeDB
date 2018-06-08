@@ -22,6 +22,7 @@ func (r ItemCategoryResolver) Name() string {
 func (r ItemCategoryResolver) Pocket() (*ItemPocketResolver, error) {
 	ip, err := r.ic.Pocket(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 

@@ -23,6 +23,7 @@ func (r MachineResolver) Number() int32 {
 func (r MachineResolver) VersionGroup() (*VersionGroupResolver, error) {
 	vg, err := r.m.VersionGroup(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
@@ -32,6 +33,7 @@ func (r MachineResolver) VersionGroup() (*VersionGroupResolver, error) {
 func (r MachineResolver) Move() (*MoveResolver, error) {
 	mv, err := r.m.Move(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 

@@ -3,6 +3,7 @@ package resolvers
 import (
 	"log"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/TMDeal/PokeDB/arguments"
 	"github.com/TMDeal/PokeDB/models"
 )
@@ -14,7 +15,7 @@ func (root *RootResolver) Moves(args arguments.Connection) MoveConnectionResolve
 	}
 
 	var items []models.Move
-	query := models.Select("*").From("moves").Limit(limit).Offset(offset)
+	query := sq.Select("*").From("moves").Limit(limit).Offset(offset)
 	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
 	}
@@ -34,7 +35,7 @@ func (root *RootResolver) Generations(args arguments.Connection) GenerationConne
 	}
 
 	var items []models.Generation
-	query := models.Select("*").From("generations").Limit(limit).Offset(offset)
+	query := sq.Select("*").From("generations").Limit(limit).Offset(offset)
 	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
 	}
@@ -54,7 +55,7 @@ func (root *RootResolver) Regions(args arguments.Connection) RegionConnectionRes
 	}
 
 	var items []models.Region
-	query := models.Select("*").From("regions").Limit(limit).Offset(offset)
+	query := sq.Select("*").From("regions").Limit(limit).Offset(offset)
 	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
 	}
@@ -74,7 +75,7 @@ func (root *RootResolver) Types(args arguments.Connection) TypeConnectionResolve
 	}
 
 	var items []models.Type
-	query := models.Select("*").From("types").Limit(limit).Offset(offset)
+	query := sq.Select("*").From("types").Limit(limit).Offset(offset)
 	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
 	}
@@ -94,7 +95,7 @@ func (root *RootResolver) Versions(args arguments.Connection) VersionConnectionR
 	}
 
 	var items []models.Version
-	query := models.Select("*").From("versions").Limit(limit).Offset(offset)
+	query := sq.Select("*").From("versions").Limit(limit).Offset(offset)
 	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
 	}
@@ -114,7 +115,7 @@ func (root *RootResolver) VersionGroups(args arguments.Connection) VersionGroupC
 	}
 
 	var items []models.VersionGroup
-	query := models.Select("*").From("version_groups").Limit(limit).Offset(offset)
+	query := sq.Select("*").From("version_groups").Limit(limit).Offset(offset)
 	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
 	}
@@ -134,7 +135,7 @@ func (root *RootResolver) Abilities(args arguments.Connection) AbilityConnection
 	}
 
 	var items []models.Ability
-	query := models.Select("*").From("abilities").Limit(limit).Offset(offset)
+	query := sq.Select("*").From("abilities").Limit(limit).Offset(offset)
 	if err = root.db.FindAll(&items, query); err != nil {
 		log.Fatal(err)
 	}

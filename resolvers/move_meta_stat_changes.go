@@ -18,6 +18,7 @@ func (r MoveMetaStatChangeResolver) Change() int32 {
 func (r MoveMetaStatChangeResolver) Stat() (*StatResolver, error) {
 	s, err := r.msc.Stat(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 

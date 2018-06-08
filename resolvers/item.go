@@ -57,6 +57,7 @@ func (r ItemResolver) FlingEffect() (*ItemFlingEffectResolver, error) {
 
 	ife, err := r.i.FlingEffect(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
@@ -66,6 +67,7 @@ func (r ItemResolver) FlingEffect() (*ItemFlingEffectResolver, error) {
 func (r ItemResolver) Category() (*ItemCategoryResolver, error) {
 	cat, err := r.i.Category(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
@@ -75,12 +77,13 @@ func (r ItemResolver) Category() (*ItemCategoryResolver, error) {
 func (r ItemResolver) Flags() ([]*ItemFlagResolver, error) {
 	fs, err := r.i.Flags(r.db)
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
 	var fsr []*ItemFlagResolver
-	for _, f := range fs {
-		fsr = append(fsr, NewItemFlagResolver(r.db, &f))
+	for i, _ := range fs {
+		fsr = append(fsr, NewItemFlagResolver(r.db, &fs[i]))
 	}
 
 	return fsr, nil
@@ -89,6 +92,7 @@ func (r ItemResolver) Flags() ([]*ItemFlagResolver, error) {
 func (r ItemResolver) FlavorText(args arguments.FlavorText) (*FlavorTextResolver, error) {
 	flav, err := r.i.FlavorText(r.db, int(args.VersionGroup))
 	if err != nil {
+		r.db.Log(err)
 		return nil, err
 	}
 
