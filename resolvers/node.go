@@ -72,6 +72,11 @@ func (r *NodeResolver) ToMachine() (*MachineResolver, bool) {
 	return to, ok
 }
 
+func (r *NodeResolver) ToNature() (*NatureResolver, bool) {
+	to, ok := r.Node.(*NatureResolver)
+	return to, ok
+}
+
 func (r *NodeResolver) ToBerry() (*BerryResolver, bool) {
 	to, ok := r.Node.(*BerryResolver)
 	return to, ok

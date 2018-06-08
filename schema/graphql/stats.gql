@@ -3,8 +3,8 @@ type Stat implements Node {
 	identifier: String!
 	name: String!
 	battleOnly: Boolean!
-	gameIndex: Int!
-	damageClass: DamageClass!
+	gameIndex: Int
+	damageClass: DamageClass
 }
 
 type StatEdge {

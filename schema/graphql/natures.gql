@@ -1,0 +1,20 @@
+type Nature implements Node {
+    id: ID!
+    identifier: String!
+    name: String!
+    decreasedStat: Stat
+    increasedStat: Stat
+    likesFlavor: String!
+    hatesFlavor: String!
+}
+
+type NatureEdge {
+    cursor: Cursor!
+    node: Nature
+}
+
+type NatureConnection {
+    totalCount: Int!
+    edges: [NatureEdge]
+    pageInfo: PageInfo!
+}

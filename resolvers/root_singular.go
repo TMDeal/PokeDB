@@ -210,3 +210,23 @@ func (root *RootResolver) Berry(args arguments.Search) *BerryResolver {
 
 	return NewBerryResolver(root.db, &a)
 }
+
+func (root *RootResolver) Nature(args arguments.Search) *NatureResolver {
+	if args.ID == nil && args.Name == nil {
+		return nil
+	}
+
+	name, id, err := GetSearch(args)
+	if err != nil {
+		return nil
+	}
+
+	var nat models.Nature
+	query := models.Natures().Where("id = ? OR LOWER(name) LIKE LOWER(?)", id, name)
+	if err = root.db.Find(&nat, query); err != nil {
+		root.db.Log(err)
+		return nil
+	}
+
+	return NewNatureResolver(root.db, &nat)
+}

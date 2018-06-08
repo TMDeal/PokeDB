@@ -32,11 +32,19 @@ func (r StatResolver) BattleOnly() bool {
 	return r.stat.BattleOnly
 }
 
-func (r StatResolver) GameIndex() int32 {
-	return int32(r.stat.GameIndex)
+func (r StatResolver) GameIndex() *int32 {
+	if !r.stat.GameIndex.Valid {
+		return nil
+	}
+	val := int32(r.stat.GameIndex.Int64)
+	return &val
 }
 
 func (r StatResolver) DamageClass() (*DamageClassResolver, error) {
+	if !r.stat.DamageClassID.Valid {
+		return nil, nil
+	}
+
 	dc, err := r.stat.DamageClass(r.db)
 	if err != nil {
 		r.db.Log(err)

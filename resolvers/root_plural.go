@@ -212,3 +212,23 @@ func (root *RootResolver) Berries(args arguments.Connection) BerryConnectionReso
 
 	return *connections
 }
+
+func (root *RootResolver) Natures(args arguments.Connection) NatureConnectionResolver {
+	limit, offset, err := GetLimitOffset(args)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var items []models.Nature
+	query := models.Natures().Limit(limit).Offset(offset)
+	if err = root.db.FindAll(&items, query); err != nil {
+		log.Fatal(err)
+	}
+
+	connections, err := NewNatureConnectionResolver(root.db, items, args)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return *connections
+}

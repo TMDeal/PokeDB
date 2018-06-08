@@ -17,6 +17,7 @@ type Query {
     machine(versionGroup: Int = 17, id: ID, name: String): Machine
 	version(id: ID, name: String): Version
 	versionGroup(id: ID, name: String): VersionGroup
+    nature(id: ID, name: String): Nature
 
 	abilities(first: Int, after: Cursor): AbilityConnection!
 	regions(first: Int, after: Cursor): RegionConnection!
@@ -28,4 +29,5 @@ type Query {
     machines(versionGroup: Int = 17, first: Int, after: Cursor): MachineConnection!
 	versions(first: Int, after: Cursor): VersionConnection!
 	versionGroups(first: Int, after: Cursor): VersionGroupConnection!
+    natures(first: Int, after: Cursor): NatureConnection!
 }

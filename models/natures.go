@@ -1,6 +1,8 @@
 package models
 
-import sq "github.com/Masterminds/squirrel"
+import (
+	sq "github.com/Masterminds/squirrel"
+)
 
 type Nature struct {
 	ID              int64  `db:"id"`
